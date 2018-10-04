@@ -260,7 +260,7 @@ mboxgrep -nd -c . spam
 Shortly, if @code{mboxgrep} crashes and/or works differently than described
 in this manual, you've found a bug.
 
-Please report bugs to @email{dspiljar@@panix.com}.  
+Please report bugs to @email{dspiljar@@datatipp.se}.  
 Instructions how to reproduce the bug or output from a debugger would be 
 highly appreciated. Don't, however, send any coredumps.
 
