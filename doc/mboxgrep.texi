@@ -1,0 +1,279 @@
+\input texinfo   @c -*-texinfo-*-
+@c $Id: mboxgrep.texi,v 1.19 2003/08/24 19:51:14 dspiljar Exp $
+@setfilename mboxgrep.info
+@settitle Grep through mailboxes
+@finalout
+@setchapternewpage odd
+
+@set EDITION 0.7
+@set VERSION 0.7.9
+@set UPDATED 24 Aug 2003
+
+@dircategory Mail
+@direntry
+* mboxgrep: (mboxgrep).		A mail folder scanning utility.
+@end direntry
+
+@node Top, , , (dir)
+
+@ifinfo
+This file documents @code{mboxgrep} (version @value{VERSION}), a
+mailbox scanning utility.
+
+Copyright (C) 2000, 2001, 2002, 2003 Daniel Spiljar
+@end ifinfo
+
+@menu
+* Introduction::	A short preface.
+* Invoking::		Command-line arguments.
+* Examples::		A few examples of usage.
+* Bugs::		What to do with bugs and similar vermin.
+
+* To Vicky::            Author's dedication.
+@end menu
+
+@node Introduction, Invoking, , Top
+@chapter Introduction
+
+@cindex introduction
+@cindex preface
+
+@code{mboxgrep} is a small, non-interactive utility that scans mail folders 
+for messages matching regular expressions.  
+
+It supports basic and extended POSIX regular expressions.  @code{Perl}-style 
+regular expressions are supported as well, if @code{mboxgrep} is linked with 
+PCRE library.
+
+Found messages can be either displayed on standard output, counted, deleted, 
+piped to a specified command, or copied to another mailbox.
+
+It can read and write a variety of folder formats: 
+
+@itemize @bullet
+@item
+mbox folders, either plain or compressed
+@item
+MH folders 
+@item nnml and nnmh folders used by Gnus 
+@item @code{qmail}-style maildirs
+@end itemize
+
+Additionally, it can read mbox folders or output from another @code{mboxgrep}
+process from standard input.  It does so if a single dash (-) is given
+as a file name.
+
+@node Invoking, Examples, Introduction, Top
+@chapter Command-Line Arguments
+@cindex arguments
+
+The syntax of @code{mboxgrep} invocation is:
+
+@example
+mboxgrep [OPTIONS] PATTERN [MAILBOX]
+@end example
+
+@menu
+* Miscellaneous::
+* File locking::
+* Regexp selection::
+* Output control::
+* Search scope selection::
+* Mailbox type selection::
+@end menu
+
+@node Miscellaneous, File locking, , Invoking
+
+@table @samp
+@item --help
+@itemx -h
+Display a brief help screen and exit.
+
+@item --version
+@itemx -V
+Display program version and copyright information and exit.
+
+@item --recursive
+@itemx -r
+Descend into directories recursively.
+
+@end table
+
+@node File locking, Regexp selection, Miscellaneous, Invoking
+
+When accessing mbox folders, @code{mboxgrep} puts a shared lock on
+files by default.  Note that mbox folders normally should not be accessed 
+without locking.  
+
+@table @samp
+
+@item --file-lock=METHOD
+@itemx -l METHOD
+Specify file locking METHOD.  @code{mboxgrep} supports @code{flock} and 
+@code{fcntl} file locking.  However, one of these methods may be 
+unimplemented on your operating system and thus not available in 
+@code{mboxgrep} at run time.  To disable file locking, specify @code{none}.
+
+@item --no-file-lock
+@itemx -nl
+Do not attempt to lock mbox folder files.
+
+@end table
+
+@node Regexp selection, Output control, File locking, Invoking
+
+@table @samp
+
+@item --extended-regexp
+@itemx -E
+PATTERN is an extended regular expression.
+
+@item --basic-regexp
+@itemx -G
+PATTERN is a basic regular expression.
+
+@item --perl-regexp
+@itemx -P
+PATTERN is a Perl regular expression.
+
+@item --regexp=PATTERN
+@itemx -e PATTERN
+Use PATTERN as a regular expression.
+
+@item --ignore-case
+@itemx -i
+Perform case-insensitive search.
+
+@item --invert-match
+@itemx -v
+Invert the sense of matching, i.e. select only non-matching messages.
+
+@end table
+
+@node Output control, Search scope selection, Regexp selection, Invoking
+
+By default, @code{mboxgrep} writes found messages to standard output.
+The options below change such behavior.
+
+@table @samp
+
+@item --count
+@itemx -c
+Suppress normal output and print the count of matching (or non-matching,
+if used with the @code{-v} option) messages.
+
+@item --delete
+@itemx -d
+Suppress normal output and delete selected messages. 
+
+Use with extreme caution.
+
+@item --no-duplicates
+@itemx -nd
+Ignore duplicate messages.
+
+@item --output=FOLDER
+@itemx -o FOLDER
+Suppress normal output and write messages to destination folder FOLDER
+instead. 
+
+Note that @code{mboxgrep} assumes the output folder is of the same format 
+as the input folder.  Currently there is no possibility to convert folders.
+
+@item --pipe=COMMAND
+@itemx -p COMMAND
+Suppress normal output and pipe each selected message to a separate
+instance of COMMAND.
+
+@item --no-messages
+@itemx -s
+Suppress error messages.
+
+@end table
+
+@node Search scope selection, Mailbox type selection, Output control, Invoking
+
+@table @samp
+
+@item --headers
+@itemx -H
+Match PATTERN against message headers.
+
+@item --body
+@itemx -B
+Match PATTERN against message body.
+
+@end table
+
+@node Mailbox type selection, , Search scope selection, Invoking
+
+@table @samp
+
+@item --mailbox-format=FORMAT
+@itemx -m FORMAT
+Specify mailbox FORMAT.  Supported formats are @code{mbox} (default),
+@code{zmbox} (gzip compressed mbox), @code{bz2mbox} (bzip2 compressed
+mbox) @code{mh}, @code{nnml}, @code{nnmh}, and @code{maildir}.
+
+@end table
+
+@node Examples, Bugs, Invoking, Top
+@chapter Examples
+@cindex example
+
+Scan @env{$MAIL} for messages from Dirty Harry:
+
+@example
+mboxgrep -H '^From:.*callahan@@homicide\.SFPD\.gov' $MAIL
+@end example
+
+Re-mail to George messages that mention his name:
+
+@example
+mboxgrep --pipe="/usr/lib/sendmail george" --ignore-case george ~/Mail/*
+@end example
+
+Display all messages in folder @file{~/Mail/incoming}, except those that
+appear to originate from AOL:
+
+@example
+mboxgrep -v -H '^Received:.*aol\.com' ~/Mail/incoming
+@end example
+
+Do a case-insensitive scan of @file{~/Mail/incoming} for messages with subject 
+``Weekly News'' and write them to folder @file{~/Mail/archive}:
+
+@example
+mboxgrep -o ~/Mail/archive -H -i '^Subject: Weekly News' ~/Mail/incoming
+@end example
+
+Count @emph{all} messages stored in folder @file{spam}, ignoring duplicates:
+
+@example
+mboxgrep -nd -c . spam
+@end example
+
+@node Bugs, To Vicky, Examples, Top
+@chapter Detecting Vermin
+@cindex bug, insect, vermin, bugreport
+
+Shortly, if @code{mboxgrep} crashes and/or works differently than described
+in this manual, you've found a bug.
+
+Please report bugs to @email{dspiljar@@world.std.com}.  
+Instructions how to reproduce the bug or output from a debugger would be 
+highly appreciated. Don't, however, send any coredumps.
+
+@node To Vicky, , Bugs, Top
+@chapter Author's Dedication
+@cindex vicky, cat, memory, love
+
+@code{Mboxgrep} is dedicated in loving memory of Vicky, my cat who died
+of tumor on Sep 12, 2002.
+
+You haven't been long with us, but you gave us a lot of joy and all
+your big heart that stopped ticking too early. I will never forget
+you. Sleep well, little friend.
+
+
+@bye @c cruel world

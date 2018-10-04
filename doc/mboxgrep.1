@@ -1,0 +1,122 @@
+.Id $Id: mboxgrep.1,v 1.15 2003/08/24 19:51:14 dspiljar Exp $
+.TH MBOXGREP 1 "24 Aug 2003"
+.SH NAME
+mboxgrep \- displays email messages matching a pattern
+.SH SYNOPSIS
+.B mboxgrep
+.RI [ OPTIONS ]
+.RI PATTERN
+.RI [ MAILBOX ]
+.SH DESCRIPTION
+This manual page refers to
+.B mboxgrep
+version
+.BR 0.7.9 .
+.PP
+.B mboxgrep
+scans a
+.I MAILBOX
+and displays messages matching
+.I PATTERN.
+.PP
+If a mailbox name is ommited, or a single dash (-) is given instead,
+it reads from standard input.
+It can read mbox folders or output from another
+.B mboxgrep
+process from standard input.
+.PP
+.B mboxgrep
+understands POSIX regular expressions, as well as Perl compatible regular
+expressions (if enabled at compile time).
+.I MAILBOX
+can be either a:
+.TP
+\(bu
+mbox folder (either plain or compressed)
+.TP
+\(bu
+MH folder
+.TP
+\(bu
+Gnus nnmh or nnml folder
+.TP
+\(bu
+qmail-style maildir folder
+.SH OPTIONS
+.PP
+.IP "-h, --help"
+Display a help screen and exit.
+.IP "-V, --version"
+Display version and copyright information and exit.
+.IP "-r, --recursive"
+Descend into directories recursively.
+.IP "-E, --extended-regexp"
+PATTERN is an extended regular expression.  This is default.
+.IP "-G, --basic-regexp "
+PATTERN is a basic regular expression.
+.IP "-P, --perl-regexp"
+PATTERN is a Perl regular expression.  Works only if enabled at compile time.
+.IP "-e, --regexp=PATTERN"
+Use PATTERN as a regular expression.
+.IP "-i, --ignore-case"
+Ignore case distinctions.
+.IP "-v, --invert-match"
+Select messages which don't match PATTERN.
+.IP "-H, --headers"
+Match PATTERN against message headers.
+.IP "-B, --body"
+Match PATTERN against message body.
+.IP "-l, --file-lock=METHOD"
+Select file locking METHOD.  METHOD is `fcntl', `flock', or `none'.
+.IP "-nl, --no-file-lock"
+Do not lock files.  This option is meaningful only if a mbox folder (see below)
+is scanned.
+.IP "-c, --count"
+Suppress normal output and print a count of matching messages.
+.IP "-o, --output=FOLDER"
+Suppress normal output and write messages to destination folder FOLDER instead.
+.IP "-p, --pipe=COMMAND"
+Pipe each found message to COMMAND
+.IP "-d, --delete"
+Suppress normal output and delete selected messages instead.  Use with
+caution.
+.IP "-nd, --no-duplicates"
+Ignore duplicate messages.
+.IP "-m, --mailbox-format=TYPE"
+Select input and output mailbox TYPE.  TYPE can be either `mbox' (default), 
+`zmbox' (meaning `gzip compressed mbox'), `bz2mbox' (meaning `bzip2
+compressed mbox'), `mh', `nnml', `nnmh' or `maildir'.
+.SH EXAMPLES
+.TP
+\(bu
+Search $MAIL for messages from Dirty Harry:
+.PP
+mboxgrep '^From:.*callahan@homicide\\.SFPD\\.gov' $MAIL
+.TP
+\(bu
+Display all messages contained in folder ~/Mail/incoming, except those
+that appear to originate from AOL:
+.PP
+mboxgrep -v 'Received:.*aol\\.com' ~/Mail/incoming
+.SH BUGS
+Report them to address below.
+.SH NOTICE
+Mboxgrep was alomost completely rewritten since version 0.5.3.  Additionally, 
+there was no stable 0.6.x branch between 0.5.3 and 0.7.0.
+.SH SEE ALSO
+grep(1),
+regex(7),
+perlre(1),
+mbox(5),
+RFC 2822
+.SH DEDICATION
+Mboxgrep is dedicated in loving memory of Vicky, my cat who died of
+tumor on Sep 12, 2002.  
+.PP
+You haven't been long with us, but you gave us a lot of joy and all your
+big heart that stopped ticking too early.  I will never forget you.  Sleep
+well, little friend.
+.SH URL
+http://www.mboxgrep.org/
+.SH AUTHOR
+Daniel Spiljar <dspiljar@world.std.com>

@@ -1,0 +1,57 @@
+#  mboxgrep - scan mailbox for messages matching a regular expression
+#  Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+#
+#  Mboxgrep is free software; you can redistribute it and/or modify it 
+#  under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  Mboxgrep is distributed in the hope that it will be useful, but 
+#  WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with mboxgrep; if not, write to the Free Software Foundation, 
+#  Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+# $Id: Makefile.in,v 1.9 2003/03/30 23:07:10 dspiljar Exp $
+
+srcdir		=	@srcdir@
+
+CC		= 	@CC@
+OBJS		=	info.o main.o mh.o scan.o maildir.o mbox.o misc.o \
+			wrap.o getopt.o getopt1.o md5.o
+SRCS		= 	info.c main.c mh.c scan.c maildir.c mbox.c misc.c \
+			wrap.c getopt.c getopt1.c md5.c
+TARGET		=	mboxgrep
+CFLAGS		=	@CFLAGS@
+LIBS		=	@LIBS@
+INSTALL		=	@INSTALL@
+prefix		=	@prefix@
+SHELL 		= 	/bin/sh
+INCLUDES	=	-I. -I$(srcdir)
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+.c.o: 
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+
+.PHONY: clean
+clean:
+	rm -f $(TARGET) $(OBJS) core
+
+.PHONY: distclean
+distclean:
+	rm -f *~ Makefile config.h
+
+.PHONY: install
+install: mboxgrep
+	$(INSTALL) -d $(prefix)/bin
+	$(INSTALL) -s $(TARGET) $(prefix)/bin
+
+.NOEXPORT:

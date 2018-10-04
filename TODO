@@ -1,0 +1,26 @@
+-*- text -*-
+
+- ignore .overview when grepping Gnus folders			[X]
+- implement inverted matching 					[X]
+- (re)implement recursive search through directories		[X]
+- implement literal date matching				[ ]
+- write Texinfo documentation					[X]
+- implement writing selected messages to a new folder		[X]
+- implement deleting selected messages				[X]
+- add support for config files 					[ ]
+- add support for reading messages from stdin			[X]
+- add support for compressed mbox folders			[X]
+- make use of lockfile library					[ ]
+- make use of Solaris' maillock library				[ ]
+- provide possibility to use flock() instead of fcntl()		[X]
+- provide national language support with gettext()		[ ]
+- allow run-time selection of file locking method		[X]
+- make mboxgrep understand MIME					[ ]
+- enable removing duplicate messages w/ MD5 checksums		[X]
+- add checking for conflicting command-line options		[ ]
+- add support for GnuPG						[ ]
+- add support for bzip2 compression				[X]
+- add support for mail folder conversion			[ ]
+
+
+$Id: TODO,v 1.16 2003/04/06 21:48:23 dspiljar Exp $

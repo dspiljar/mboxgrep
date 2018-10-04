@@ -1,0 +1,21 @@
+Begin4
+Title:          mboxgrep
+Version:        0.7.9
+Entered-date:   2003-08-24
+Description:    mboxgrep is a small utility that scans a mailbox for messages 
+                matching a basic, extended, or Perl-compatible regular 
+                expression.   Selected messages can be either displayed on 
+                standard output, counted, piped to a command or written to 
+		another mailbox.
+                It supports mbox (both plain and compressed), MH, nnmh, nnml 
+		and maildir folders.
+Keywords:       mail, mail-tools, mbox, MH, nnmh, nnml, maildir, regex
+Author:         dspiljar@world.std.com (Daniel Spiljar)
+Maintained-by:  dspiljar@world.std.com (Daniel Spiljar)
+Primary-site:   http://www.mboxgrep.org/
+                75k     mboxgrep-0.7.9.tar.gz
+Alternate-site: 
+Original-site:  
+Platforms:      
+Copying-policy: GPL
+End

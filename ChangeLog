@@ -1,0 +1,254 @@
+Sun Aug 24 21:49:52 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* doc/mboxgrep.1, doc/mboxgrep.texi:
+	small updates
+
+Sat Aug 23 20:56:39 CEST 2003  James P. Dugal  <jpd@louisiana.edu>
+
+	* src/main.c, src/mbox.h, src/mbox.c
+	If we are to use rename() to move a temp file (resulting from
+	deletions done in a mailbox) back over the original mailbox, we
+	must be sure the temp file is on the same file system.  Also,
+	we should try to preserve the same ownership and permissions.
+
+Mon Aug 11 00:39:14 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* configure.ac:
+	look for pcre-config(1) script; this effectively fixes a
+	compilation bug on recent RedHat Linux systems
+
+Sun Apr 13 21:16:25 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/info.c, src/info.h:
+	print_wrap(); list of compile-time options is now printed wrapped
+
+Mon Apr  7 01:24:20 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/mbox.c, src/wrap.c, src/wrap.h:
+	m_gzdopen()
+
+Sun Apr  6 23:04:19 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/mbox.c, src/mbox.h, src/mboxgrep.h, src/misc.c, src/scan.c:
+	support for bzip2 compressed mailboxes
+
+Fri Apr  4 00:14:01 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* configure.ac:
+	check for libbz2
+
+Sun Oct 27 23:57:31 CET 2002  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/mbox.c:
+	mbox_open() should now complain if called with an unknown argument
+	mode.  Shouldn't normally happen, but...
+
+Sun Aug 25 22:43:38 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c, src/mbox.c, src/mbox.h, src/scan.c:
+	removed the gzmbox* functions in order to avoid code duplication;
+	as a side effect, mboxgrep can now read compressed mbox folders
+	from standard input
+
+Sun Aug 11 01:36:02 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* configure.ac:
+	AC_HEADER_STDC, which fixed another compiler warning
+
+Sat Aug 10 22:03:31 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c, src/mbox.c, src/mh.c, src/scan.c, src/misc.c, src/maildir.c, src/mboxgrep.h:
+	made various code cleanups: got rid of a couple of global variables,
+	fixed compiler warnings and things like that
+
+Sat Aug 10 00:35:21 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/mh.h, src/wrap.h, src/mboxgrep.h:
+	removed some unnecessary #defines that have been causing compiler
+	errors
+
+Sun Aug  4 20:11:29 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c, src/scan.c, src/scan.h:
+	code clean up: moved recursive scan code from main()
+	to recursive_scan()
+
+Wed Jul 24 00:20:59 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/maildir.c:
+	same thing with maildir as with MH below
+
+Sat Jul  6 22:51:45 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/mh.c:
+	MH module doesn't read files which aren't RFC 2822 messages anymore
+
+Sat Jun 29 01:43:36 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* configure.in, src/maildir.c, src/main.c, src/mbox.c, src/mh.c, src/scan.c:
+	added debugging with dmalloc library
+
+Sat Jun 29 01:39:21 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/mbox.c, src/maildir.c:
+	fixed potential problem as with MH folders (below)
+
+Sat Jun 29 01:28:30 CEST 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/mh.c, src/scan.c:
+	(hopefully) fixed crashes on MH folders
+
+Sat Feb 23 22:22:12 CET 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/mbox.c, src/maildir.c, src/mh.c, src/misc.c:
+	removed useless code that required strptime ()
+
+Sat Feb 23 15:43:05 CET 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c, src/mbox.h, src/mbox.c, src/scan.c:
+	mboxgrep can now read mbox folders from standard input
+
+Fri Feb  8 02:15:36 CET 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c:
+	fixed a bug which prevented mboxgrep from being compiled;
+	this happened because I've put some assignments *before*
+	declarations
+
+Wed Feb  6 23:11:50 CET 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+	
+	* src/maildir.c, src/main.c, src/mbox.c, src/mboxgrep.h, src/mh.c, src/mh.h, src/misc.c, src/scan.c, src/wrap.c
+	code cleanups; many global variables have been replaced with
+	a single option_t structure
+
+Fri Feb  1 00:31:05 CET 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/maildir.c:
+	fixed a bug which occured on recursive search of maildirs
+
+Wed Jan  2 00:32:37 CET 2002  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c, src/misc.c, src/wrap.h:
+	applied a patch (kindly submitted by John R. Daily 
+	<jdaily@progeny.com>), which fixes missing prototypes that might 
+	cause mboxgrep to coredump on IA64 platform
+
+Sat Dec 15 20:12:40 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c, src/scan.c, src/scan.h:
+	recursive search through directories has been reimplemented
+
+Sat Dec  8 22:13:54 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/main.c, src/maildir.c:
+	replaced remaining occurences of malloc() with xmalloc()
+
+Sat Dec  8 21:21:58 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/maildir.c, src/main.c, src/mbox.c, src/mh.c, src/misc.c, src/scan.c, src/wrap.c, src/wrap.h:
+	wrote xstrdup(), an error-checking wrapper around strdup() and 
+	replaced all occurences of strdup() with xstrdup()
+
+Sun Dec  2 18:05:57 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/Makefile.in, src/info.c, src/main.c, src/mboxgrep.h, src/md5.c, src/md5.h, src/scan.c, src/scan.h, doc/mboxgrep.texi:
+	mboxgrep can now ignore duplicate messages, thanks to the MD5 
+	algorithm
+
+	* src/maildir.c, src/main.c, src/scan.c, src/wrap.c, src/wrap.h:
+	wrote xcalloc() and renamed m_realloc() to xrealloc()
+
+Sat Nov 17 22:57:57 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/mbox.c, src/mh.c, src/maildir.c
+	message->headers and message->body pointers are now initially malloc'd
+	to size of one character in order to prevent NULL pointers from being 
+	passed to regexec()
+
+Wed Nov  7 22:47:34 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+	
+	* configure.ac, src/mboxgrep.h, src/main.c, src/misc.h, src/misc.c, src/info.c, src/config.h, src/mbox.c:
+	file locking method can now be selected at run time
+
+	* src/info.c, src/maildir.c, src/main.c, src/mbox.h, src/misc.c, src/scan.c, src/Makefile.in
+	changed `#include "config.h"' to `#include <config.h>', and fixed 
+	other bugs with #including
+
+Sat Nov  3 16:08:22 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+	
+	* configure.ac, src/config.h.in, src/info.c, src/mbox.c
+	files can be locked with flock() instead of fcntl(), if
+	enabled at compile time
+
+Sun Oct 28 19:01:44 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/Makefile.in:
+	forgot to mention getopt.c and getopt1.c 
+
+Sun Oct 28 16:06:28 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/mh.c, src/main.c, src/scan.c:
+	#included certain neccessary files
+	
+Sun Oct 28 14:43:21 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/maildir.c, src/maildir.h, src/scan.c:
+	wrote functions maildir_check and maildir_create;
+	if the target maildir doesn't exist, mboxgrep creates one;
+	if it does exist, mboxgrep checks its consistency and refuses to
+	write to it unless `tmp', `new' and `cur' subdirectories exist
+
+Sun Oct 28 13:02:10 CET 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/info.c, doc/mboxgrep.texi, doc/mboxgrep.1
+	the "--regexp" command was implemented in version 0.7.0, but I
+	forgot to document it
+
+Sat Oct 27 21:48:36 CEST 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/scan.c:
+	if the input is a non-mbox folder, a proper postmark line (with 
+	date) is put on top of each message written to stdout
+
+Mon Oct  8 22:53:34 CEST 2001  Daniel Spiljar  <dspiljar@bofhlet.net>
+
+	* src/*:
+	source code now completely rewritten
+
+Sun May 27 00:19:52 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
+
+	* doc/mboxgrep.1:
+	updated the manual page -- it now refers to RFC 2822, instead
+	of the obsoleted 822
+
+Tue May  1 15:06:03 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
+
+	* configure.in, doc/Makefile.in, src/Makefile.in, Makefile.in:
+	moved manpage to the `doc' subdirectory; changed files above
+	accordingly
+
+Sun Apr 15 23:00:08 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
+
+	* src/mboxgrep.h, src/main.c, src/file.c, src/scan.c, src/info.c: 
+	added support for writing messages to another mail folder
+
+Mon Apr  9 21:55:15 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
+
+	* src/file.c, src/scan.c: all calls of malloc() are now checked 
+	and mboxgrep exits with code 2 if it fails to allocate memory
+
+Sun Apr  8 19:40:33 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
+
+	* src/mboxgrep.h, src/main.c: wrote mboxgrep_stat()
+
+Sun Apr  8 16:58:36 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
+
+	* src/mboxgrep.h, src/main.c: wrote mboxgrep_error()
+
+Tue Mar 27 01:26:22 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
+
+	* configure.in: check for gethostname()
+
+
+
+$Id: ChangeLog,v 1.37 2003/08/24 19:51:12 dspiljar Exp $
