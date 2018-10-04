@@ -1,6 +1,6 @@
 /* -*- C -*- 
    mboxgrep - scan mailbox for messages matching a regular expression
-   Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+   Copyright (C) 2000, 2001, 2002, 2003, 2004  Daniel Spiljar
    
    Mboxgrep is free software; you can redistribute it and/or modify it 
    under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
    along with mboxgrep; if not, write to the Free Software Foundation, 
    Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
    
-   $Id: mbox.h,v 1.9 2003/08/24 19:23:50 dspiljar Exp $ */
+   $Id: mbox.h,v 1.13 2006-10-22 23:34:49 dspiljar Exp $ */
 
 #ifndef MBOX_H
 #define MBOX_H 1
@@ -34,8 +34,14 @@ typedef struct
 
 
 mbox_t *mbox_open (const char *path, const char *mode);
-void *tmpfile_open (const char *path);
+void tmpmbox_create (const char *path);
+void tmpfile_name (const char *path);
+void tmpfile_mod_own (const int fd, const char *path);
+int tmpfile_create (void);
 void mbox_close (mbox_t * mbp);
-message_t *mbox_read_message (mbox_t * mbp);
+/* FIXME -- it doesn't compile with this portion uncommented
+message_t *mbox_read_message (mbox_t * mp);
+void mbox_write_message (message_t *m, mbox_t *mbox);
+*/
 
 #endif /* MBOX_H */

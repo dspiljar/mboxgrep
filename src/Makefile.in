@@ -1,5 +1,5 @@
 #  mboxgrep - scan mailbox for messages matching a regular expression
-#  Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+#  Copyright (C) 2000, 2001, 2002, 2003, 2006  Daniel Spiljar
 #
 #  Mboxgrep is free software; you can redistribute it and/or modify it 
 #  under the terms of the GNU General Public License as published by
@@ -15,15 +15,15 @@
 #  along with mboxgrep; if not, write to the Free Software Foundation, 
 #  Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# $Id: Makefile.in,v 1.9 2003/03/30 23:07:10 dspiljar Exp $
+# $Id: Makefile.in,v 1.12 2006-07-07 04:38:53 dspiljar Exp $
 
 srcdir		=	@srcdir@
 
 CC		= 	@CC@
 OBJS		=	info.o main.o mh.o scan.o maildir.o mbox.o misc.o \
-			wrap.o getopt.o getopt1.o md5.o
+			wrap.o getopt.o getopt1.o md5.o re.o
 SRCS		= 	info.c main.c mh.c scan.c maildir.c mbox.c misc.c \
-			wrap.c getopt.c getopt1.c md5.c
+			wrap.c getopt.c getopt1.c md5.c re.c
 TARGET		=	mboxgrep
 CFLAGS		=	@CFLAGS@
 LIBS		=	@LIBS@

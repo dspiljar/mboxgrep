@@ -16,7 +16,7 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: mh.h,v 1.6 2003/03/30 23:07:10 dspiljar Exp $ */
+  $Id: mh.h,v 1.6 2003-03-30 23:07:10 dspiljar Exp $ */
 
 #ifndef MH_H
 #define MH_H 1

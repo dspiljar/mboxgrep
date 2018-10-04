@@ -16,7 +16,7 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: wrap.c,v 1.12 2003/04/06 23:24:04 dspiljar Exp $ */
+  $Id: wrap.c,v 1.13 2006-01-20 03:00:39 dspiljar Exp $ */
 
 #include <config.h>
 #include <unistd.h>
@@ -54,6 +54,8 @@
 #ifndef APPNAME
 #define APPNAME "mboxgrep"
 #endif
+
+#define BUFLEN 16384
 
 int m_open (const char *pathname, int flags, mode_t mode)
 {
@@ -214,3 +216,42 @@ int m_unlink (const char *pathname)
   return baz;
 }
 
+#ifdef HAVE_LIBZ
+
+void gzwrite_loop (void *fp, char *str)
+{
+  int quux, len, baz;
+
+  quux = 0;
+  baz = strlen (str);
+  for (;;)
+    {
+      len = gzwrite (fp, (str+quux), 
+		     (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
+      quux += len;
+      if (quux == baz)
+	break;
+    }
+}
+
+#endif /* HAVE_LIBZ */
+
+#ifdef HAVE_LIBBZ2
+
+void bzwrite_loop (void *fp, char *str)
+{
+  int quux, len, baz;
+
+  quux = 0;
+  baz = strlen (str);
+  for (;;)
+    {
+      len = BZ2_bzwrite (fp, (str+quux), 
+			 (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
+      quux += len;
+      if (quux == baz)
+	break;
+    }
+}
+
+#endif /* HAVE_LIBBZ2 */

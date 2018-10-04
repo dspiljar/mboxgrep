@@ -16,7 +16,7 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: wrap.h,v 1.11 2003/04/06 23:24:04 dspiljar Exp $ */
+  $Id: wrap.h,v 1.12 2006-01-20 03:00:39 dspiljar Exp $ */
 
 /* This file is part of mboxgrep. */
 
@@ -58,7 +58,11 @@ FILE *m_fopen (const char *path, const char *mode);
 FILE *m_fdopen (int fildes, const char *mode);
 #ifdef HAVE_LIBZ
 gzFile *m_gzdopen (int fildes, const char *mode);
+void gzwrite_loop (void *fp, char *str);
 #endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+void bzwrite_loop (void *fp, char *str);
+#endif /* HAVE_LIBBZ2 */
 
 DIR *m_opendir (const char *name);
 

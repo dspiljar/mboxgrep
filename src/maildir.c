@@ -1,6 +1,6 @@
 /* -*- C -*- 
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+  Copyright (C) 2000, 2001, 2002, 2003, 2006  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: maildir.c,v 1.21 2003/03/30 23:07:10 dspiljar Exp $ */
+  $Id: maildir.c,v 1.25 2006-10-19 01:53:43 dspiljar Exp $ */
 
 #include <config.h>
 
@@ -115,26 +115,15 @@ message_t *
 maildir_read_message (maildir_t *mdp)
 {
   int isheaders = 1;
-  int have_from = 0, have_to = 0, have_message_id = 0, have_return_path = 0,
-    have_sender = 0, have_date = 0;
+  int have_from = 0, have_to = 0, have_message_id = 0, have_sender = 0,
+      have_date = 0;
   static message_t *message;
   static struct dirent *d_content;
   char *filename, buffer[BUFSIZ];
-  extern char *boxname;
   static FILE *fp;
   static int s;
 
-  message = (message_t *) xmalloc (sizeof (message_t));
-
-  message->headers = (char *) xmalloc (sizeof (char));
-  message->headers[0] = '\0';
-  message->hbytes = 0;
-
-  message->body = (char *) xmalloc (sizeof (char));
-  message->body[0] = '\0';
-  message->bbytes = 0;
-
-  message->from = NULL;
+  message = malloc_message ();
 
   for(;;)
     {
@@ -169,17 +158,17 @@ maildir_read_message (maildir_t *mdp)
 
       filename = 
 	(char *) xmalloc ((sizeof (char)*((strlen (d_content->d_name)) 
-					  + (strlen (boxname)) + 6)));
+					  + (strlen (config.boxname)) + 6)));
 
 /*
       filename = 
 	(char *) alloca((sizeof(char)*((strlen(d_content->d_name))
-					 + (strlen(boxname)) + 2)));
+					 + (strlen(config.boxname)) + 2)));
 */
       if (mdp->new != NULL)
-	sprintf (filename, "%s/new/%s", boxname, d_content->d_name);
+	sprintf (filename, "%s/new/%s", config.boxname, d_content->d_name);
       else
-	sprintf (filename, "%s/cur/%s", boxname, d_content->d_name);
+	sprintf (filename, "%s/cur/%s", config.boxname, d_content->d_name);
       message->filename = (char *) xstrdup (filename);
       free (filename);
 
@@ -210,10 +199,7 @@ maildir_read_message (maildir_t *mdp)
 	      if (0 == strncasecmp ("Message-ID: ", buffer, 12))
 		have_message_id = 1;
 	      if (0 == strncasecmp ("Return-Path: ", buffer, 13))
-		{
-		  have_return_path = 1;
 		  message->from = parse_return_path(buffer);
-		}
 
 	      message->headers =
 		(char *) xrealloc (message->headers,
@@ -248,15 +234,15 @@ maildir_read_message (maildir_t *mdp)
 void 
 maildir_write_message (message_t *m, const char *path)
 {
-  extern int maildir_count;
   char bla[BUFSIZ], *s1, *s2;
   int t;
   static FILE *f1;
 
-  maildir_count++;
+  runtime.maildir_count++;
   t = (int) time (NULL);
 
-  sprintf (bla, "%i.%i_%i.%s", t, config.pid, maildir_count, config.hostname);
+  sprintf (bla, "%i.%i_%i.%s",
+	   t, config.pid, runtime.maildir_count, config.hostname);
   s1 = (char *) xmalloc ((strlen (path) + strlen (bla) + 6) * sizeof (char));
   sprintf(s1, "%s/tmp/%s", path, bla);
   s2 = (char *) xmalloc ((strlen (path) + strlen (bla) + 6) * sizeof (char));

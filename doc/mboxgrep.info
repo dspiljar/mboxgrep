@@ -1,4 +1,4 @@
-This is mboxgrep.info, produced by makeinfo version 4.3 from
+This is mboxgrep.info, produced by makeinfo version 4.6 from
 mboxgrep.texi.
 
 INFO-DIR-SECTION Mail
@@ -29,8 +29,8 @@ File: mboxgrep.info,  Node: Introduction,  Next: Invoking,  Up: Top
 Introduction
 ************
 
-   `mboxgrep' is a small, non-interactive utility that scans mail
-folders for messages matching regular expressions.
+`mboxgrep' is a small, non-interactive utility that scans mail folders
+for messages matching regular expressions.
 
    It supports basic and extended POSIX regular expressions.
 `Perl'-style regular expressions are supported as well, if `mboxgrep'
@@ -59,7 +59,7 @@ File: mboxgrep.info,  Node: Invoking,  Next: Examples,  Prev: Introduction,  Up:
 Command-Line Arguments
 **********************
 
-   The syntax of `mboxgrep' invocation is:
+The syntax of `mboxgrep' invocation is:
 
      mboxgrep [OPTIONS] PATTERN [MAILBOX]
 
@@ -87,6 +87,7 @@ File: mboxgrep.info,  Node: Miscellaneous,  Next: File locking,  Up: Invoking
 `-r'
      Descend into directories recursively.
 
+
 
 File: mboxgrep.info,  Node: File locking,  Next: Regexp selection,  Prev: Miscellaneous,  Up: Invoking
 
@@ -104,6 +105,7 @@ without locking.
 `--no-file-lock'
 `-nl'
      Do not attempt to lock mbox folder files.
+
 
 
 File: mboxgrep.info,  Node: Regexp selection,  Next: Output control,  Prev: File locking,  Up: Invoking
@@ -132,6 +134,7 @@ File: mboxgrep.info,  Node: Regexp selection,  Next: Output control,  Prev: File
 `-v'
      Invert the sense of matching, i.e. select only non-matching
      messages.
+
 
 
 File: mboxgrep.info,  Node: Output control,  Next: Search scope selection,  Prev: Regexp selection,  Up: Invoking
@@ -172,6 +175,7 @@ The options below change such behavior.
 `-s'
      Suppress error messages.
 
+
 
 File: mboxgrep.info,  Node: Search scope selection,  Next: Mailbox type selection,  Prev: Output control,  Up: Invoking
 
@@ -183,14 +187,16 @@ File: mboxgrep.info,  Node: Search scope selection,  Next: Mailbox type selectio
 `-B'
      Match PATTERN against message body.
 
+
 
 File: mboxgrep.info,  Node: Mailbox type selection,  Prev: Search scope selection,  Up: Invoking
 
 `--mailbox-format=FORMAT'
 `-m FORMAT'
      Specify mailbox FORMAT.  Supported formats are `mbox' (default),
-     `zmbox' (gzip compressed mbox), `bzmbox' (bzip2 compressed mbox)
+     `zmbox' (gzip compressed mbox), `bz2mbox' (bzip2 compressed mbox)
      `mh', `nnml', `nnmh', and `maildir'.
+
 
 
 File: mboxgrep.info,  Node: Examples,  Next: Bugs,  Prev: Invoking,  Up: Top
@@ -198,7 +204,7 @@ File: mboxgrep.info,  Node: Examples,  Next: Bugs,  Prev: Invoking,  Up: Top
 Examples
 ********
 
-   Scan `$MAIL' for messages from Dirty Harry:
+Scan `$MAIL' for messages from Dirty Harry:
 
      mboxgrep -H '^From:.*callahan@homicide\.SFPD\.gov' $MAIL
 
@@ -226,10 +232,10 @@ File: mboxgrep.info,  Node: Bugs,  Next: To Vicky,  Prev: Examples,  Up: Top
 Detecting Vermin
 ****************
 
-   Shortly, if `mboxgrep' crashes and/or works differently than
-described in this manual, you've found a bug.
+Shortly, if `mboxgrep' crashes and/or works differently than described
+in this manual, you've found a bug.
 
-   Please report bugs to <dspiljar@world.std.com>.  Instructions how to
+   Please report bugs to <dspiljar@panix.com>.  Instructions how to
 reproduce the bug or output from a debugger would be highly
 appreciated. Don't, however, send any coredumps.
 
@@ -239,8 +245,8 @@ File: mboxgrep.info,  Node: To Vicky,  Prev: Bugs,  Up: Top
 Author's Dedication
 *******************
 
-   `Mboxgrep' is dedicated in loving memory of Vicky, my cat who died
-of tumor on Sep 12, 2002.
+`Mboxgrep' is dedicated in loving memory of Vicky, my cat who died of
+tumor on Sep 12, 2002.
 
    You haven't been long with us, but you gave us a lot of joy and all
 your big heart that stopped ticking too early. I will never forget you.
@@ -251,15 +257,15 @@ Sleep well, little friend.
 Tag Table:
 Node: Top197
 Node: Introduction598
-Node: Invoking1469
-Node: Miscellaneous1830
-Node: File locking2115
-Node: Regexp selection2756
-Node: Output control3307
-Node: Search scope selection4300
-Node: Mailbox type selection4541
-Node: Examples4862
-Node: Bugs5681
-Node: To Vicky6089
+Node: Invoking1466
+Node: Miscellaneous1824
+Node: File locking2110
+Node: Regexp selection2752
+Node: Output control3304
+Node: Search scope selection4298
+Node: Mailbox type selection4540
+Node: Examples4863
+Node: Bugs5679
+Node: To Vicky6080
 
 End Tag Table

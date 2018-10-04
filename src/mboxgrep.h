@@ -1,6 +1,6 @@
 /* -*- C -*- 
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+  Copyright (C) 2000, 2001, 2002, 2003, 2006  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -16,14 +16,14 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: mboxgrep.h,v 1.21 2003/04/06 21:01:49 dspiljar Exp $ */
+  $Id: mboxgrep.h,v 1.31 2006-10-22 23:34:49 dspiljar Exp $ */
 
 #ifndef MBOXGREP_H
 #define MBOXGREP_H
 
 #define APPNAME "mboxgrep"
-#define VERSION "0.7.9"
-#define BUGREPORT_ADDR "dspiljar@world.std.com"
+#define VERSION "0.7.10"
+#define BUGREPORT_ADDR "dspiljar@panix.com"
 
 #define HOST_NAME_SIZE 256
 
@@ -45,6 +45,7 @@
 # endif /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H */
 
+#include "mbox.h"
 
 typedef enum
   {
@@ -120,15 +121,30 @@ typedef struct
   int ignorecase;
   int merr;
   int pid;
+  int haveregex;
 
   char hostname[HOST_NAME_SIZE];
+  char *boxname, *outboxname, *pipecmd, *tmpfilename, *regex_s;
+
+  void *pcre_pattern, *pcre_hints, *posix_pattern;
+  int res1, res2;
 
   action_t action;
   format_t format;
   lockmethod_t lock;
 }
-option_t;
+  option_t;
+
+typedef struct
+{
+  int count;
+  int maildir_count;
+  checksum_t *cs;
+  mbox_t *tmp_mbox;
+}
+  runtime_t;
 
 option_t config;
+runtime_t runtime;
 
 #endif /* MBOXGREP_H */

@@ -1,6 +1,6 @@
 /* -*- C -*- 
    mboxgrep - scan mailbox for messages matching a regular expression
-   Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+   Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006  Daniel Spiljar
    
    Mboxgrep is free software; you can redistribute it and/or modify it 
    under the terms of the GNU General Public License as published by
@@ -16,13 +16,12 @@
    along with mboxgrep; if not, write to the Free Software Foundation, 
    Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
    
-   $Id: scan.c,v 1.21 2003/04/06 21:01:49 dspiljar Exp $ */
+   $Id: scan.c,v 1.32 2006-10-22 23:34:49 dspiljar Exp $ */
 
 #include <config.h>
 
 #include <unistd.h>
 #include <stdio.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <sys/types.h>
 
@@ -46,20 +45,17 @@
 #include <time.h>
 #include <errno.h>
 #include <string.h>
-#ifdef HAVE_LIBZ
-# include <zlib.h>
 #define BUFLEN 16384
-#endif /* HAVE_LIBZ */
-#ifdef HAVE_LIBPCRE
-# include <pcre.h>
-#endif /* HAVE_LIBPCRE */
 
+#include "mboxgrep.h"
 #include "scan.h"
 #include "mbox.h"
 #include "mh.h"
 #include "maildir.h"
 #include "wrap.h"
 #include "md5.h"
+#include "misc.h"
+#include "re.h"
 #ifdef HAVE_FTS_OPEN
 # include <sys/stat.h>
 # include <fts.h>
@@ -77,46 +73,30 @@ void scan_mailbox (char path[])
      /* {{{  */
 {
   static FILE *outf;
-  extern FILE *tmpp;
   static mbox_t *mbox, *out;
-#ifdef HAVE_LIBPCRE
-  extern pcre *pcre_pattern;
-  extern pcre_extra *hints;
-  int of[BUFSIZ];
-#endif /* HAVE_LIBPCRE */
   static DIR *boxd, *foo;
   static maildir_t *maildird;
   static message_t *msg;
-  extern regex_t posix_pattern;
-  extern char *pipecmd, *outboxname;
-  extern int count;
   int delete = 0;
-  char date_str[80];
   int isdup = 0;
-  time_t tt;
-  struct tm *ct;
-  extern checksum_t *cs;
-
-  extern option_t config;
-
 
   if (config.format == MAILDIR && config.action == WRITE)
     {
-      foo = opendir (outboxname); /* do NOT change this to m_opendir! */
+      foo = opendir (config.outboxname); /* do NOT change this to m_opendir! */
       if (foo == NULL && errno == ENOENT)
-	maildir_create (outboxname);
+	maildir_create (config.outboxname);
       else closedir (foo);
 
-      if (-1 == maildir_check (outboxname))
+      if (-1 == maildir_check (config.outboxname))
 	{
 	  if (config.merr)
 	    fprintf (stderr, "%s: %s: Not a maildir folder\n", APPNAME, 
-		     outboxname);
+		     config.outboxname);
 	  exit (2);
 	}
     }
 
-  count = 0;
+  runtime.count = 0;
   if (config.action == DELETE)
     delete = 1;
 
@@ -140,7 +120,8 @@ void scan_mailbox (char path[])
 
   for (;;)
     {
-      int res1 = 1, res2 = 1;
+      config.res1 = 1;
+      config.res2 = 1;
 
       if ((config.format == MBOX) || (config.format == ZMBOX) ||
 	  (config.format == BZ2MBOX))
@@ -157,30 +138,16 @@ void scan_mailbox (char path[])
 
 #ifdef HAVE_LIBPCRE
       if (config.perl)
-	{
-	  if (config.headers)
-	    res1 = pcre_exec (pcre_pattern, hints, msg->headers,
-			      (int) strlen (msg->headers), 0, 0, of, BUFSIZ);
-	  if (config.body)
-	    res2 = pcre_exec (pcre_pattern, hints, msg->body,
-			      (int) strlen (msg->body), 0, 0, of, BUFSIZ);
-
-	  res1 = res1 ^ 1;
-	  res2 = res2 ^ 1;
-	}
+	pcre_match (msg);
       else
 #endif /* HAVE_LIBPCRE */
-	{
-	  if (config.headers)
-	    res1 = regexec (&posix_pattern, msg->headers, 0, NULL, 0);
-	  if (config.body)
-	    res2 = regexec (&posix_pattern, msg->body, 0, NULL, 0);
-	}
+	regex_match (msg);
 
       if (config.dedup)
-	isdup = md5_check_message (msg->body, cs);
+	isdup = md5_check_message (msg->body, runtime.cs);
 
-      if (((res1 == 0) | (res2 == 0)) ^ ((config.invert ^ delete)) &&
+      if (((config.res1 == 0) | (config.res2 == 0)) ^
+	  ((config.invert ^ delete)) &&
 	  ((config.dedup && !isdup) || !config.dedup))
 	{
 	  if (config.action == DISPLAY)
@@ -188,39 +155,33 @@ void scan_mailbox (char path[])
 	      if (config.format != MBOX && config.format != ZMBOX
 		  && config.format != BZ2MBOX
 		  && 0 != strncmp ("From ", msg->headers, 5))
-		{
-		  tt = time (NULL);
-		  ct = localtime (&tt);
-		  strftime (date_str, 80, "%a %b %d %H:%M:%S %Y", ct);
-		  if (msg->from)
-		    fprintf (stdout, "From %s  %s\n", msg->from, date_str);
-		  else
-		    fprintf (stdout, "From nobody  %s\n", date_str);
-		}
+		postmark_print (msg);
 	      fprintf (stdout, "%s\n%s", msg->headers, msg->body);
 	    }
 	  else if (config.action == WRITE)
 	    {
 	      if (config.format == MAILDIR)
-		maildir_write_message (msg, outboxname);
+		maildir_write_message (msg, config.outboxname);
 	      else if (config.format == MH || config.format == NNMH ||
 		       config.format == NNML)
-		mh_write_message (msg, outboxname);
-	      else if (config.format == MBOX)
+		mh_write_message (msg, config.outboxname);
+	      else if ((config.format == MBOX) || (config.format == ZMBOX) ||
+		       (config.format == BZ2MBOX))
 		{
-		  out = mbox_open (outboxname, "w");
-		  fprintf (out->fp, "%s\n%s", msg->headers, msg->body);
+		  out = mbox_open (config.outboxname, "w");
+		  /* fprintf (out->fp, "%s\n%s", msg->headers, msg->body); */
+		  mbox_write_message (msg, out);
 		  mbox_close (out);
 		}
 	    }
 	  else if (config.action == PIPE)
 	    {
-	      outf = popen (pipecmd, "w");
+	      outf = popen (config.pipecmd, "w");
 	      if (outf == NULL)
 		{
 		  if (config.merr)
 		    {
-		      fprintf (stderr, "%s: %s: ", APPNAME, pipecmd);
+		      fprintf (stderr, "%s: %s: ", APPNAME, config.pipecmd);
 		      perror (NULL);
 		    }
 		  exit (2);
@@ -229,41 +190,15 @@ void scan_mailbox (char path[])
 	      pclose (outf);
 	    }
 	  else if (config.action == COUNT)
-	    ++count;
-	  else if (config.action == DELETE && config.format == MBOX)
-	    fprintf (tmpp, "%s\n%s", msg->headers, msg->body);
-#ifdef HAVE_LIBZ
-	  else if (config.action == DELETE && config.format == ZMBOX)
-	    {
-	      int quux, len, baz;
+	    runtime.count++;
+	  else if (config.action == DELETE &&
+		   ((config.format == MBOX) || (config.format == ZMBOX) ||
+		    (config.format == BZ2MBOX)))
+	    mbox_write_message (msg, runtime.tmp_mbox);
+	}
 
-	      quux = 0;
-	      baz = strlen (msg->headers);
-	      for (;;)
-		{
-		  len = gzwrite (tmpp, (msg->headers+quux), 
-			 	 (((quux + BUFLEN) < baz) ? BUFLEN : 
-				  (baz - quux)));
-		  quux += len;
-		  if (quux == baz)
-		    break;
-		}
-	      gzwrite(tmpp, "\n", 1);
-	      quux = 0;
-	      baz = strlen(msg->body);
-	      for (;;)
-		{
-		  len = gzwrite(tmpp, (msg->body+quux), 
-				(((quux + BUFLEN) < baz) ? BUFLEN : 
-				 (baz - quux)));
-		  quux += len;
-		  if (quux == baz)
-		    break;
-		}
-	    }
-#endif /* HAVE_LIBZ */
-	} /* if */
-      else if (((((res1 == 0) | (res2 == 0)) ^ config.invert) && delete) &&
+      else if (((((config.res1 == 0) | (config.res2 == 0)) ^
+		 config.invert) && delete) &&
 	       ((config.format == MH) || (config.format == NNMH) || 
 		(config.format == NNML) || (config.format == MAILDIR)))
 	m_unlink(msg->filename);
@@ -322,7 +257,7 @@ int md5_check_message (char *body, checksum_t *chksum)
      /* {{{  */
 {
   struct md5_ctx a;
-  unsigned char b[16];
+  char b[16];
   int i;
 
   md5_init_ctx (&a);
@@ -334,7 +269,7 @@ int md5_check_message (char *body, checksum_t *chksum)
 
   for (i = 0; i < chksum->n; i++)
     {
-      if (0 == strncmp (chksum->md5[i], b, 16)) 
+      if (0 == strncmp ((char *)chksum->md5[i], b, 16)) 
 	return 1; 
     }
 

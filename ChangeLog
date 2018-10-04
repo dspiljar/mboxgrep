@@ -1,3 +1,133 @@
+Mon Oct 23 01:29:07 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mboxgrep.h, src/main.c, src/mbox.c, src/mbox.h, src/scan.c:
+	temporary mbox file (used for deleting messages) is now created
+	by tmpmbox_create(), tmpp global pointer is killed;  portions of
+	code in scan.c are replaced by single call of mbox_write_message();
+	scan.c no longer includes zlib.h and bzlib.h
+
+Thu Oct 19 03:50:38 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mboxgrep.h, src/main.c, src/maildir.c, src/scan.c:
+	got rid off tmpp and maildir_count global variables (code
+	cleanup)
+
+Thu Oct 19 03:38:24 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mboxgrep.h, src/main.c, src/scan.c:
+	introduction of the global runtime_t structure; mailbox counter,
+	MD5 hash and other global variables are now part of it (code
+	cleanup)
+
+Fri Jul  7 06:10:51 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mboxgrep.h, src/re.c, src/re.h, src/scan.c:
+	portions of scan_mailbox() have been moved to new functions,
+	pcre_match() and regex_match() (code cleanup)
+
+Thu Jul  6 13:54:23 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/main.c, src/mboxgrep.h, src/re.c, src/re.h, src/scan.c:
+	main() has been partially uncluttered by moving portions of the
+	code to functions pcre_init() and regex_init()
+
+Thu Jul  6 12:49:59 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/main.c, src/mboxgrep.h, src/misc.c, src/misc.h:
+	variables regex_s and haveregex are now part of the option_t
+	structure (code cleanup)
+
+Thu Jul  6 10:26:57 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/main.c, src/misc.c, src/misc.h:
+	parts of main() have been moved to set_default_options() and
+	get_runtime_options() (code cleanup)
+
+Sat Jul  1 13:06:37 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mbox.c, src/mbox.h:
+	file mode and ownership-altering code has been moved to a separate
+	function, tmpfile_mod_own (code cleanup)
+
+Tue Jun 27 18:48:00 CEST 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mbox.c, src/mbox.h:
+	portions of the code from tmpfile_open moved to a new function,
+	tmpfile_name (code cleanup)
+
+Mon Feb 20 18:09:59 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/maildir.c, src/mh.c:
+	removed some unused variables (have_return_path)
+
+Mon Jan 30 01:35:30 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mboxgrep.h, src/maildir.c, src/mh.c, src/mbox.c, src/scan.c, src/main.c:
+	boxname, outboxname, pipecmd and tmpfilename are now a part of
+	the config_t structure and no longer global variables
+
+Sat Jan 21 08:18:29 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/scan.c, src/misc.c, src/misc.h:
+	created postmark_print() to unclutter scan_mailbox()
+
+Fri Jan 20 05:36:44 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/misc.c, src/misc.h, src/mbox.c, src/maildir.c, src/mh.c:
+	some repetitive code moved to malloc_message()
+
+Fri Jan 20 05:13:06 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/mbox.c:
+	cleanup of mbox_write_message(); use of gzwrite_loop() and
+	bzwrite_loop()
+
+Fri Jan 20 03:57:28 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/scan.c, src/wrap.h, src/wrap.c:
+	wrote gzwrite_loop() and bzwrite_loop() to remove some repetitive
+	code from scan.c
+
+Fri Jan 20 02:11:50 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/scan.c:
+	md5_check_message(): array b and cast in strncmp are no longer
+	unsigned
+
+Wed Jan 18 01:48:56 CET 2006  Daniel Spiljar <dspiljar@panix.com>
+
+	* src/info.c, src/mboxgrep.h:
+	updated copyright information, changed author's email address
+	to the one at Panix
+
+Mon Apr 12 19:30:52 CEST 2004  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/info.c:
+	updated copyright information
+
+Sun Apr 11 23:45:08 CEST 2004  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/mbox.h, src/mbox.c, src/scan.c, src/main.c:
+	mbox_write_message(); further fixes of message deletion code
+
+Thu Sep 18 00:10:13 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/scan.c:
+	fixed deleting messages from mbox folders compressed with
+	bzip2
+
+Thu Sep 18 00:08:36 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
+
+	* src/main.c, src/mbox.c:
+	moved James P. Dugal's ownership-preserving code from main() 
+	to tmpfile_open()
+
+Sat Aug 30 23:13:01 CEST 2003  Vid Strpic  <vms@bofhlet.net>
+
+	* src/info.c:
+	If bzip2 support is compiled in, `--help' command should list
+	`bz2mbox' as a valid option to `--mailbox-format='.
+
 Sun Aug 24 21:49:52 CEST 2003  Daniel Spiljar  <dspiljar@world.std.com>
 
 	* doc/mboxgrep.1, doc/mboxgrep.texi:
@@ -251,4 +381,4 @@ Tue Mar 27 01:26:22 CEST 2001  Daniel Spiljar  <dspiljar@public.srce.hr>
 
 
 
-$Id: ChangeLog,v 1.37 2003/08/24 19:51:12 dspiljar Exp $
+$Id: ChangeLog,v 1.59 2006-10-22 23:34:47 dspiljar Exp $

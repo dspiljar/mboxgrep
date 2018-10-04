@@ -1,6 +1,6 @@
 /* -*- C -*- 
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+  Copyright (C) 2000, 2001, 2002, 2003, 2006  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: mh.c,v 1.15 2003/03/30 23:07:10 dspiljar Exp $ */
+  $Id: mh.c,v 1.18 2006-02-20 17:12:22 dspiljar Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -80,24 +80,14 @@ void mh_close (DIR *dp)
 message_t *mh_read_message (DIR *dp)
 {
   int isheaders = 1;
-  int have_from = 0, have_return_path = 0,
-    have_date = 0, have_sender = 0;
+  int have_from = 0, have_date = 0, have_sender = 0;
   static int s;
   message_t *message;
   struct dirent *d_content;
   char buffer[BUFSIZ], *filename;
   FILE *fp;
-  extern char *boxname;
 
-  message = (message_t *) xmalloc (sizeof (message_t));
-
-  message->headers = NULL;
-  message->hbytes = 0;
-
-  message->body = NULL;
-  message->bbytes = 0;
-
-  message->from = NULL;
+  message = malloc_message ();
 
   filename = NULL;
 
@@ -110,7 +100,7 @@ message_t *mh_read_message (DIR *dp)
 
       filename = (char *) xrealloc 
 	(filename, ((strlen (d_content->d_name)) + 
-		    (strlen (boxname)) + 2));
+		    (strlen (config.boxname)) + 2));
 
 /*       message->headers = (char *) xrealloc (message->headers, 0); */
 /*       message->hbytes = 0; */
@@ -118,7 +108,7 @@ message_t *mh_read_message (DIR *dp)
 /*       message->bbytes = 0; */
 
       filename[0] = '\0';
-      sprintf (filename, "%s/%s", boxname, d_content->d_name);
+      sprintf (filename, "%s/%s", config.boxname, d_content->d_name);
       fp = m_fopen (filename, "r");
       isheaders = 1;
       if (fp == NULL)
@@ -167,10 +157,7 @@ message_t *mh_read_message (DIR *dp)
 	      if (0 == strncasecmp ("Date: ", buffer, 6))
 		have_date = 1;
 	      if (0 == strncasecmp ("Return-Path: ", buffer, 13))
-		{
-		  have_return_path = 1;
 		  message->from = parse_return_path (buffer);
-		}
 
 	      message->headers =
 		(char *) realloc (message->headers,

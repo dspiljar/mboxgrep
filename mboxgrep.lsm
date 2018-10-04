@@ -10,8 +10,8 @@ Description:    mboxgrep is a small utility that scans a mailbox for messages
                 It supports mbox (both plain and compressed), MH, nnmh, nnml 
 		and maildir folders.
 Keywords:       mail, mail-tools, mbox, MH, nnmh, nnml, maildir, regex
-Author:         dspiljar@world.std.com (Daniel Spiljar)
-Maintained-by:  dspiljar@world.std.com (Daniel Spiljar)
+Author:         dspiljar@panix.com (Daniel Spiljar)
+Maintained-by:  dspiljar@panix.com (Daniel Spiljar)
 Primary-site:   http://www.mboxgrep.org/
                 75k     mboxgrep-0.7.9.tar.gz
 Alternate-site: 

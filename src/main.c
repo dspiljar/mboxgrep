@@ -1,6 +1,6 @@
 /* -*- C -*-
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+  Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: main.c,v 1.32 2003/08/24 19:23:50 dspiljar Exp $ */
+  $Id: main.c,v 1.41 2006-10-22 23:34:49 dspiljar Exp $ */
 
 #include <config.h>
 
@@ -24,12 +24,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <unistd.h>
-#ifdef HAVE_LIBPCRE
-#include <pcre.h>
-#endif /* HAVE_LIBPCRE */
 #ifdef HAVE_LIBZ
 #include <zlib.h>
 #endif /* HAVE_LIBZ */
@@ -42,39 +38,21 @@
 #include "mh.h"
 #include "scan.h"
 #include "wrap.h" /* xcalloc() et cetera */
+#include "re.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
 #endif /* HAVE_LIBDMALLOC */
-
-regex_t posix_pattern;
-#ifdef HAVE_LIBPCRE
-pcre *pcre_pattern;
-pcre_extra *hints;
-#endif /* HAVE_LIBPCRE */
-char *boxname, *outboxname, *pipecmd, *tmpfilename;
-int maildir_count = 0;
-int count = 0;
-void *tmpp;
-checksum_t *cs;
 
 int
 main (int argc, char **argv)
      /* {{{  */
 
 {
-  int option_index = 0;
-  int c;
-#ifdef HAVE_LIBPCRE
-  int errptr;
-  const char *error;
-#endif /* HAVE_LIBPCRE */
-  int haveregex = 0, havemailbox = 0;
-  static char *regex_s;
+  int havemailbox = 0;
   int singlefile = 0;
-
-  int errcode = 0;
-  char errbuf[BUFSIZ];
+  runtime.count = 0;
+  runtime.maildir_count = 0;
 
   static struct option long_options[] = 
     /* {{{  */
@@ -107,124 +85,9 @@ main (int argc, char **argv)
 
   /* }}} */
 
-  config.perl = 0;
-  config.extended = 1;
-  config.invert = 0;
-  config.headers = 0;
-  config.body = 0;
-  config.action = DISPLAY;
-  config.dedup = 0;
-  config.recursive = 0;
-  config.ignorecase = 0;
-  config.format = MBOX; /* default mailbox format */
-  config.lock = FCNTL; /* default file locking method */
-  config.merr = 1; /* report errors by default */
+  set_default_options ();
 
-  while (1)
-    {
-      c = getopt_long (argc, argv, "BcdEe:GHhil:m:n:o:Pp:rsVv", long_options, 
-		       &option_index);
-
-      if (c == -1)
-	break;
-
-      switch (c)
-	/* {{{  */
-
-	{
-	case '?':
-	  usage();
-	case 'c':
-	  config.action = COUNT;
-	  break;
-	case 'd':
-	  config.action = DELETE;
-	  break;
-	case 'e':
-	  regex_s = xstrdup (optarg);
-	  haveregex = 1;
-	  break;
-	case 'o':
-	  outboxname = xstrdup (optarg);
-	  config.action = WRITE;
-	  break;
-	case 'E':
-	  config.extended = 1;
-	  break;
-	case 'G':
-	  config.extended = 0;
-	  break;
-	case 'P':
-#ifdef HAVE_LIBPCRE
-	  config.extended = 0;
-	  config.perl = 1;
-#else
-	  fprintf(stderr, 
-		  "%s: Support for Perl regular expressions not "
-		  "compiled in\n");
-	  exit(2);
-#endif /* HAVE_LIBPCRE */
-	  break;
-	case 'h':
-	  help ();
-	  break;
-	case 'i':
-	  config.ignorecase = 1;
-	  break;
-	case 'm':
-	  config.format = folder_format (optarg);
-	  break;
-	case 'l':
-	  config.lock = lock_method (optarg);
-	  break;
-	case 'p':
-	  config.action = PIPE;
-	  pipecmd = xstrdup (optarg);
-	  break;
-	case 'V':
-	  version ();
-	  break;
-	case 'v':
-	  config.invert = 1;
-	  break;
-	case 'H':
-	  config.headers = 1;
-	  break;
-	case 'B':
-	  config.body = 1;
-	  break;
-	case 's':
-	  config.merr = 0;
-	  break;
-	case 201:
-	  config.lock = 0;
-	  break;
-	case 'r':
-	  config.recursive = 1;
-	  break;
-        case 200:
-          config.dedup = 1;
-          break;
-        case 'n':
-	  {
-	    switch (optarg[0])
-	      {
-	        case 'd':
-		  config.dedup = 1;
-		  break;
-		case 'l':
-		  config.lock = 0;
-		  break;
-	        default:
-		  fprintf(stderr, "%s: invalid option -- n%c\n", 
-			  APPNAME, optarg[0]);
-		  exit(2);
-	      }
-	  }
-	} /* switch */
-
-      /* }}} */
-    } /* while */
+  get_runtime_options (&argc, argv, long_options);
 
   if ((config.body == 0) && (config.headers == 0))
     {
@@ -238,62 +101,25 @@ main (int argc, char **argv)
       config.pid = (int) getpid ();
     }
 
-  cs = (checksum_t *) xmalloc (sizeof (checksum_t));
-  cs->md5 = (char **) xcalloc (1, sizeof (char **));
-  cs->n = 0;
+  runtime.cs = (checksum_t *) xmalloc (sizeof (checksum_t));
+  runtime.cs->md5 = (char **) xcalloc (1, sizeof (char **));
+  runtime.cs->n = 0;
 
-  if (optind < argc && ! haveregex)
+  if (optind < argc && ! config.haveregex)
     {
-      regex_s = xstrdup (argv[optind]);
-      haveregex = 1;
+      config.regex_s = xstrdup (argv[optind]);
+      config.haveregex = 1;
       ++optind;
     } /* if */
 
-  if (haveregex) 
+  if (config.haveregex) 
     {
 #ifdef HAVE_LIBPCRE
       if (config.perl)
-	/* {{{  */
-
-	{
-	  pcre_pattern = pcre_compile (regex_s, 
-				       (config.ignorecase ? PCRE_CASELESS : 0),
-				       &error, &errptr, NULL);
-	  if (pcre_pattern == NULL)
-	    {
-	      if (config.merr)
-		fprintf (stderr, "%s: %s: %s\n", APPNAME, regex_s, error);
-	      exit(2);
-	    }
-	}
-
-      /* }}} */
+	pcre_init ();
       else
 #endif /* HAVE_LIBPCRE */
-	/* {{{  */
-
-	{
-	  int flag1 = 0, flag2 = 0;
-	  
-	  if (config.ignorecase)
-	    flag1 = REG_ICASE;
-	  if (config.extended)
-	    flag2 = REG_EXTENDED;
-	
-	  errcode = regcomp (&posix_pattern, regex_s, 
-			     (flag1 | flag2 | REG_NEWLINE ));
-	  if (0 != errcode)
-	    {
-	      if (config.merr)
-		{
-		  regerror (errcode, &posix_pattern, errbuf, BUFSIZ);
-		  fprintf (stderr, "%s: %s: %s\n", APPNAME, regex_s, errbuf);
-		}
-	      exit (2);
-	    } /* if */
-	} /* if */
-
-      /* }}} */
+	regex_init ();
     } /* if */
   else
     usage ();
@@ -306,24 +132,11 @@ main (int argc, char **argv)
 
     {
       if (config.action == DELETE) {
-	  tmpp = tmpfile_open (argv[optind]);
-
-	  /* If we're root, copy {owner, group, perms} of mailbox to the tmpfile
-	   * so rename() will thus retain the original's ownership & permissions.
-	   */
-	  if (geteuid() == 0) {
-	      struct stat s;
-	      if (stat(argv[optind], &s) != -1) {
-		  if (fchown(fileno(tmpp), s.st_uid, s.st_gid) == -1)
-		      if (config.merr) perror(tmpfilename);
-		  if (fchmod(fileno(tmpp), s.st_mode) == -1)
-		      if (config.merr) perror(tmpfilename);
-	      }
-	      else if (config.merr) perror(argv[optind]);
-	  }
+	tmpmbox_create (argv[optind]);
+	runtime.tmp_mbox = mbox_open (config.tmpfilename, "w");
       }
 
-      boxname = xstrdup (argv[optind]);
+      config.boxname = xstrdup (argv[optind]);
 
       if (config.recursive)
 	recursive_scan (argv[optind]);
@@ -333,24 +146,19 @@ main (int argc, char **argv)
       if (config.action == COUNT)
 	{
 	  if (singlefile)
-	    fprintf (stdout, "%i\n", count);
+	    fprintf (stdout, "%i\n", runtime.count);
 	  else
 	    {
 	      if (0 == strcmp ("-", argv[optind]))
-		fprintf (stdout, "(standard input):%i\n", count);
+		fprintf (stdout, "(standard input):%i\n", runtime.count);
 	      else
-		fprintf (stdout, "%s:%i\n", argv[optind], count);
+		fprintf (stdout, "%s:%i\n", argv[optind], runtime.count);
 	    }
 	}
       if (config.action == DELETE)
 	{
-#ifdef HAVE_LIBZ
-	  if (config.format == ZMBOX)
-	    gzclose (tmpp);
-#endif /* HAVE_LIBZ */
-	  if (config.format == MBOX)
-	    fclose (tmpp);
-	  rename (tmpfilename, argv[optind]);
+	  mbox_close (runtime.tmp_mbox);
+	  rename (config.tmpfilename, argv[optind]);
 	}
       ++optind;
     } /* while */
@@ -364,7 +172,7 @@ main (int argc, char **argv)
       config.format = MBOX;
       scan_mailbox ("-");
       if (config.action == COUNT)
-	fprintf (stdout, "%i\n", count);
+	fprintf (stdout, "%i\n", runtime.count);
     }
 
   /* }}} */

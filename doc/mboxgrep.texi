@@ -1,5 +1,5 @@
 \input texinfo   @c -*-texinfo-*-
-@c $Id: mboxgrep.texi,v 1.19 2003/08/24 19:51:14 dspiljar Exp $
+@c $Id: mboxgrep.texi,v 1.20 2006-01-18 00:09:58 dspiljar Exp $
 @setfilename mboxgrep.info
 @settitle Grep through mailboxes
 @finalout
@@ -260,7 +260,7 @@ mboxgrep -nd -c . spam
 Shortly, if @code{mboxgrep} crashes and/or works differently than described
 in this manual, you've found a bug.
 
-Please report bugs to @email{dspiljar@@world.std.com}.  
+Please report bugs to @email{dspiljar@@panix.com}.  
 Instructions how to reproduce the bug or output from a debugger would be 
 highly appreciated. Don't, however, send any coredumps.
 

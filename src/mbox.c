@@ -1,6 +1,6 @@
 /* -*- C -*- 
    mboxgrep - scan mailbox for messages matching a regular expression
-   Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+   Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006  Daniel Spiljar
 
    Mboxgrep is free software; you can redistribute it and/or modify it 
    under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
    along with mboxgrep; if not, write to the Free Software Foundation, 
    Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-   $Id: mbox.c,v 1.26 2003/08/24 19:23:50 dspiljar Exp $ */
+   $Id: mbox.c,v 1.34 2006-10-22 23:34:49 dspiljar Exp $ */
 
 #include <config.h>
 
@@ -39,6 +39,7 @@
 #ifdef HAVE_LIBBZ2
 #include <bzlib.h>
 #endif /* HAVE_LIBBZ2 */
+#define BUFLEN 16384
 
 #include "mboxgrep.h"
 #include "mbox.h"
@@ -243,17 +244,7 @@ mbox_read_message (mbox_t * mp)
   char buffer[BUFSIZ];
   message_t *message;
 
-  message = (message_t *) xmalloc (sizeof (message_t));
-
-  message->headers = (char *) xmalloc (sizeof (char));
-  message->headers[0] = '\0';
-  message->hbytes = 0;
-
-  message->body = (char *) xmalloc (sizeof (char));
-  message->body[0] = '\0';
-  message->bbytes = 0;
-
-  message->from = NULL;
+  message = malloc_message ();
 
   s = strlen (mp->postmark_cache);
   message->headers =
@@ -348,53 +339,112 @@ mbox_read_message (mbox_t * mp)
 
 /* }}} */
 
-void *
-tmpfile_open (const char *path)
+void
+tmpmbox_create (const char *path)
      /* {{{  */
 
 {
-  extern char *tmpfilename;
-  char *fname;
-  char *tmpdir;
   int foo;
 
-  if (path == NULL) { /* no path prefix given, use /tmp or TMPDIR */
-    tmpdir = getenv ("TMPDIR");
-    if (tmpdir == NULL)
-      tmpdir = xstrdup ("/tmp");
-    fname = xstrdup ("/mboxgrepXXXXXX");
-  }
-  else {
-    tmpdir = (char *)path;
-    fname = xstrdup (".XXXXXX");
-  }
+  tmpfile_name (path);
+  foo = tmpfile_create ();
+  tmpfile_mod_own (foo, path);
+}
 
-  tmpfilename = (char *) xmalloc ((strlen (tmpdir) + (strlen (fname) + 1))
-				    * sizeof (char));
-  sprintf (tmpfilename, "%s%s", tmpdir, fname);
-  foo = mkstemp (tmpfilename);
-  if (-1 == foo)
+/* }}} */
+
+void
+tmpfile_name (const char *path)
+     /* {{{  */
+{
+  char *fname, *tmpdir;
+
+  if (path == NULL) /* no path prefix given, use /tmp or TMPDIR */
+    {
+      tmpdir = getenv ("TMPDIR");
+      if (tmpdir == NULL)
+	tmpdir = xstrdup ("/tmp");
+      fname = xstrdup ("/mboxgrepXXXXXX");
+    }
+  else
+    {
+      tmpdir = xstrdup (path);
+      fname = xstrdup (".XXXXXX");
+    }
+
+  config.tmpfilename =
+    (char *) xmalloc ((strlen (tmpdir) + (strlen (fname) + 1))
+		      * sizeof (char));
+  sprintf (config.tmpfilename, "%s%s", tmpdir, fname);
+}
+/* }}} */
+
+
+void 
+mbox_write_message (message_t *msg, mbox_t *mbox)
+     /* {{{  */
+
+{
+  if (config.format == MBOX)
+    fprintf (mbox->fp, "%s\n%s", msg->headers, msg->body);
+#ifdef HAVE_LIBZ
+  else if (config.format == ZMBOX)
+    {
+      gzwrite_loop (mbox->fp, msg->headers);
+      gzwrite(mbox->fp, "\n", 1);
+      gzwrite_loop (mbox->fp, msg->body);
+    }
+#endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+  else if (config.format == BZ2MBOX)
+    {
+      bzwrite_loop (mbox->fp, msg->headers);
+      BZ2_bzwrite (mbox->fp, "\n", 1);
+      bzwrite_loop (mbox->fp, msg->body);
+    }
+#endif /* HAVE_LIBBZ2 */
+}
+/* }}}  */
+
+void
+tmpfile_mod_own (const int fd, const char *path)
+     /* {{{  */
+{
+  /* If we're root, copy {owner, group, perms} of mailbox to the tmpfile
+   * so rename() will thus retain the original's ownership & permissions.
+   */
+  if (geteuid () == 0)
+    {
+      struct stat s;
+
+      if (stat (path, &s) != -1)
+	{
+	  if (fchown (fd, s.st_uid, s.st_gid) == -1)
+	    if (config.merr) perror (config.tmpfilename);
+	  if (fchmod (fd, s.st_mode) == -1)
+	    if (config.merr) perror (config.tmpfilename);
+	}
+      else if (config.merr) perror (path);
+    }
+}
+/* }}}  */
+
+int
+tmpfile_create (void)
+     /* {{{  */
+{
+  int fd;
+
+  fd = mkstemp (config.tmpfilename);
+  if (-1 == fd)
     {
       if (config.merr)
 	{
-	  fprintf (stderr, "%s: %s: ", APPNAME, tmpfilename);
+	  fprintf (stderr, "%s: %s: ", APPNAME, config.tmpfilename);
 	  perror (NULL);
 	}
       exit (2);
     }
-
-  if (config.format == MBOX)
-    return (m_fdopen (foo, "w"));
-#ifdef HAVE_LIBZ
-  else if (config.format == ZMBOX)
-    return (m_gzdopen (foo, "wb"));
-#endif /* HAVE_LIBZ */
-#ifdef HAVE_LIBBZ2
-  else if (config.format == BZ2MBOX)
-    return (BZ2_bzdopen (foo, "wb"));
-#endif /* HAVE_LIBZ */
-
-  return NULL; /* not reached */
+  return fd;
 }
-
-/* }}} */
+/* }}}  */
