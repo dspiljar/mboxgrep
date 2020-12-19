@@ -23,7 +23,7 @@
 
 #define APPNAME "mboxgrep"
 #define VERSION "0.7.10"
-#define BUGREPORT_ADDR "dspiljar@datatipp.se"
+#define BUGREPORT_ADDR "dspiljar AT datatipp.se"
 
 #define HOST_NAME_SIZE 256
 
