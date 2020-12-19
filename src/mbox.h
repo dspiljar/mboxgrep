@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-#include "mboxgrep.h"           /* for message_t structure */
+#include "message.h"
 
 typedef struct
 {
@@ -39,9 +39,7 @@ void tmpfile_name (const char *path);
 void tmpfile_mod_own (const int fd, const char *path);
 int tmpfile_create (void);
 void mbox_close (mbox_t * mbp);
-/* FIXME -- it doesn't compile with this portion uncommented
 message_t *mbox_read_message (mbox_t * mp);
 void mbox_write_message (message_t *m, mbox_t *mbox);
-*/
 
 #endif /* MBOX_H */

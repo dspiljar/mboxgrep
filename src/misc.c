@@ -33,6 +33,8 @@
 #include "mboxgrep.h"
 #include "wrap.h"
 #include "getopt.h"
+#include "info.h"
+#include "message.h"
 
 format_t
 folder_format (const char *name)

@@ -133,7 +133,7 @@ main (int argc, char **argv)
     {
       if (config.action == DELETE) {
 	tmpmbox_create (argv[optind]);
-	runtime.tmp_mbox = mbox_open (config.tmpfilename, "w");
+	runtime.tmp_mbox = (mbox_t *) mbox_open (config.tmpfilename, "w");
       }
 
       config.boxname = xstrdup (argv[optind]);

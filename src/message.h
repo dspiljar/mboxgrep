@@ -1,6 +1,6 @@
 /* -*- C -*- 
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003, 2006  Daniel Spiljar
+  Copyright (C) 2020  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -16,23 +16,24 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: misc.h,v 1.9 2006-07-06 10:53:49 dspiljar Exp $ */
+  $Id$ */
 
-#ifndef MISC_H
-#define MISC_H 1
+#ifndef MESSAGE_H
+#define MESSAGE_H 1
 
-#include "mboxgrep.h"
-#include "getopt.h"
-#include "message.h"
-/* #include <time.h> */
+#include <config.h>
 
-format_t folder_format (const char *name);
-lockmethod_t lock_method (const char *name);
-/* time_t parse_date(char *datestr); */
-char * parse_return_path(char *rpath);
-void * malloc_message (void);
-void postmark_print (message_t *msg);
-void set_default_options (void);
-void get_runtime_options (int *argc, char **argv, struct option *long_options);
+typedef struct
+{
+  char *filename; /* used with directory formats, such as maildir or MH */
+  char *msgid; 
+  char *from;
+  char *headers;
+  int hbytes;
+  char *body;
+  int bbytes;
+  time_t date;
+}
+message_t;
 
-#endif /* MISC_H */
+#endif /* MESSAGE_H */

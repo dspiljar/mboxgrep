@@ -45,8 +45,6 @@
 # endif /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H */
 
-#include "mbox.h"
-
 typedef enum
   {
     MBOX,
@@ -76,19 +74,6 @@ typedef enum
     PIPE
   }
 action_t;
-
-typedef struct
-{
-  char *filename; /* used with directory formats, such as maildir or MH */
-  char *msgid; 
-  char *from;
-  char *headers;
-  int hbytes;
-  char *body;
-  int bbytes;
-  time_t date;
-}
-message_t;
 
 typedef struct
 {
@@ -140,7 +125,8 @@ typedef struct
   int count;
   int maildir_count;
   checksum_t *cs;
-  mbox_t *tmp_mbox;
+  /* mbox_t *tmp_mbox; */
+  void *tmp_mbox;
 }
   runtime_t;
 

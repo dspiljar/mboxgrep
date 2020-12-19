@@ -26,6 +26,7 @@
 #include <pcre.h>
 #endif /* HAVE_LIBPCRE */
 #include "mboxgrep.h"
+#include "message.h"
 
 #ifdef HAVE_LIBPCRE
 void
