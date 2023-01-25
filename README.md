@@ -1,5 +1,3 @@
--*- text -*-
-
 mboxgrep - displays e-mail messages matching a pattern
 
 Full description of mboxgrep is contained in the documentation,
@@ -15,5 +13,3 @@ GNU/Linux distrubution, for example), please drop me a line about it.
 
 For build instructions, read the file `INSTALL', and run 
 `./configure --help'
-
-$Id: README,v 1.3 2006-01-18 00:09:56 dspiljar Exp $
