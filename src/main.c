@@ -1,6 +1,6 @@
-/* -*- C -*-
+/*
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006  Daniel Spiljar
+  Copyright (C) 2000 - 2004, 2006, 2023  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  $Id: main.c,v 1.41 2006-10-22 23:34:49 dspiljar Exp $ */
+*/
 
 #include <config.h>
 
@@ -43,6 +43,9 @@
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
 #endif /* HAVE_LIBDMALLOC */
+
+option_t config;
+runtime_t runtime;
 
 int
 main (int argc, char **argv)
