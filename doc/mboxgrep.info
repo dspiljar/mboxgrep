@@ -1,4 +1,4 @@
-This is mboxgrep.info, produced by makeinfo version 6.4 from
+This is mboxgrep.info, produced by makeinfo version 6.7 from
 mboxgrep.texi.
 
 INFO-DIR-SECTION Mail
@@ -9,7 +9,7 @@ END-INFO-DIR-ENTRY
 
 File: mboxgrep.info,  Node: Top,  Up: (dir)
 
-This file documents 'mboxgrep' (version 0.7.9), a mailbox scanning
+This file documents 'mboxgrep' (version 0.7.10), a mailbox scanning
 utility.
 
    Copyright (C) 2000, 2001, 2002, 2003 Daniel Spiljar
@@ -247,16 +247,21 @@ Sleep well, little friend.
 
 Tag Table:
 Node: Top197
-Node: Introduction595
-Node: Invoking1464
-Node: Miscellaneous1826
-Node: File locking2111
-Node: Regexp selection2748
-Node: Output control3300
-Node: Search scope selection4291
-Node: Mailbox type selection4532
-Node: Examples4853
-Node: Bugs5673
-Node: To Vicky6080
+Node: Introduction596
+Node: Invoking1465
+Node: Miscellaneous1827
+Node: File locking2112
+Node: Regexp selection2749
+Node: Output control3301
+Node: Search scope selection4292
+Node: Mailbox type selection4533
+Node: Examples4854
+Node: Bugs5674
+Node: To Vicky6081
 
 End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:

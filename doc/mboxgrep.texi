@@ -6,8 +6,8 @@
 @setchapternewpage odd
 
 @set EDITION 0.7
-@set VERSION 0.7.9
-@set UPDATED 24 Aug 2003
+@set VERSION 0.7.10
+@set UPDATED 26 Jan 2023
 
 @dircategory Mail
 @direntry
