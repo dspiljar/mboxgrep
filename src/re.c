@@ -1,6 +1,6 @@
-/* -*- C -*-
+/*
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2006  Daniel Spiljar
+  Copyright (C) 2006, 2023  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by
@@ -15,8 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with mboxgrep; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-  $Id: re.c,v 1.3 2006-07-07 04:15:44 dspiljar Exp $ */
+*/
 
 #include <config.h>
 #include <stdio.h>
@@ -37,13 +36,13 @@ pcre_init (void)
 
   config.pcre_pattern =
     (pcre *) pcre_compile (config.regex_s, 
-			   (config.ignorecase ? PCRE_CASELESS : 0),
-			   &error, &errptr, NULL);
+      (config.ignorecase ? PCRE_CASELESS : 0),
+      &error, &errptr, NULL);
   if (config.pcre_pattern == NULL)
     {
       if (config.merr)
-	fprintf (stderr, "%s: %s: %s\n", APPNAME, config.regex_s,
-		 error);
+        fprintf (stderr, "%s: %s: %s\n", APPNAME, config.regex_s,
+          error);
       exit(2);
     }
 }
@@ -56,15 +55,15 @@ pcre_match (message_t *msg)
   if (config.headers)
     config.res1 =
       pcre_exec ((pcre *) config.pcre_pattern,
-		 (pcre_extra *) config.pcre_hints,
-		 msg->headers,
-		 (int) strlen (msg->headers), 0, 0, of, BUFSIZ);
+      (pcre_extra *) config.pcre_hints,
+      msg->headers,
+      (int) strlen (msg->headers), 0, 0, of, BUFSIZ);
   if (config.body)
     config.res2 =
       pcre_exec ((pcre *) config.pcre_pattern,
-		 (pcre_extra *) config.pcre_hints,
-		 msg->body,
-		 (int) strlen (msg->body), 0, 0, of, BUFSIZ);
+      (pcre_extra *) config.pcre_hints,
+      msg->body,
+      (int) strlen (msg->body), 0, 0, of, BUFSIZ);
 
   config.res1 = config.res1 ^ 1;
   config.res2 = config.res2 ^ 1;
@@ -88,11 +87,10 @@ regex_init (void)
   if (0 != errcode)
     {
       if (config.merr)
-	{
-	  regerror (errcode, (regex_t *) config.posix_pattern, errbuf, BUFSIZ);
-	  fprintf (stderr, "%s: %s: %s\n", APPNAME, config.regex_s,
-		   errbuf);
-	}
+        {
+          regerror (errcode, (regex_t *) config.posix_pattern, errbuf, BUFSIZ);
+          fprintf (stderr, "%s: %s: %s\n", APPNAME, config.regex_s, errbuf);
+        }
       exit (2);
     }
 }
@@ -102,8 +100,8 @@ regex_match (message_t *msg)
 {
   if (config.headers)
     config.res1 = regexec ((regex_t *) config.posix_pattern,
-			   msg->headers, 0, NULL, 0);
+      msg->headers, 0, NULL, 0);
   if (config.body)
     config.res2 = regexec ((regex_t *) config.posix_pattern,
-			   msg->body, 0, NULL, 0);
+      msg->body, 0, NULL, 0);
 }

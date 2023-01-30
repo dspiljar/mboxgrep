@@ -1,6 +1,6 @@
-/* -*- C -*-
+/*
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2006  Daniel Spiljar
+  Copyright (C) 2006, 2023  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by
@@ -15,8 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with mboxgrep; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-  $Id: re.h,v 1.3 2006-07-07 04:15:44 dspiljar Exp $ */
+*/
 
 #include "mboxgrep.h"
 

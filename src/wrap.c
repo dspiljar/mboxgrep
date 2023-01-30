@@ -1,6 +1,6 @@
 /* -*- C -*- 
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003  Daniel Spiljar
+  Copyright (C) 2000 - 2003, 2023  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -15,8 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-  $Id: wrap.c,v 1.13 2006-01-20 03:00:39 dspiljar Exp $ */
+*/
 
 #include <config.h>
 #include <unistd.h>
@@ -65,13 +64,13 @@ int m_open (const char *pathname, int flags, mode_t mode)
   if (blah == -1 && config.merr)
     {
       if (config.merr)
-	{
-	  fprintf (stderr, "%s: %s: ", APPNAME, pathname);
-	  perror (NULL);
-	}
-/* failure to open a file for writing should be fatal */
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, pathname);
+          perror (NULL);
+        }
+      /* failure to open a file for writing should be fatal */
       if (((flags & O_WRONLY) == O_WRONLY) || ((flags & O_RDWR) == O_RDWR))
-	exit (2);
+        exit (2);
     }
   return blah;
 }      
@@ -84,12 +83,12 @@ FILE *m_fopen (const char *path, const char *mode)
   if (blah == NULL)
     {
       if (config.merr)
-	{
-	  fprintf (stderr, "%s: %s: ", APPNAME, path);
-	  perror (NULL);
-	}
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, path);
+          perror (NULL);
+        }
       if (mode[0] == 'w')
-	exit (2);
+        exit (2);
     }
   return blah;
 }
@@ -102,7 +101,7 @@ FILE *m_fdopen (int fildes, const char *mode)
   if (blah == NULL)
     {
       if (config.merr)
-	perror (APPNAME);
+        perror (APPNAME);
     }
   return blah;
 }
@@ -117,7 +116,7 @@ gzFile *m_gzdopen (int fildes, const char *mode)
   if (blah == NULL)
     {
       if (config.merr)
-	perror (APPNAME);
+        perror (APPNAME);
     }
   return blah;
 }
@@ -132,10 +131,10 @@ DIR *m_opendir (const char *name)
   if (blah == NULL)
     {
       if (config.merr)
-	{
-	  fprintf (stderr, "%s: %s: ", APPNAME, name);
-	  perror (NULL);
-	}
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, name);
+          perror (NULL);
+        }
     }
   return blah;
 }
@@ -150,7 +149,7 @@ void *xmalloc (size_t size)
   if (foo == NULL)
     {
       if (config.merr)
-	perror (APPNAME);
+        perror (APPNAME);
       exit (2);
     }
   return foo;
@@ -164,7 +163,7 @@ void *xrealloc (void *ptr, size_t size)
   if (foo == NULL)
     {
       if (config.merr)
-	perror (APPNAME);
+        perror (APPNAME);
       exit (2);
     }
   return foo;
@@ -178,7 +177,7 @@ void *xcalloc (size_t nmemb, size_t size)
   if (foo == NULL)
     {
       if (config.merr)
-	perror (APPNAME);
+        perror (APPNAME);
       exit (2);
     }
   return foo;
@@ -192,7 +191,7 @@ char *xstrdup (const char *s)
   if (foo == NULL)
     {
       if (config.merr)
-	perror (APPNAME);
+        perror (APPNAME);
       exit (2);
     }
   return foo;
@@ -208,10 +207,10 @@ int m_unlink (const char *pathname)
   if (baz == -1)
     {
       if (config.merr)
-	{
-	  fprintf (stderr, "%s: %s: ", APPNAME, pathname);
-	  perror (NULL);
-	}
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, pathname);
+          perror (NULL);
+        }
     }
   return baz;
 }
@@ -227,10 +226,10 @@ void gzwrite_loop (void *fp, char *str)
   for (;;)
     {
       len = gzwrite (fp, (str+quux), 
-		     (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
+        (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
       quux += len;
       if (quux == baz)
-	break;
+        break;
     }
 }
 
@@ -247,10 +246,10 @@ void bzwrite_loop (void *fp, char *str)
   for (;;)
     {
       len = BZ2_bzwrite (fp, (str+quux), 
-			 (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
+        (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
       quux += len;
       if (quux == baz)
-	break;
+        break;
     }
 }
 
