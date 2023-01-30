@@ -1,4 +1,4 @@
-/* -*- C -*- 
+/*
    mboxgrep - scan mailbox for messages matching a regular expression
    Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006  Daniel Spiljar
 
@@ -15,8 +15,7 @@
    You should have received a copy of the GNU General Public License
    along with mboxgrep; if not, write to the Free Software Foundation, 
    Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-   $Id: mbox.c,v 1.34 2006-10-22 23:34:49 dspiljar Exp $ */
+*/
 
 #include <config.h>
 
@@ -52,7 +51,6 @@
 
 mbox_t *
 mbox_open (const char *path, const char *mode)
-     /* {{{  */
 {
   mbox_t *mp;
   static int fd;
@@ -69,155 +67,153 @@ mbox_open (const char *path, const char *mode)
   else
     {
       if (mode[0] == 'r')
-	fd = m_open (path, O_RDONLY, 0);
+        fd = m_open (path, O_RDONLY, 0);
       else if (mode[0] == 'w')
-	fd = m_open (path, (O_WRONLY | O_CREAT | O_APPEND),
+        fd = m_open (path, (O_WRONLY | O_CREAT | O_APPEND),
 		     (S_IWUSR | S_IRUSR));
       else
-	{
-	  fprintf (stderr, "%s: mbox.c: Unknown mode %c.  You shouldn't "
-		   "get this error...", APPNAME, mode[0]);
-	  exit (2);
-	}
+        {
+          fprintf (stderr, "%s: mbox.c: Unknown mode %c.  You shouldn't "
+            "get this error...", APPNAME, mode[0]);
+          exit (2);
+        }
 
       if (fd == -1)
-	{
-	  if (config.merr)
-	    {
-	      fprintf (stderr, "%s: %s: ", APPNAME, path);
-	      perror (NULL);
-	    }
-	  errno = 0;
-	  return NULL;
-	}
+        {
+          if (config.merr)
+            {
+              fprintf (stderr, "%s: %s: ", APPNAME, path);
+              perror (NULL);
+            }
+          errno = 0;
+          return NULL;
+        }
       
       if (config.lock)
-	{
+        {
 #ifdef HAVE_FLOCK
-	  int op;
+          int op;
 
-	  if (mode[0] == 'r')
-	    op = LOCK_SH;
-	  else
-	    op = LOCK_EX;
-	  if (-1 == flock (fd, op))
+          if (mode[0] == 'r')
+            op = LOCK_SH;
+          else
+            op = LOCK_EX;
+          if (-1 == flock (fd, op))
 #else
-	    memset (&lck, 0, sizeof (struct flock));
-	  lck.l_whence = SEEK_SET;
-	  if (mode[0] == 'r')
-	    lck.l_type = F_RDLCK;
-	  else
-	    lck.l_type = F_WRLCK;
+            memset (&lck, 0, sizeof (struct flock));
+          lck.l_whence = SEEK_SET;
+          if (mode[0] == 'r')
+            lck.l_type = F_RDLCK;
+          else
+            lck.l_type = F_WRLCK;
 
-	  if (-1 == fcntl (fd, F_SETLK, &lck))
+          if (-1 == fcntl (fd, F_SETLK, &lck))
 #endif /* HAVE_FLOCK */
-	    {
-	      if (config.merr)
-		{
-		  fprintf (stderr, "%s: %s: ", APPNAME, path);
-		  perror (NULL);
-		}
-	      errno = 0;
-	      close (fd);
-	      return NULL;
-	    }
-	}
+            {
+              if (config.merr)
+                {
+                  fprintf (stderr, "%s: %s: ", APPNAME, path);
+                  perror (NULL);
+                }
+              errno = 0;
+              close (fd);
+              return NULL;
+            }
+          }
 
       if (mode[0] == 'r')
-	{
-	  if (config.format == MBOX)
-	    mp->fp = (FILE *) m_fdopen (fd, "r");
+        {
+          if (config.format == MBOX)
+            mp->fp = (FILE *) m_fdopen (fd, "r");
 #ifdef HAVE_LIBZ
-	  else if (config.format == ZMBOX)
-	    mp->fp = (gzFile *) m_gzdopen (fd, "rb");
+          else if (config.format == ZMBOX)
+            mp->fp = (gzFile *) m_gzdopen (fd, "rb");
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-	  else if (config.format == BZ2MBOX)
-	    mp->fp = (BZFILE *) BZ2_bzdopen (fd, "rb");
+          else if (config.format == BZ2MBOX)
+            mp->fp = (BZFILE *) BZ2_bzdopen (fd, "rb");
 #endif /* HAVE_LIBBZ2 */
-	}
+        }
       else if (mode[0] == 'w')
-	{
-	  if (config.format == MBOX)
-	    mp->fp = (FILE *) m_fdopen (fd, "w");
+        {
+          if (config.format == MBOX)
+            mp->fp = (FILE *) m_fdopen (fd, "w");
 #ifdef HAVE_LIBZ
-	  else if (config.format == ZMBOX)
-	    mp->fp = (gzFile *) m_gzdopen (fd, "wb");
+          else if (config.format == ZMBOX)
+            mp->fp = (gzFile *) m_gzdopen (fd, "wb");
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-	  else if (config.format == BZ2MBOX)
-	    mp->fp = (BZFILE *) BZ2_bzdopen (fd, "wb");
+          else if (config.format == BZ2MBOX)
+            mp->fp = (BZFILE *) BZ2_bzdopen (fd, "wb");
 #endif /* HAVE_LIBBZ2 */
-	}
+        }
       
       if (mp->fp == NULL)
-	{
-	  if (config.merr)
-	    {
-	      fprintf (stderr, "%s: %s: ", APPNAME, path);
-	      perror (NULL);
-	    }
-	  errno = 0;
-	  close (fd);
-	  return NULL;
-	}
+        {
+          if (config.merr)
+            {
+              fprintf (stderr, "%s: %s: ", APPNAME, path);
+              perror (NULL);
+            }
+          errno = 0;
+          close (fd);
+          return NULL;
+        }
     }
 
   if (mode[0] == 'r')
     {
       if (config.format == MBOX)
-	fgets (buffer, BUFSIZ, mp->fp);
+        fgets (buffer, BUFSIZ, mp->fp);
 #ifdef HAVE_LIBZ
       else if (config.format == ZMBOX)
-	gzgets (mp->fp, buffer, BUFSIZ);
+        gzgets (mp->fp, buffer, BUFSIZ);
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
       else if (config.format == BZ2MBOX)
-	{
-	  char c[1] = "\0";
-	  int n = 0;
+        {
+          char c[1] = "\0";
+          int n = 0;
 
-	  while (c[0] != '\n' && n < BUFSIZ)
-	    {
-	      BZ2_bzread (mp->fp, c, 1);
-	      buffer[n] = c[0];
-	      n++;
-	    }
-	  buffer[n] = '\0';
-	}
+          while (c[0] != '\n' && n < BUFSIZ)
+            {
+              BZ2_bzread (mp->fp, c, 1);
+              buffer[n] = c[0];
+              n++;
+            }
+          buffer[n] = '\0';
+        }
 #endif /* HAVE_LIBBZ2 */
 
       if (0 != strncmp ("From ", buffer, 5))
-	{
-	  if (config.merr)
-	    {
-	      if (0 == strcmp ("-", path))
-		fprintf (stderr, "%s: (standard input): Not a mbox folder\n", 
-			 APPNAME);
-	      else
-		fprintf (stderr, "%s: %s: Not a mbox folder\n", APPNAME, path);
-	    }
-	  if (config.format == MBOX)
-	    fclose (mp->fp);
+        {
+          if (config.merr)
+            {
+              if (0 == strcmp ("-", path))
+                fprintf (stderr, "%s: (standard input): Not a mbox folder\n",
+                  APPNAME);
+              else
+                fprintf (stderr, "%s: %s: Not a mbox folder\n", APPNAME, path);
+            }
+          if (config.format == MBOX)
+            fclose (mp->fp);
 #ifdef HAVE_LIBZ
-	  else if (config.format == ZMBOX)
-	    gzclose (mp->fp);
+          else if (config.format == ZMBOX)
+            gzclose (mp->fp);
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-	  else if (config.format == BZ2MBOX)
-	    BZ2_bzclose (mp->fp);
+          else if (config.format == BZ2MBOX)
+            BZ2_bzclose (mp->fp);
 #endif /* HAVE_LIBBZ2 */
-	  return NULL;
-	}
+          return NULL;
+        }
       strcpy (mp->postmark_cache, buffer);
     }
   return mp;
 }
-/* }}} */
 
 void
 mbox_close (mbox_t * mp)
-     /* {{{  */
 {
   if (config.format == MBOX)
     fclose (mp->fp);
@@ -233,12 +229,9 @@ mbox_close (mbox_t * mp)
   free (mp->postmark_cache);
   free (mp);
 }
-/* }}} */
 
 message_t *
 mbox_read_message (mbox_t * mp)
-     /* {{{  */
-
 {
   int isheaders = 1, s;
   char buffer[BUFSIZ];
@@ -256,93 +249,89 @@ mbox_read_message (mbox_t * mp)
   for (;;)
     {
       if (config.format == MBOX)
-	{
-	  if (fgets (buffer, BUFSIZ, mp->fp) == NULL)
-	    {
-	      if (isheaders)
-		return NULL;
-	      else
-		return message;
-	    }
-	}
+        {
+          if (fgets (buffer, BUFSIZ, mp->fp) == NULL)
+            {
+              if (isheaders)
+                return NULL;
+              else
+                return message;
+            }
+        }
 
 #ifdef HAVE_LIBZ
       else if (config.format == ZMBOX)
-	{
-	  if (gzgets (mp->fp, buffer, BUFSIZ) == NULL)
-	    {
-	      if (isheaders)
-		return NULL;
-	      else
-		return message;
-	    }
-	}
+        {
+          if (gzgets (mp->fp, buffer, BUFSIZ) == NULL)
+            {
+              if (isheaders)
+                return NULL;
+              else
+                return message;
+            }
+        }
 #endif /* HAVE_LIBZ */
 
 #ifdef HAVE_LIBBZ2
       else if (config.format == BZ2MBOX)
-	{
-	  char c[1] = "\0";
-	  int n = 0;
+        {
+          char c[1] = "\0";
+          int n = 0;
 
-	  while (c[0] != '\n' && n < BUFSIZ)
-	    {
-	      BZ2_bzread (mp->fp, c, 1);
-	      buffer[n] = c[0];
-	      n++;
-	    }
-	  buffer[n] = '\0';
+          while (c[0] != '\n' && n < BUFSIZ)
+            {
+              BZ2_bzread (mp->fp, c, 1);
+              buffer[n] = c[0];
+              n++;
+            }
+          buffer[n] = '\0';
 
-	  if (buffer[0] == '\0')
-	    {
-	      if (isheaders)
-		return NULL;
-	      else
-		return message;
-	    }
-	}
+          if (buffer[0] == '\0')
+            {
+              if (isheaders)
+                return NULL;
+              else
+                return message;
+            }
+        }
 #endif /* HAVE_LIBBZ2 */
 
       s = strlen (buffer);
 
       if (buffer[0] == '\n' && isheaders == 1)
-	{
-	  isheaders = 0;
-	  continue;
-	}
+        {
+          isheaders = 0;
+          continue;
+        }
 
       if (isheaders)
-	{
-	  message->headers =
-	    (char *) realloc (message->headers,
+        {
+          message->headers =
+            (char *) realloc (message->headers,
 			      ((1 + s + message->hbytes) * sizeof (char)));
-	  strcpy (message->headers + message->hbytes, buffer);
-	  message->hbytes += s;
-	}			/* if */
+          strcpy (message->headers + message->hbytes, buffer);
+          message->hbytes += s;
+        }
       else
-	{
-	  if (0 == strncmp (buffer, "From ", 5))
-	    {
-	      strcpy (mp->postmark_cache, buffer);
-	      return message;
-	    }
-	  message->body =
-	    (char *) realloc (message->body,
+        {
+          if (0 == strncmp (buffer, "From ", 5))
+            {
+              strcpy (mp->postmark_cache, buffer);
+              return message;
+            }
+          message->body =
+            (char *) realloc (message->body,
 			      ((1 + s + message->bbytes) * sizeof (char)));
-	  strcpy (message->body + message->bbytes, buffer);
-	  message->bbytes += s;
-
-	}
-    }				/* for */
+          strcpy (message->body + message->bbytes, buffer);
+          message->bbytes += s;
+        }
+    }
   return NULL;
 }
 
-/* }}} */
 
 void
 tmpmbox_create (const char *path)
-     /* {{{  */
-
 {
   int foo;
 
@@ -351,11 +340,9 @@ tmpmbox_create (const char *path)
   tmpfile_mod_own (foo, path);
 }
 
-/* }}} */
 
 void
 tmpfile_name (const char *path)
-     /* {{{  */
 {
   char *fname, *tmpdir;
 
@@ -363,7 +350,7 @@ tmpfile_name (const char *path)
     {
       tmpdir = getenv ("TMPDIR");
       if (tmpdir == NULL)
-	tmpdir = xstrdup ("/tmp");
+        tmpdir = xstrdup ("/tmp");
       fname = xstrdup ("/mboxgrepXXXXXX");
     }
   else
@@ -377,13 +364,10 @@ tmpfile_name (const char *path)
 		      * sizeof (char));
   sprintf (config.tmpfilename, "%s%s", tmpdir, fname);
 }
-/* }}} */
 
 
 void 
 mbox_write_message (message_t *msg, mbox_t *mbox)
-     /* {{{  */
-
 {
   if (config.format == MBOX)
     fprintf (mbox->fp, "%s\n%s", msg->headers, msg->body);
@@ -404,11 +388,9 @@ mbox_write_message (message_t *msg, mbox_t *mbox)
     }
 #endif /* HAVE_LIBBZ2 */
 }
-/* }}}  */
 
 void
 tmpfile_mod_own (const int fd, const char *path)
-     /* {{{  */
 {
   /* If we're root, copy {owner, group, perms} of mailbox to the tmpfile
    * so rename() will thus retain the original's ownership & permissions.
@@ -418,20 +400,18 @@ tmpfile_mod_own (const int fd, const char *path)
       struct stat s;
 
       if (stat (path, &s) != -1)
-	{
-	  if (fchown (fd, s.st_uid, s.st_gid) == -1)
-	    if (config.merr) perror (config.tmpfilename);
-	  if (fchmod (fd, s.st_mode) == -1)
-	    if (config.merr) perror (config.tmpfilename);
-	}
+        {
+          if (fchown (fd, s.st_uid, s.st_gid) == -1)
+            if (config.merr) perror (config.tmpfilename);
+          if (fchmod (fd, s.st_mode) == -1)
+            if (config.merr) perror (config.tmpfilename);
+        }
       else if (config.merr) perror (path);
     }
 }
-/* }}}  */
 
 int
 tmpfile_create (void)
-     /* {{{  */
 {
   int fd;
 
@@ -439,12 +419,11 @@ tmpfile_create (void)
   if (-1 == fd)
     {
       if (config.merr)
-	{
-	  fprintf (stderr, "%s: %s: ", APPNAME, config.tmpfilename);
-	  perror (NULL);
-	}
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, config.tmpfilename);
+          perror (NULL);
+        }
       exit (2);
     }
   return fd;
 }
-/* }}}  */

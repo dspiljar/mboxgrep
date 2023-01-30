@@ -28,7 +28,6 @@
 
 void
 print_wrap (char *str, int len, int *n)
-     /* {{{  */
 {
   *n += len;
   fprintf (stdout, str);
@@ -39,11 +38,9 @@ print_wrap (char *str, int len, int *n)
     }
   else fprintf (stdout, " ");
 }
-/* }}} */
 
 void
 version (void)
-     /* {{{  */
 {
   int n = 0;
 
@@ -93,13 +90,12 @@ version (void)
   print_wrap ("HAVE_SYS_NDIR_H", 15, &n);
 #endif
   fprintf (stdout, "\n");
+
   exit(0);
 }
-/* }}} */
 
 void 
 help (void)
-     /* {{{  */
 {
   fprintf(stdout, "%s %s - search MAILBOX for messages matching PATTERN\n\n",
 	  APPNAME, VERSION);
@@ -157,15 +153,12 @@ help (void)
 
   exit(0);
 }
-/* }}} */
 
 void 
 usage (void)
-     /* {{{  */
 {
   printf ("Usage: %s [OPTION] PATTERN MAILBOX ...\n\n"
           "Try `%s --help' for more information.\n", APPNAME, APPNAME);
+
   exit (2);
 }
-/* }}} */
-
