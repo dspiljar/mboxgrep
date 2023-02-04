@@ -88,7 +88,16 @@ version (void)
 #endif /* HAVE_SYS_DIR_H */
 #ifdef HAVE_SYS_NDIR_H
   print_wrap ("HAVE_SYS_NDIR_H", 15, &n);
-#endif
+#endif /* HAVE_SYS_NDIR_H */
+#ifdef HAVE_STRPTIME
+  print_wrap ("HAVE_STRPTIME", 15, &n);
+#endif /* HAVE_STRPTIME */
+#ifdef HAVE_REGCOMP
+  print_wrap ("HAVE_REGCOMP", 15, &n);
+#endif /* HAVE_REGCOMP */
+#ifdef HAVE_LIBDMALLOC
+  print_wrap ("HAVE_LIBDMALLOC", 15, &n);
+#endif /* HAVE_LIBDMALLOC */
   fprintf (stdout, "\n");
 
   exit(0);
