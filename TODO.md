@@ -1,21 +1,23 @@
 - [x] ignore .overview when grepping Gnus folders
-- [x] implement inverted matching
-- [x] re-implement recursive search through directories
-- [ ] implement literal date matching
+- [x] inverted matching
+- [x] recursive search through directories
+- [ ] literal date matching
 - [x] write Texinfo documentation
-- [x] implement writing selected messages to a new folder
-- [x] implement deleting selected messages
-- [ ] add support for config files
-- [x] add support for reading messages from stdin
-- [x] add support for compressed mbox folders
+- [x] writing selected messages to a new folder
+- [x] deleting selected messages
+- [ ] support for config files
+- [x] support for reading messages from stdin
+- [x] support for compressed mbox folders
 - [ ] make use of lockfile library
 - [ ] make use of Solaris' maillock library
 - [x] provide possibility to use flock() instead of fcntl()
-- [ ] provide national language support with gettext()
 - [x] allow run-time selection of file locking method
-- [ ] make mboxgrep understand MIME
+- [ ] provide national language support with gettext()
+- [ ] MIME support
 - [x] enable removing duplicate messages w/ MD5 checksums
 - [ ] add checking for conflicting command-line options
-- [ ] add support for GnuPG
-- [x] add support for bzip2 compression
-- [ ] add support for mail folder conversion
+- [ ] support for GnuPG
+- [x] support for bzip2 compression
+- [ ] support for XZ-format compression
+- [ ] support for mail folder conversion
+- [ ] support for deletion of messages after being matched and displayed
