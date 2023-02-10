@@ -84,14 +84,14 @@ caution.
 Ignore duplicate messages.
 .IP "-m, --mailbox-format=TYPE"
 Select input and output mailbox TYPE.  TYPE can be either `mbox' (default), 
-`zmbox' (meaning `gzip compressed mbox'), `bz2mbox' (meaning `bzip2
-compressed mbox'), `mh', `nnml', `nnmh' or `maildir'.
+`zmbox' (gzip compressed mbox), `bz2mbox' (bzip2 compressed mbox), `mh', `nnml', 
+`nnmh' or `maildir'.
 .SH EXAMPLES
 .TP
 \(bu
 Search $MAIL for messages from Dirty Harry:
 .PP
-mboxgrep '^From:.*callahan@homicide\\.SFPD\\.gov' $MAIL
+mboxgrep '^From:.*callahan@sanfranciscopolice\\.org' $MAIL
 .TP
 \(bu
 Display all messages contained in folder ~/Mail/incoming, except those
@@ -100,9 +100,6 @@ that appear to originate from AOL:
 mboxgrep -v 'Received:.*aol\\.com' ~/Mail/incoming
 .SH BUGS
 Report them to address below.
-.SH NOTICE
-Mboxgrep was alomost completely rewritten since version 0.5.3.  Additionally, 
-there was no stable 0.6.x branch between 0.5.3 and 0.7.0.
 .SH SEE ALSO
 grep(1),
 regex(7),

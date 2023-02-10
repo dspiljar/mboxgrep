@@ -1,5 +1,4 @@
-\input texinfo   @c -*-texinfo-*-
-@c $Id: mboxgrep.texi,v 1.20 2006-01-18 00:09:58 dspiljar Exp $
+\input texinfo
 @setfilename mboxgrep.info
 @settitle Grep through mailboxes
 @finalout
@@ -224,7 +223,7 @@ mbox) @code{mh}, @code{nnml}, @code{nnmh}, and @code{maildir}.
 Scan @env{$MAIL} for messages from Dirty Harry:
 
 @example
-mboxgrep -H '^From:.*callahan@@homicide\.SFPD\.gov' $MAIL
+mboxgrep -H '^From:.*callahan@@sanfranciscopolice\.org' $MAIL
 @end example
 
 Re-mail to George messages that mention his name:
@@ -258,11 +257,11 @@ mboxgrep -nd -c . spam
 @cindex bug, insect, vermin, bugreport
 
 Shortly, if @code{mboxgrep} crashes and/or works differently than described
-in this manual, you've found a bug.
+in this manual, you have found a bug.
 
 Please report bugs to @email{dspiljar@@datatipp.se}.  
 Instructions how to reproduce the bug or output from a debugger would be 
-highly appreciated. Don't, however, send any coredumps.
+highly appreciated. Please do not, however, send any core dumps.
 
 @node To Vicky, , Bugs, Top
 @chapter Author's Dedication

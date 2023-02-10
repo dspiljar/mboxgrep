@@ -1,23 +1,34 @@
+# The TODO list for mboxgrep
+
+## Behavior
+
+- [x] use cryptographic hashes for detecting duplicate messages
+- [ ] add checking for conflicting command-line options
+- [ ] support for deletion of messages after being matched and displayed
 - [x] ignore .overview when grepping Gnus folders
 - [x] inverted matching
 - [x] recursive search through directories
-- [ ] literal date matching
-- [x] write Texinfo documentation
 - [x] writing selected messages to a new folder
 - [x] deleting selected messages
-- [ ] support for config files
-- [x] support for reading messages from stdin
-- [x] support for compressed mbox folders
-- [ ] make use of lockfile library
-- [ ] make use of Solaris' maillock library
-- [x] provide possibility to use flock() instead of fcntl()
-- [x] allow run-time selection of file locking method
-- [ ] provide national language support with gettext()
+- [ ] literal date matching
+- [x] reading messages from standard input
+- [x] run-time selection of file locking method
+
+## File formats, encodings and standards
+
 - [ ] MIME support
-- [x] enable removing duplicate messages w/ MD5 checksums
-- [ ] add checking for conflicting command-line options
 - [ ] support for GnuPG
+- [x] support for compressed mbox folders
 - [x] support for bzip2 compression
 - [ ] support for XZ-format compression
 - [ ] support for mail folder conversion
-- [ ] support for deletion of messages after being matched and displayed
+- [ ] use a more modern hash function than MD5
+
+## Miscellaneous
+
+- [x] write Texinfo documentation
+- [ ] configuration files
+- [ ] make use of lockfile library
+- [ ] make use of Solaris' maillock library
+- [x] provide possibility to use flock() instead of fcntl()
+- [ ] provide national language support with gettext()
