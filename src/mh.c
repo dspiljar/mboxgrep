@@ -87,7 +87,7 @@ message_t *mh_read_message (DIR *dp)
   char buffer[BUFSIZ], *filename;
   FILE *fp;
 
-  message = malloc_message ();
+  message = allocate_message ();
 
   filename = NULL;
 

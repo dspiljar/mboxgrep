@@ -30,7 +30,7 @@ void
 print_wrap (char *str, int len, int *n)
 {
   *n += len;
-  fprintf (stdout, str);
+  fprintf (stdout, "%s", str);
   if (*n >= 50)
     {
       fprintf (stdout, "\n");

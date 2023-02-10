@@ -139,7 +139,7 @@ char * parse_return_path(char *rpath)
 }
 /* }}} */
 
-void * malloc_message (void)
+void * allocate_message (void)
 {
   message_t *message;
 

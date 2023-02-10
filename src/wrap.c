@@ -42,6 +42,9 @@
 #ifdef HAVE_LIBZ
 #include <zlib.h>
 #endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+#include <bzlib.h>
+#endif /* HAVE_LIBBZ2 */
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -108,9 +111,9 @@ FILE *m_fdopen (int fildes, const char *mode)
 
 #ifdef HAVE_LIBZ
 
-gzFile *m_gzdopen (int fildes, const char *mode)
+gzFile m_gzdopen (int fildes, const char *mode)
 {
-  gzFile *blah;
+  gzFile blah;
 
   blah = gzdopen (fildes, mode);
   if (blah == NULL)

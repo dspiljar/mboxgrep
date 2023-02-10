@@ -237,7 +237,7 @@ mbox_read_message (mbox_t * mp)
   char buffer[BUFSIZ];
   message_t *message;
 
-  message = malloc_message ();
+  message = allocate_message ();
 
   s = strlen (mp->postmark_cache);
   message->headers =

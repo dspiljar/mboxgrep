@@ -56,7 +56,7 @@ int m_open (const char *pathname, int flags, mode_t mode);
 FILE *m_fopen (const char *path, const char *mode);
 FILE *m_fdopen (int fildes, const char *mode);
 #ifdef HAVE_LIBZ
-gzFile *m_gzdopen (int fildes, const char *mode);
+gzFile m_gzdopen (int fildes, const char *mode);
 void gzwrite_loop (void *fp, char *str);
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
