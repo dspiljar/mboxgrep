@@ -197,7 +197,7 @@ File: mboxgrep.info,  Node: Examples,  Next: Bugs,  Prev: Invoking,  Up: Top
 
 Scan '$MAIL' for messages from Dirty Harry:
 
-     mboxgrep -H '^From:.*callahan@homicide\.SFPD\.gov' $MAIL
+     mboxgrep -H '^From:.*callahan@sanfranciscopolice\.org' $MAIL
 
    Re-mail to George messages that mention his name:
 
@@ -224,11 +224,11 @@ File: mboxgrep.info,  Node: Bugs,  Next: To Vicky,  Prev: Examples,  Up: Top
 ******************
 
 Shortly, if 'mboxgrep' crashes and/or works differently than described
-in this manual, you've found a bug.
+in this manual, you have found a bug.
 
    Please report bugs to <dspiljar@datatipp.se>.  Instructions how to
 reproduce the bug or output from a debugger would be highly appreciated.
-Don't, however, send any coredumps.
+Please do not, however, send any core dumps.
 
 
 File: mboxgrep.info,  Node: To Vicky,  Prev: Bugs,  Up: Top
@@ -256,8 +256,8 @@ Node: Output control3301
 Node: Search scope selection4292
 Node: Mailbox type selection4533
 Node: Examples4854
-Node: Bugs5674
-Node: To Vicky6081
+Node: Bugs5678
+Node: To Vicky6096
 
 End Tag Table
 
