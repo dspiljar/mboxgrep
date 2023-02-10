@@ -122,7 +122,7 @@ maildir_read_message (maildir_t *mdp)
   static FILE *fp;
   static int s;
 
-  message = malloc_message ();
+  message = allocate_message ();
 
   for(;;)
     {

@@ -26,6 +26,7 @@
 #endif /* HAVE_LIBPCRE */
 #include "mboxgrep.h"
 #include "message.h"
+#include "wrap.h" /* xcalloc() et cetera */
 
 #ifdef HAVE_LIBPCRE
 void
@@ -81,7 +82,8 @@ regex_init (void)
     flag1 = REG_ICASE;
   if (config.extended)
     flag2 = REG_EXTENDED;
-	
+
+  config.posix_pattern = (regex_t *) xmalloc (sizeof (regex_t));
   errcode = regcomp ((regex_t *) config.posix_pattern, config.regex_s, 
 		     (flag1 | flag2 | REG_NEWLINE ));
   if (0 != errcode)
