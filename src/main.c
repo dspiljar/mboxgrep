@@ -48,8 +48,6 @@ runtime_t runtime;
 
 int
 main (int argc, char **argv)
-     /* {{{  */
-
 {
   int havemailbox = 0;
   int singlefile = 0;
@@ -57,8 +55,6 @@ main (int argc, char **argv)
   runtime.maildir_count = 0;
 
   static struct option long_options[] = 
-    /* {{{  */
-
     {
       {"count", 0, 0, 'c'},
       {"delete", 0, 0, 'd'},
@@ -85,8 +81,6 @@ main (int argc, char **argv)
       {0, 0, 0, 0}
     };
 
-  /* }}} */
-
   set_default_options ();
 
   get_runtime_options (&argc, argv, long_options);
@@ -112,17 +106,17 @@ main (int argc, char **argv)
       config.regex_s = xstrdup (argv[optind]);
       config.haveregex = 1;
       ++optind;
-    } /* if */
+    }
 
   if (config.haveregex) 
     {
 #ifdef HAVE_LIBPCRE
       if (config.perl)
-	pcre_init ();
+        pcre_init ();
       else
 #endif /* HAVE_LIBPCRE */
-	regex_init ();
-    } /* if */
+        regex_init ();
+    }
   else
     usage ();
 
@@ -130,56 +124,49 @@ main (int argc, char **argv)
     singlefile = 1;
 
   while (optind < argc)
-    /* {{{  */
-
     {
-      if (config.action == DELETE) {
-	tmpmbox_create (argv[optind]);
-	runtime.tmp_mbox = (mbox_t *) mbox_open (config.tmpfilename, "w");
-      }
+      if (config.action == DELETE)
+        {
+          tmpmbox_create (argv[optind]);
+          runtime.tmp_mbox = (mbox_t *) mbox_open (config.tmpfilename, "w");
+        }
 
       config.boxname = xstrdup (argv[optind]);
 
       if (config.recursive)
-	recursive_scan (argv[optind]);
+        recursive_scan (argv[optind]);
       else
-	scan_mailbox (argv[optind]);
-      havemailbox = 1;
-      if (config.action == COUNT)
-	{
-	  if (singlefile)
-	    fprintf (stdout, "%i\n", runtime.count);
-	  else
-	    {
-	      if (0 == strcmp ("-", argv[optind]))
-		fprintf (stdout, "(standard input):%i\n", runtime.count);
-	      else
-		fprintf (stdout, "%s:%i\n", argv[optind], runtime.count);
-	    }
-	}
-      if (config.action == DELETE)
-	{
-	  mbox_close (runtime.tmp_mbox);
-	  rename (config.tmpfilename, argv[optind]);
-	}
-      ++optind;
-    } /* while */
+        scan_mailbox (argv[optind]);
 
-  /* }}} */
+      havemailbox = 1;
+
+      if (config.action == COUNT)
+        {
+          if (singlefile)
+            fprintf (stdout, "%i\n", runtime.count);
+          else
+            {
+              if (0 == strcmp ("-", argv[optind]))
+                fprintf (stdout, "(standard input):%i\n", runtime.count);
+              else
+                fprintf (stdout, "%s:%i\n", argv[optind], runtime.count);
+            }
+        }
+      if (config.action == DELETE)
+        {
+          mbox_close (runtime.tmp_mbox);
+          rename (config.tmpfilename, argv[optind]);
+        }
+      ++optind;
+    }
 
   if (! havemailbox)
-    /* {{{  */
-
     {
       config.format = MBOX;
       scan_mailbox ("-");
       if (config.action == COUNT)
-	fprintf (stdout, "%i\n", runtime.count);
+        fprintf (stdout, "%i\n", runtime.count);
     }
 
-  /* }}} */
-
   return 0;
-} /* main */
-
-/* }}} */
+}

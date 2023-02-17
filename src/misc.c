@@ -1,6 +1,6 @@
-/* -*- C -*- 
+/*
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003, 2006  Daniel Spiljar
+  Copyright (C) 2000 - 2004, 2006, 2023  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -15,8 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-  $Id: misc.c,v 1.17 2006-07-06 10:53:49 dspiljar Exp $ */
+*/
 
 #define _XOPEN_SOURCE  /* Pull in strptime(3) from time.h */
 #define _BSD_SOURCE    /* Compensate for _XOPEN_SOURCE to pull in strdup(3)
@@ -38,7 +37,6 @@
 
 format_t
 folder_format (const char *name)
-     /* {{{  */
 {
   format_t f;
 
@@ -63,16 +61,14 @@ folder_format (const char *name)
   else
     {
       if (config.merr)
-	fprintf (stderr, "mboxgrep: %s: unknown folder type\n", name);
+        fprintf (stderr, "mboxgrep: %s: unknown folder type\n", name);
       exit (2);
     }
 
   return f;
 }
-/* }}} */
 
 lockmethod_t lock_method (const char *name)
-     /* {{{  */
 {
   lockmethod_t l;
 
@@ -97,38 +93,36 @@ lockmethod_t lock_method (const char *name)
 
   return l;
 }
-/* }}} */
 
-/* time_t parse_date(char *datestr) */
-     /* {{{  */
-/* { */
-/*   time_t t; */
-/*   const char *fmt = "%d%n%b%n%Y%n%T"; */
-/*   int h, m; */
-/*   struct tm tm; */
-/*   char *str2, str1[BUFSIZ]; */
+/*
+time_t parse_date(char *datestr)
+{
+  time_t t;
+  const char *fmt = "%d%n%b%n%Y%n%T";
+  int h, m;
+  struct tm tm;
+  char *str2, str1[BUFSIZ];
 
-/*   sscanf (datestr, "Date: %[^\r\n]", str1); */
+  sscanf (datestr, "Date: %[^\r\n]", str1);
 
-/*   str2 = (char *) strptime (str1, "%d%n%b%n%Y%n%T", &tm); */
-/*   if (str2 == NULL) */
-/*     str2 = (char *) strptime (str1, "%a, %d%n%b%n%Y%n%T", &tm); */
-/*   if (str2 == NULL) */
-/*     return (time_t) 0; */
- 
-/*   if (sscanf (str2, "%3d%2d", &h, &m) == 2) */
-/*     { */
-/*       tm.tm_hour -= h; */
-/*       tm.tm_min -= (h >= 0 ? m : -m); */
-/*       t = (time_t) mktime (&tm); */
-/*     } */
+  str2 = (char *) strptime (str1, "%d%n%b%n%Y%n%T", &tm);
+  if (str2 == NULL)
+    str2 = (char *) strptime (str1, "%a, %d%n%b%n%Y%n%T", &tm);
+  if (str2 == NULL)
+    return (time_t) 0;
 
-/*   return t; */
-/* } */
-/* }}} */
+  if (sscanf (str2, "%3d%2d", &h, &m) == 2)
+    {
+      tm.tm_hour -= h;
+      tm.tm_min -= (h >= 0 ? m : -m);
+      t = (time_t) mktime (&tm);
+    }
+
+   return t;
+}
+*/
 
 char * parse_return_path(char *rpath)
-     /* {{{  */
 {
   char *blah1, blah2[BUFSIZ];
 
@@ -137,7 +131,6 @@ char * parse_return_path(char *rpath)
 
   return blah1;
 }
-/* }}} */
 
 void * allocate_message (void)
 {
@@ -201,103 +194,99 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
 		       &option_index);
 
       if (c == -1)
-	break;
+        break;
 
       switch (c)
-	/* {{{  */
-
-	{
-	case '?':
-	  usage();
-	case 'c':
-	  config.action = COUNT;
-	  break;
-	case 'd':
-	  config.action = DELETE;
-	  break;
-	case 'e':
-	  config.regex_s = xstrdup (optarg);
-	  config.haveregex = 1;
-	  break;
-	case 'o':
-	  config.outboxname = xstrdup (optarg);
-	  config.action = WRITE;
-	  break;
-	case 'E':
-	  config.extended = 1;
-	  break;
-	case 'G':
-	  config.extended = 0;
-	  break;
-	case 'P':
+        {
+          case '?':
+            usage();
+          case 'c':
+            config.action = COUNT;
+            break;
+          case 'd':
+            config.action = DELETE;
+            break;
+          case 'e':
+            config.regex_s = xstrdup (optarg);
+            config.haveregex = 1;
+            break;
+          case 'o':
+            config.outboxname = xstrdup (optarg);
+            config.action = WRITE;
+            break;
+          case 'E':
+            config.extended = 1;
+            break;
+          case 'G':
+            config.extended = 0;
+            break;
+          case 'P':
 #ifdef HAVE_LIBPCRE
-	  config.extended = 0;
-	  config.perl = 1;
+            config.extended = 0;
+            config.perl = 1;
 #else
-	  fprintf(stderr, 
-		  "%s: Support for Perl regular expressions not "
-		  "compiled in\n");
-	  exit(2);
+            fprintf(stderr,
+              "%s: Support for Perl regular expressions not "
+              "compiled in\n");
+            exit(2);
 #endif /* HAVE_LIBPCRE */
-	  break;
-	case 'h':
-	  help ();
-	  break;
-	case 'i':
-	  config.ignorecase = 1;
-	  break;
-	case 'm':
-	  config.format = folder_format (optarg);
-	  break;
-	case 'l':
-	  config.lock = lock_method (optarg);
-	  break;
-	case 'p':
-	  config.action = PIPE;
-	  config.pipecmd = xstrdup (optarg);
-	  break;
-	case 'V':
-	  version ();
-	  break;
-	case 'v':
-	  config.invert = 1;
-	  break;
-	case 'H':
-	  config.headers = 1;
-	  break;
-	case 'B':
-	  config.body = 1;
-	  break;
-	case 's':
-	  config.merr = 0;
-	  break;
-	case 201:
-	  config.lock = 0;
-	  break;
-	case 'r':
-	  config.recursive = 1;
-	  break;
-        case 200:
-          config.dedup = 1;
-          break;
-        case 'n':
-	  {
-	    switch (optarg[0])
-	      {
-	        case 'd':
-		  config.dedup = 1;
-		  break;
-		case 'l':
-		  config.lock = 0;
-		  break;
-	        default:
-		  fprintf(stderr, "%s: invalid option -- n%c\n", 
-			  APPNAME, optarg[0]);
-		  exit(2);
-	      }
-	  }
-	} /* switch */
-
-      /* }}} */
+            break;
+          case 'h':
+            help ();
+            break;
+          case 'i':
+            config.ignorecase = 1;
+            break;
+          case 'm':
+            config.format = folder_format (optarg);
+            break;
+          case 'l':
+            config.lock = lock_method (optarg);
+            break;
+          case 'p':
+            config.action = PIPE;
+            config.pipecmd = xstrdup (optarg);
+            break;
+          case 'V':
+            version ();
+            break;
+          case 'v':
+            config.invert = 1;
+            break;
+          case 'H':
+            config.headers = 1;
+            break;
+          case 'B':
+            config.body = 1;
+            break;
+          case 's':
+            config.merr = 0;
+            break;
+          case 201:
+            config.lock = 0;
+            break;
+          case 'r':
+            config.recursive = 1;
+            break;
+          case 200:
+            config.dedup = 1;
+            break;
+          case 'n':
+            {
+              switch (optarg[0])
+                {
+                  case 'd':
+                    config.dedup = 1;
+                    break;
+                  case 'l':
+                    config.lock = 0;
+                    break;
+                  default:
+                    fprintf(stderr, "%s: invalid option -- n%c\n",
+                      APPNAME, optarg[0]);
+                    exit(2);
+                }
+            }
+        } /* switch */
     } /* while */
 }
