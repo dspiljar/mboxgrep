@@ -76,6 +76,7 @@ main (int argc, char **argv)
       {"output", 1, 0, 'o'},
       {"no-duplicates", 0, 0, 200},
       {"no-file-lock", 0, 0, 201},
+      {"debug", 0, 0, 202},
       {"file-lock", 1, 0, 'l'},
       {"recursive", 0, 0, 'r'},
       {0, 0, 0, 0}

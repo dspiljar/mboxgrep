@@ -6,7 +6,7 @@
 
 @set EDITION 0.7
 @set VERSION 0.7.10
-@set UPDATED 26 Jan 2023
+@set UPDATED 17 Feb 2023
 
 @dircategory Mail
 @direntry
@@ -187,6 +187,9 @@ instance of COMMAND.
 @item --no-messages
 @itemx -s
 Suppress error messages.
+
+@item --debug
+Print messages useful for debugging.
 
 @end table
 

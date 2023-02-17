@@ -107,6 +107,7 @@ typedef struct
   int merr;
   int pid;
   int haveregex;
+  int debug;
 
   char hostname[HOST_NAME_SIZE];
   char *boxname, *outboxname, *pipecmd, *tmpfilename, *regex_s;

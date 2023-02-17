@@ -61,7 +61,7 @@ folder_format (const char *name)
   else
     {
       if (config.merr)
-        fprintf (stderr, "mboxgrep: %s: unknown folder type\n", name);
+        fprintf (stderr, "%s: %s: unknown folder type\n", APPNAME, name);
       exit (2);
     }
 
@@ -181,6 +181,7 @@ set_default_options (void)
   config.format = MBOX; /* default mailbox format */
   config.lock = FCNTL; /* default file locking method */
   config.merr = 1; /* report errors by default */
+  config.debug = 0;
 }
 
 void
@@ -227,7 +228,7 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
 #else
             fprintf(stderr,
               "%s: Support for Perl regular expressions not "
-              "compiled in\n");
+              "compiled in\n", APPNAME);
             exit(2);
 #endif /* HAVE_LIBPCRE */
             break;
@@ -264,6 +265,11 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
             break;
           case 201:
             config.lock = 0;
+            break;
+          case 202:
+            config.debug = 1;
+            fprintf (stderr, "%s: %s, line %d: enable debugging\n",
+              APPNAME, __FILE__, __LINE__);
             break;
           case 'r':
             config.recursive = 1;

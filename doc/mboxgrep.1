@@ -1,5 +1,4 @@
-.Id $Id: mboxgrep.1,v 1.16 2006-01-18 00:09:58 dspiljar Exp $
-.TH MBOXGREP 1 "26 Jan 2023"
+.TH MBOXGREP 1 "17 Feb 2023"
 .SH NAME
 mboxgrep \- displays email messages matching a pattern
 .SH SYNOPSIS
@@ -86,6 +85,10 @@ Ignore duplicate messages.
 Select input and output mailbox TYPE.  TYPE can be either `mbox' (default), 
 `zmbox' (gzip compressed mbox), `bz2mbox' (bzip2 compressed mbox), `mh', `nnml', 
 `nnmh' or `maildir'.
+.IP "-s, --no-messages"
+Suppress most error messages.
+.IP "--debug"
+Print messages useful for debugging.
 .SH EXAMPLES
 .TP
 \(bu

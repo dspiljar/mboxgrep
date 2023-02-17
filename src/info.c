@@ -120,7 +120,8 @@ help (void)
           "  -nd, --no-duplicates\t\tIgnore duplicate messages\n"
 	  "  -o,  --output=MAILBOX\t\tWrite messages to MAILBOX\n"
 	  "  -p,  --pipe=COMMAND\t\tPipe each found message to COMMAND\n"
-	  "  -s,  --no-messages\t\tSuppress most error messages\n\n"
+	  "  -s,  --no-messages\t\tSuppress most error messages\n"
+    "       --debug\t\t\tPrint messages useful for debugging\n\n"
 	  "Matching criteria:\n\n"
 	  "  -E,  --extended-regexp\tPATTERN is an extended regular expression\n"
 	  "  -G,  --basic-regexp\t\tPATTERN is a basic regular expression\n");

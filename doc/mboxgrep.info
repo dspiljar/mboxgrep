@@ -169,6 +169,9 @@ options below change such behavior.
 '-s'
      Suppress error messages.
 
+'--debug'
+     Print messages useful for debugging.
+
 
 File: mboxgrep.info,  Node: Search scope selection,  Next: Mailbox type selection,  Prev: Output control,  Up: Invoking
 
@@ -253,11 +256,11 @@ Node: Miscellaneous1827
 Node: File locking2112
 Node: Regexp selection2749
 Node: Output control3301
-Node: Search scope selection4292
-Node: Mailbox type selection4533
-Node: Examples4854
-Node: Bugs5678
-Node: To Vicky6096
+Node: Search scope selection4345
+Node: Mailbox type selection4586
+Node: Examples4907
+Node: Bugs5731
+Node: To Vicky6149
 
 End Tag Table
 
