@@ -2,8 +2,12 @@
 
 ## Changes since 0.7.9
 
+- development has been restarted after a longer hiatus
+- moved the source tree to git
 - fixed compile bug on FreeBSD and other systems
 - fixed deleting messages mbox folders compressed with bzip2
+- fixed multiple compilation errors and warnings on Linux and FreeBSD
+- started implementing a debug mode
 
 ## Changes since 0.7.8
 

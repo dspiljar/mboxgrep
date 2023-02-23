@@ -13,7 +13,7 @@
 - [ ] literal date matching
 - [x] reading messages from standard input
 - [x] run-time selection of file locking method
-- [ ] add a debug function
+- [x] add a debug function
 
 ## File formats, encodings and standards
 
