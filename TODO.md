@@ -10,7 +10,8 @@
 - [x] recursive search through directories
 - [x] writing selected messages to a new folder
 - [x] deleting selected messages
-- [ ] literal date matching
+- [ ] basic time and date matching
+- [ ] more advanced time and date matching, with strings such as "yesterday"
 - [x] reading messages from standard input
 - [x] run-time selection of file locking method
 - [x] add a debug function
@@ -24,6 +25,8 @@
 - [ ] support for XZ-format compression
 - [ ] support for mail folder conversion
 - [ ] use a more modern hash function than MD5
+- [ ] improve error detection when a directory is not a Maildir or MH folder
+- [ ] document criteria for folder format detection
 
 ## Miscellaneous
 
