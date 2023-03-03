@@ -18,11 +18,11 @@
 */
 
 #ifndef MBOX_H
-#define MBOX_H 1
+#  define MBOX_H 1
 
-#include <config.h>
+#  include <config.h>
 
-#include "message.h"
+#  include "message.h"
 
 typedef struct
 {
@@ -39,6 +39,6 @@ void tmpfile_mod_own (const int fd, const char *path);
 int tmpfile_create (void);
 void mbox_close (mbox_t * mbp);
 message_t *mbox_read_message (mbox_t * mp);
-void mbox_write_message (message_t *m, mbox_t *mbox);
+void mbox_write_message (message_t * m, mbox_t * mbox);
 
 #endif /* MBOX_H */

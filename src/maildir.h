@@ -18,28 +18,32 @@
 */
 
 #ifndef MAILDIR_H
-#define MAILDIR_H
+#  define MAILDIR_H
 
-#include <config.h>
+#  include <config.h>
 
-#ifdef HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# ifdef HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif /* HAVE_SYS_NDIR_H */
-# ifdef HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif /* HAVE_SYS_DIR_H */
-# ifdef HAVE_NDIR_H
-#  include <ndir.h>
-# endif /* HAVE_NDIR_H */
-#endif /* HAVE_DIRENT_H */
+#  ifdef HAVE_DIRENT_H
+#    include <dirent.h>
+#    define NAMLEN(dirent) strlen((dirent)->d_name)
+#  else
+#    define dirent direct
+#    define NAMLEN(dirent) (dirent)->d_namlen
+#    ifdef HAVE_SYS_NDIR_H
+#      include <sys/ndir.h>
+#    endif
+       /* HAVE_SYS_NDIR_H */
+#    ifdef HAVE_SYS_DIR_H
+#      include <sys/dir.h>
+#    endif
+       /* HAVE_SYS_DIR_H */
+#    ifdef HAVE_NDIR_H
+#      include <ndir.h>
+#    endif
+       /* HAVE_NDIR_H */
+#  endif
+       /* HAVE_DIRENT_H */
 
-#include "mboxgrep.h"
+#  include "mboxgrep.h"
 
 typedef struct
 {
@@ -50,8 +54,8 @@ typedef struct
 maildir_t *maildir_open (const char *path);
 int maildir_check (const char *path);
 void maildir_create (const char *path);
-void maildir_close (maildir_t *mdp);
-message_t *maildir_read_message (maildir_t *mdp);
-void maildir_write_message (message_t *m, const char *path);
+void maildir_close (maildir_t * mdp);
+message_t *maildir_read_message (maildir_t * mdp);
+void maildir_write_message (message_t * m, const char *path);
 
 #endif /* MAILDIR_H */

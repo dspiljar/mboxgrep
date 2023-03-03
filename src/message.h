@@ -18,14 +18,14 @@
 */
 
 #ifndef MESSAGE_H
-#define MESSAGE_H 1
+#  define MESSAGE_H 1
 
-#include <config.h>
+#  include <config.h>
 
 typedef struct
 {
-  char *filename; /* used with directory formats, such as maildir or MH */
-  char *msgid; 
+  char *filename;               /* used with directory formats, such as maildir or MH */
+  char *msgid;
   char *from;
   char *headers;
   int hbytes;

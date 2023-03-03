@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #ifdef HAVE_LIBZ
-#include <zlib.h>
+#  include <zlib.h>
 #endif /* HAVE_LIBZ */
 
 #include "getopt.h"
@@ -36,11 +36,11 @@
 #include "mbox.h"
 #include "mh.h"
 #include "scan.h"
-#include "wrap.h" /* xcalloc() et cetera */
+#include "wrap.h"               /* xcalloc() et cetera */
 #include "re.h"
 
 #ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
+#  include <dmalloc.h>
 #endif /* HAVE_LIBDMALLOC */
 
 option_t config;
@@ -54,33 +54,32 @@ main (int argc, char **argv)
   runtime.count = 0;
   runtime.maildir_count = 0;
 
-  static struct option long_options[] = 
-    {
-      {"count", 0, 0, 'c'},
-      {"delete", 0, 0, 'd'},
-      /*  {"date", 1, 0, 'D'}, */
-      {"extended-regexp", 0, 0, 'E'},
-      {"basic-regexp", 0, 0, 'G'},
-      {"perl-regexp", 0, 0, 'P'},
-      {"help", 0, 0, 'h'},
-      {"ignore-case", 0, 0, 'i'},
-      {"mailbox-format", 1, 0, 'm'},
-      {"no", 1, 0, 'n' },
-      {"pipe", 1, 0, 'p'},
-      {"regexp", 1, 0, 'e'},
-      {"invert-match", 0, 0, 'v'},
-      {"version", 0, 0, 'V'},
-      {"headers", 0, 0, 'H'},
-      {"body", 0, 0, 'B'},
-      {"no-messages", 0, 0, 's'},
-      {"output", 1, 0, 'o'},
-      {"no-duplicates", 0, 0, 200},
-      {"no-file-lock", 0, 0, 201},
-      {"debug", 0, 0, 202},
-      {"file-lock", 1, 0, 'l'},
-      {"recursive", 0, 0, 'r'},
-      {0, 0, 0, 0}
-    };
+  static struct option long_options[] = {
+    {"count", 0, 0, 'c'},
+    {"delete", 0, 0, 'd'},
+    /*  {"date", 1, 0, 'D'}, */
+    {"extended-regexp", 0, 0, 'E'},
+    {"basic-regexp", 0, 0, 'G'},
+    {"perl-regexp", 0, 0, 'P'},
+    {"help", 0, 0, 'h'},
+    {"ignore-case", 0, 0, 'i'},
+    {"mailbox-format", 1, 0, 'm'},
+    {"no", 1, 0, 'n'},
+    {"pipe", 1, 0, 'p'},
+    {"regexp", 1, 0, 'e'},
+    {"invert-match", 0, 0, 'v'},
+    {"version", 0, 0, 'V'},
+    {"headers", 0, 0, 'H'},
+    {"body", 0, 0, 'B'},
+    {"no-messages", 0, 0, 's'},
+    {"output", 1, 0, 'o'},
+    {"no-duplicates", 0, 0, 200},
+    {"no-file-lock", 0, 0, 201},
+    {"debug", 0, 0, 202},
+    {"file-lock", 1, 0, 'l'},
+    {"recursive", 0, 0, 'r'},
+    {0, 0, 0, 0}
+  };
 
   set_default_options ();
 
@@ -102,14 +101,14 @@ main (int argc, char **argv)
   runtime.cs->md5 = (char **) xcalloc (1, sizeof (char **));
   runtime.cs->n = 0;
 
-  if (optind < argc && ! config.haveregex)
+  if (optind < argc && !config.haveregex)
     {
       config.regex_s = xstrdup (argv[optind]);
       config.haveregex = 1;
       ++optind;
     }
 
-  if (config.haveregex) 
+  if (config.haveregex)
     {
 #ifdef HAVE_LIBPCRE
       if (config.perl)
@@ -161,7 +160,7 @@ main (int argc, char **argv)
       ++optind;
     }
 
-  if (! havemailbox)
+  if (!havemailbox)
     {
       config.format = MBOX;
       scan_mailbox ("-");

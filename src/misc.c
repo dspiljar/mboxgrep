@@ -17,9 +17,9 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#define _XOPEN_SOURCE  /* Pull in strptime(3) from time.h */
-#define _BSD_SOURCE    /* Compensate for _XOPEN_SOURCE to pull in strdup(3)
-                        * from string.h. */
+#define _XOPEN_SOURCE           /* Pull in strptime(3) from time.h */
+#define _BSD_SOURCE             /* Compensate for _XOPEN_SOURCE to pull in strdup(3)
+                                 * from string.h. */
 
 #include <config.h>
 
@@ -68,7 +68,8 @@ folder_format (const char *name)
   return f;
 }
 
-lockmethod_t lock_method (const char *name)
+lockmethod_t
+lock_method (const char *name)
 {
   lockmethod_t l;
 
@@ -87,7 +88,7 @@ lockmethod_t lock_method (const char *name)
   else
     {
       if (config.merr)
-	fprintf (stderr, "mboxgrep: %s: unknown file locking method\n", name);
+        fprintf (stderr, "mboxgrep: %s: unknown file locking method\n", name);
       exit (2);
     }
 
@@ -122,17 +123,19 @@ time_t parse_date(char *datestr)
 }
 */
 
-char * parse_return_path(char *rpath)
+char *
+parse_return_path (char *rpath)
 {
   char *blah1, blah2[BUFSIZ];
 
-  sscanf(rpath, "Return-Path: <%[^\r\n>]>", blah2);
+  sscanf (rpath, "Return-Path: <%[^\r\n>]>", blah2);
   blah1 = xstrdup (blah2);
 
   return blah1;
 }
 
-void * allocate_message (void)
+void *
+allocate_message (void)
 {
   message_t *message;
 
@@ -151,7 +154,8 @@ void * allocate_message (void)
   return message;
 }
 
-void postmark_print (message_t *msg)
+void
+postmark_print (message_t * msg)
 {
   time_t tt;
   struct tm *ct;
@@ -178,9 +182,9 @@ set_default_options (void)
   config.dedup = 0;
   config.recursive = 0;
   config.ignorecase = 0;
-  config.format = MBOX; /* default mailbox format */
-  config.lock = FCNTL; /* default file locking method */
-  config.merr = 1; /* report errors by default */
+  config.format = MBOX;         /* default mailbox format */
+  config.lock = FCNTL;          /* default file locking method */
+  config.merr = 1;              /* report errors by default */
   config.debug = 0;
 }
 
@@ -191,108 +195,108 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
 
   while (1)
     {
-      c = getopt_long (*argc, argv, "BcdEe:GHhil:m:n:o:Pp:rsVv", long_options, 
-		       &option_index);
+      c = getopt_long (*argc, argv, "BcdEe:GHhil:m:n:o:Pp:rsVv", long_options,
+                       &option_index);
 
       if (c == -1)
         break;
 
       switch (c)
         {
-          case '?':
-            usage();
-          case 'c':
-            config.action = COUNT;
-            break;
-          case 'd':
-            config.action = DELETE;
-            break;
-          case 'e':
-            config.regex_s = xstrdup (optarg);
-            config.haveregex = 1;
-            break;
-          case 'o':
-            config.outboxname = xstrdup (optarg);
-            config.action = WRITE;
-            break;
-          case 'E':
-            config.extended = 1;
-            break;
-          case 'G':
-            config.extended = 0;
-            break;
-          case 'P':
+        case '?':
+          usage ();
+        case 'c':
+          config.action = COUNT;
+          break;
+        case 'd':
+          config.action = DELETE;
+          break;
+        case 'e':
+          config.regex_s = xstrdup (optarg);
+          config.haveregex = 1;
+          break;
+        case 'o':
+          config.outboxname = xstrdup (optarg);
+          config.action = WRITE;
+          break;
+        case 'E':
+          config.extended = 1;
+          break;
+        case 'G':
+          config.extended = 0;
+          break;
+        case 'P':
 #ifdef HAVE_LIBPCRE
-            config.extended = 0;
-            config.perl = 1;
+          config.extended = 0;
+          config.perl = 1;
 #else
-            fprintf(stderr,
-              "%s: Support for Perl regular expressions not "
-              "compiled in\n", APPNAME);
-            exit(2);
+          fprintf (stderr,
+                   "%s: Support for Perl regular expressions not "
+                   "compiled in\n", APPNAME);
+          exit (2);
 #endif /* HAVE_LIBPCRE */
-            break;
-          case 'h':
-            help ();
-            break;
-          case 'i':
-            config.ignorecase = 1;
-            break;
-          case 'm':
-            config.format = folder_format (optarg);
-            break;
-          case 'l':
-            config.lock = lock_method (optarg);
-            break;
-          case 'p':
-            config.action = PIPE;
-            config.pipecmd = xstrdup (optarg);
-            break;
-          case 'V':
-            version ();
-            break;
-          case 'v':
-            config.invert = 1;
-            break;
-          case 'H':
-            config.headers = 1;
-            break;
-          case 'B':
-            config.body = 1;
-            break;
-          case 's':
-            config.merr = 0;
-            break;
-          case 201:
-            config.lock = 0;
-            break;
-          case 202:
-            config.debug = 1;
-            fprintf (stderr, "%s: %s, line %d: enable debugging\n",
-              APPNAME, __FILE__, __LINE__);
-            break;
-          case 'r':
-            config.recursive = 1;
-            break;
-          case 200:
-            config.dedup = 1;
-            break;
-          case 'n':
-            {
-              switch (optarg[0])
-                {
-                  case 'd':
-                    config.dedup = 1;
-                    break;
-                  case 'l':
-                    config.lock = 0;
-                    break;
-                  default:
-                    fprintf(stderr, "%s: invalid option -- n%c\n",
-                      APPNAME, optarg[0]);
-                    exit(2);
-                }
-            }
-        } /* switch */
-    } /* while */
+          break;
+        case 'h':
+          help ();
+          break;
+        case 'i':
+          config.ignorecase = 1;
+          break;
+        case 'm':
+          config.format = folder_format (optarg);
+          break;
+        case 'l':
+          config.lock = lock_method (optarg);
+          break;
+        case 'p':
+          config.action = PIPE;
+          config.pipecmd = xstrdup (optarg);
+          break;
+        case 'V':
+          version ();
+          break;
+        case 'v':
+          config.invert = 1;
+          break;
+        case 'H':
+          config.headers = 1;
+          break;
+        case 'B':
+          config.body = 1;
+          break;
+        case 's':
+          config.merr = 0;
+          break;
+        case 201:
+          config.lock = 0;
+          break;
+        case 202:
+          config.debug = 1;
+          fprintf (stderr, "%s: %s, line %d: enable debugging\n",
+                   APPNAME, __FILE__, __LINE__);
+          break;
+        case 'r':
+          config.recursive = 1;
+          break;
+        case 200:
+          config.dedup = 1;
+          break;
+        case 'n':
+          {
+            switch (optarg[0])
+              {
+              case 'd':
+                config.dedup = 1;
+                break;
+              case 'l':
+                config.lock = 0;
+                break;
+              default:
+                fprintf (stderr, "%s: invalid option -- n%c\n",
+                         APPNAME, optarg[0]);
+                exit (2);
+              }
+          }
+        }                       /* switch */
+    }                           /* while */
 }

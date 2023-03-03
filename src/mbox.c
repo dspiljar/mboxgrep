@@ -30,13 +30,13 @@
 #include <errno.h>
 #include <time.h>
 #ifdef HAVE_FLOCK
-#include <sys/file.h>
+#  include <sys/file.h>
 #endif /* HAVE_FLOCK */
 #ifdef HAVE_LIBZ
-#include <zlib.h>
+#  include <zlib.h>
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-#include <bzlib.h>
+#  include <bzlib.h>
 #endif /* HAVE_LIBBZ2 */
 #define BUFLEN 16384
 
@@ -46,7 +46,7 @@
 #include "wrap.h"
 
 #ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
+#  include <dmalloc.h>
 #endif /* HAVE_LIBDMALLOC */
 
 mbox_t *
@@ -70,11 +70,11 @@ mbox_open (const char *path, const char *mode)
         fd = m_open (path, O_RDONLY, 0);
       else if (mode[0] == 'w')
         fd = m_open (path, (O_WRONLY | O_CREAT | O_APPEND),
-		     (S_IWUSR | S_IRUSR));
+                     (S_IWUSR | S_IRUSR));
       else
         {
           fprintf (stderr, "%s: mbox.c: Unknown mode %c.  You shouldn't "
-            "get this error...", APPNAME, mode[0]);
+                   "get this error...", APPNAME, mode[0]);
           exit (2);
         }
 
@@ -88,7 +88,7 @@ mbox_open (const char *path, const char *mode)
           errno = 0;
           return NULL;
         }
-      
+
       if (config.lock)
         {
 #ifdef HAVE_FLOCK
@@ -100,7 +100,7 @@ mbox_open (const char *path, const char *mode)
             op = LOCK_EX;
           if (-1 == flock (fd, op))
 #else
-            memset (&lck, 0, sizeof (struct flock));
+          memset (&lck, 0, sizeof (struct flock));
           lck.l_whence = SEEK_SET;
           if (mode[0] == 'r')
             lck.l_type = F_RDLCK;
@@ -119,7 +119,7 @@ mbox_open (const char *path, const char *mode)
               close (fd);
               return NULL;
             }
-          }
+        }
 
       if (mode[0] == 'r')
         {
@@ -147,7 +147,7 @@ mbox_open (const char *path, const char *mode)
             mp->fp = (BZFILE *) BZ2_bzdopen (fd, "wb");
 #endif /* HAVE_LIBBZ2 */
         }
-      
+
       if (mp->fp == NULL)
         {
           if (config.merr)
@@ -191,9 +191,10 @@ mbox_open (const char *path, const char *mode)
             {
               if (0 == strcmp ("-", path))
                 fprintf (stderr, "%s: (standard input): Not a mbox folder\n",
-                  APPNAME);
+                         APPNAME);
               else
-                fprintf (stderr, "%s: %s: Not a mbox folder\n", APPNAME, path);
+                fprintf (stderr, "%s: %s: Not a mbox folder\n", APPNAME,
+                         path);
             }
           if (config.format == MBOX)
             fclose (mp->fp);
@@ -308,7 +309,7 @@ mbox_read_message (mbox_t * mp)
         {
           message->headers =
             (char *) realloc (message->headers,
-			      ((1 + s + message->hbytes) * sizeof (char)));
+                              ((1 + s + message->hbytes) * sizeof (char)));
           strcpy (message->headers + message->hbytes, buffer);
           message->hbytes += s;
         }
@@ -321,7 +322,7 @@ mbox_read_message (mbox_t * mp)
             }
           message->body =
             (char *) realloc (message->body,
-			      ((1 + s + message->bbytes) * sizeof (char)));
+                              ((1 + s + message->bbytes) * sizeof (char)));
           strcpy (message->body + message->bbytes, buffer);
           message->bbytes += s;
         }
@@ -346,7 +347,7 @@ tmpfile_name (const char *path)
 {
   char *fname, *tmpdir;
 
-  if (path == NULL) /* no path prefix given, use /tmp or TMPDIR */
+  if (path == NULL)             /* no path prefix given, use /tmp or TMPDIR */
     {
       tmpdir = getenv ("TMPDIR");
       if (tmpdir == NULL)
@@ -361,13 +362,13 @@ tmpfile_name (const char *path)
 
   config.tmpfilename =
     (char *) xmalloc ((strlen (tmpdir) + (strlen (fname) + 1))
-		      * sizeof (char));
+                      * sizeof (char));
   sprintf (config.tmpfilename, "%s%s", tmpdir, fname);
 }
 
 
-void 
-mbox_write_message (message_t *msg, mbox_t *mbox)
+void
+mbox_write_message (message_t * msg, mbox_t * mbox)
 {
   if (config.format == MBOX)
     fprintf (mbox->fp, "%s\n%s", msg->headers, msg->body);
@@ -375,7 +376,7 @@ mbox_write_message (message_t *msg, mbox_t *mbox)
   else if (config.format == ZMBOX)
     {
       gzwrite_loop (mbox->fp, msg->headers);
-      gzwrite(mbox->fp, "\n", 1);
+      gzwrite (mbox->fp, "\n", 1);
       gzwrite_loop (mbox->fp, msg->body);
     }
 #endif /* HAVE_LIBZ */
@@ -402,11 +403,14 @@ tmpfile_mod_own (const int fd, const char *path)
       if (stat (path, &s) != -1)
         {
           if (fchown (fd, s.st_uid, s.st_gid) == -1)
-            if (config.merr) perror (config.tmpfilename);
+            if (config.merr)
+              perror (config.tmpfilename);
           if (fchmod (fd, s.st_mode) == -1)
-            if (config.merr) perror (config.tmpfilename);
+            if (config.merr)
+              perror (config.tmpfilename);
         }
-      else if (config.merr) perror (path);
+      else if (config.merr)
+        perror (path);
     }
 }
 

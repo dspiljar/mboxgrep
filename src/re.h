@@ -21,7 +21,7 @@
 
 #ifdef HAVE_LIBPCRE
 void pcre_init (void);
-void pcre_match (message_t *msg);
+void pcre_match (message_t * msg);
 #endif /* HAVE_LIBPCRE */
 void regex_init (void);
-void regex_match (message_t *msg);
+void regex_match (message_t * msg);

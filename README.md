@@ -13,3 +13,6 @@ GNU/Linux distrubution, for example), please drop me a line about it.
 
 For build instructions, read the file "INSTALL", and run
 `./configure --help`.
+
+This project aims to follow the GNU coding style (https://www.gnu.org/prep/standards/html_node/Formatting.html),
+at least loosely. The code should be indented with indent -gnu -nut -ppi2.

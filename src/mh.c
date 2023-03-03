@@ -22,20 +22,23 @@
 #include <string.h>
 
 #ifdef HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#  include <dirent.h>
+#  define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# ifdef HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif /* HAVE_SYS_NDIR_H */
-# ifdef HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif /* HAVE_SYS_DIR_H */
-# ifdef HAVE_NDIR_H
-#  include <ndir.h>
-# endif /* HAVE_NDIR_H */
+#  define dirent direct
+#  define NAMLEN(dirent) (dirent)->d_namlen
+#  ifdef HAVE_SYS_NDIR_H
+#    include <sys/ndir.h>
+#  endif
+       /* HAVE_SYS_NDIR_H */
+#  ifdef HAVE_SYS_DIR_H
+#    include <sys/dir.h>
+#  endif
+       /* HAVE_SYS_DIR_H */
+#  ifdef HAVE_NDIR_H
+#    include <ndir.h>
+#  endif
+       /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H */
 
 #include <sys/types.h>
@@ -49,12 +52,13 @@
 #include "wrap.h"
 
 #ifdef HAVE_LIBDMALLOC
-# include <dmalloc.h>
+#  include <dmalloc.h>
 #endif /* HAVE_LIBDMALLOC */
 
 extern option_t config;
 
-DIR *mh_open (const char *path)
+DIR *
+mh_open (const char *path)
 {
   DIR *dp;
 
@@ -62,22 +66,24 @@ DIR *mh_open (const char *path)
   if (dp == NULL)
     {
       if (config.merr)
-	{
-	  fprintf (stderr, "%s: %s: ", APPNAME, path);
-	  perror (NULL);
-	}
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, path);
+          perror (NULL);
+        }
       errno = 0;
       return NULL;
     }
   return dp;
-} /* mh_open */
+}                               /* mh_open */
 
-void mh_close (DIR *dp)
+void
+mh_close (DIR * dp)
 {
   closedir (dp);
-} /* mh_close */
+}                               /* mh_close */
 
-message_t *mh_read_message (DIR *dp)
+message_t *
+mh_read_message (DIR * dp)
 {
   int isheaders = 1;
   int have_from = 0, have_date = 0, have_sender = 0;
@@ -91,16 +97,17 @@ message_t *mh_read_message (DIR *dp)
 
   filename = NULL;
 
-  for(;;)
+  for (;;)
     {
-      d_content = readdir(dp);
-      if (d_content == NULL) return NULL;
+      d_content = readdir (dp);
+      if (d_content == NULL)
+        return NULL;
       if (d_content->d_name[0] == '.')
-	continue;
+        continue;
 
-      filename = (char *) xrealloc 
-	(filename, ((strlen (d_content->d_name)) + 
-		    (strlen (config.boxname)) + 2));
+      filename = (char *) xrealloc
+        (filename, ((strlen (d_content->d_name)) +
+                    (strlen (config.boxname)) + 2));
 
 /*       message->headers = (char *) xrealloc (message->headers, 0); */
 /*       message->hbytes = 0; */
@@ -112,13 +119,13 @@ message_t *mh_read_message (DIR *dp)
       fp = m_fopen (filename, "r");
       isheaders = 1;
       if (fp == NULL)
-	{
-	  free (message->headers);
-	  free (message->body);
-	  message->hbytes = 0;
-	  message->bbytes = 0;
-	  continue;
-	}
+        {
+          free (message->headers);
+          free (message->body);
+          message->hbytes = 0;
+          message->bbytes = 0;
+          continue;
+        }
 
       fgets (buffer, BUFSIZ, fp);
 
@@ -137,76 +144,80 @@ message_t *mh_read_message (DIR *dp)
 /* 	      continue; */
 /* 	    } */
 /* 	} */
-      
+
       fseek (fp, 0, SEEK_SET);
 
       while (fgets (buffer, BUFSIZ, fp) != NULL)
-	{
-	  s = strlen (buffer);
-	  if (0 == strncmp ("\n", buffer, 1) && isheaders == 1)
-	    {
-	      isheaders = 0;
-	      continue;
-	    } /* if */
-	  if (isheaders)
-	    {
-	      if (0 == strncasecmp ("From: ", buffer, 6))
-		have_from = 1;
-	      if (0 == strncasecmp ("Sender: ", buffer, 8))
-		have_sender = 1;
-	      if (0 == strncasecmp ("Date: ", buffer, 6))
-		have_date = 1;
-	      if (0 == strncasecmp ("Return-Path: ", buffer, 13))
-		  message->from = parse_return_path (buffer);
+        {
+          s = strlen (buffer);
+          if (0 == strncmp ("\n", buffer, 1) && isheaders == 1)
+            {
+              isheaders = 0;
+              continue;
+            }                   /* if */
+          if (isheaders)
+            {
+              if (0 == strncasecmp ("From: ", buffer, 6))
+                have_from = 1;
+              if (0 == strncasecmp ("Sender: ", buffer, 8))
+                have_sender = 1;
+              if (0 == strncasecmp ("Date: ", buffer, 6))
+                have_date = 1;
+              if (0 == strncasecmp ("Return-Path: ", buffer, 13))
+                message->from = parse_return_path (buffer);
 
-	      message->headers =
-		(char *) realloc (message->headers,
-				  ((1 + s + message->hbytes) * sizeof (char)));
-	      strcpy (message->headers + message->hbytes, buffer);
-	      message->hbytes += s;
-	    } /* if */
-	  else
-	    {
-	      message->body =
-		(char *) realloc (message->body,
-				  ((1 + s + message->bbytes) * sizeof (char)));
-	      strcpy (message->body + message->bbytes, buffer);
-	      message->bbytes += s;
-	    } /* else */
-	} /* while */
+              message->headers =
+                (char *) realloc (message->headers,
+                                  ((1 + s +
+                                    message->hbytes) * sizeof (char)));
+              strcpy (message->headers + message->hbytes, buffer);
+              message->hbytes += s;
+            }                   /* if */
+          else
+            {
+              message->body =
+                (char *) realloc (message->body,
+                                  ((1 + s +
+                                    message->bbytes) * sizeof (char)));
+              strcpy (message->body + message->bbytes, buffer);
+              message->bbytes += s;
+            }                   /* else */
+        }                       /* while */
 
-      if ((!have_from && !have_sender)|| !have_date)
-	{
-	  if (config.merr)
-	    fprintf (stderr, "%s: %s: Not a RFC 2822 message\n",
-		     APPNAME, filename);
-	  fclose (fp);
-	  free (message->headers);
-	  message->headers = NULL;
-	  free (message->body);
-	  message->body = NULL;
-	  message->hbytes = 0;
-	  message->bbytes = 0;
-	  continue;
-	}
+      if ((!have_from && !have_sender) || !have_date)
+        {
+          if (config.merr)
+            fprintf (stderr, "%s: %s: Not a RFC 2822 message\n",
+                     APPNAME, filename);
+          fclose (fp);
+          free (message->headers);
+          message->headers = NULL;
+          free (message->body);
+          message->body = NULL;
+          message->hbytes = 0;
+          message->bbytes = 0;
+          continue;
+        }
 
       else
-	{
-	  message->filename = (char *) xstrdup (filename);
-	  fclose (fp);
-	  free (filename);
+        {
+          message->filename = (char *) xstrdup (filename);
+          fclose (fp);
+          free (filename);
 
-	  return message;
-	}
-    } /* for */
-} /* mh_read_message */
+          return message;
+        }
+    }                           /* for */
+}                               /* mh_read_message */
 
-void mh_write_message (message_t *m, const char *path)
+void
+mh_write_message (message_t * m, const char *path)
 {
   struct dirent *dc;
   int x, y = 0;
   char s1[BUFSIZ];
-  DIR *d; FILE *f;
+  DIR *d;
+  FILE *f;
 
   d = m_opendir (path);
   rewinddir (d);
@@ -215,11 +226,11 @@ void mh_write_message (message_t *m, const char *path)
     {
       x = strtol (dc->d_name, NULL, 10);
       if (x > y)
-	y = x;
+        y = x;
     }
   y++;
   sprintf (s1, "%s/%i", path, y);
-  
+
   f = m_fopen (s1, "w");
   fprintf (f, "%s\n%s", m->headers, m->body);
   fclose (f);

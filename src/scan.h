@@ -18,12 +18,12 @@
 */
 
 #ifndef SCAN_H
-#define SCAN_H 1
+#  define SCAN_H 1
 
-#include "mboxgrep.h"
+#  include "mboxgrep.h"
 
 void scan_mailbox (char path[]);
 void recursive_scan (char path[]);
-int md5_check_message (char *body, checksum_t *chksum);
+int md5_check_message (char *body, checksum_t * chksum);
 
 #endif /* SCAN_H */

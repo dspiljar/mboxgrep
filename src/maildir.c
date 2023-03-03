@@ -23,20 +23,23 @@
 #include <string.h>
 
 #ifdef HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#  include <dirent.h>
+#  define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# ifdef HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif /* HAVE_SYS_NDIR_H */
-# ifdef HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif /* HAVE_SYS_DIR_H */
-# ifdef HAVE_NDIR_H
-#  include <ndir.h>
-# endif /* HAVE_NDIR_H */
+#  define dirent direct
+#  define NAMLEN(dirent) (dirent)->d_namlen
+#  ifdef HAVE_SYS_NDIR_H
+#    include <sys/ndir.h>
+#  endif
+       /* HAVE_SYS_NDIR_H */
+#  ifdef HAVE_SYS_DIR_H
+#    include <sys/dir.h>
+#  endif
+       /* HAVE_SYS_DIR_H */
+#  ifdef HAVE_NDIR_H
+#    include <ndir.h>
+#  endif
+       /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H */
 
 #include <stdlib.h>
@@ -52,7 +55,7 @@
 #include "wrap.h"
 
 #ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
+#  include <dmalloc.h>
 #endif /* HAVE_LIBDMALLOC */
 
 maildir_t *
@@ -64,20 +67,20 @@ maildir_open (const char *path)
 
   foo = m_opendir (path);
   if (foo == NULL)
-      return NULL;
+    return NULL;
 
   closedir (foo);
 
   if (-1 == maildir_check (path))
     {
       if (config.merr)
-	  fprintf (stderr, "%s: %s: Not a maildir folder\n", APPNAME, path);
+        fprintf (stderr, "%s: %s: Not a maildir folder\n", APPNAME, path);
       return NULL;
     }
 
-  dirname = (char *) xmalloc((sizeof (char) * (strlen (path) + 5)));
+  dirname = (char *) xmalloc ((sizeof (char) * (strlen (path) + 5)));
 
-  mp = (maildir_t *) xmalloc(sizeof (maildir_t));
+  mp = (maildir_t *) xmalloc (sizeof (maildir_t));
   sprintf (dirname, "%s/new", path);
   mp->new = m_opendir (dirname);
   if (mp->new == NULL)
@@ -108,14 +111,14 @@ maildir_open (const char *path)
 
   free (dirname);
   return mp;
-} /* maildir_open */
+}                               /* maildir_open */
 
 message_t *
-maildir_read_message (maildir_t *mdp)
+maildir_read_message (maildir_t * mdp)
 {
   int isheaders = 1;
   int have_from = 0, have_to = 0, have_message_id = 0, have_sender = 0,
-      have_date = 0;
+    have_date = 0;
   static message_t *message;
   static struct dirent *d_content;
   char *filename, buffer[BUFSIZ];
@@ -124,9 +127,9 @@ maildir_read_message (maildir_t *mdp)
 
   message = allocate_message ();
 
-  for(;;)
+  for (;;)
     {
-      if (mdp->new != NULL) 
+      if (mdp->new != NULL)
         {
           d_content = readdir (mdp->new);
           if (d_content == NULL)
@@ -155,9 +158,10 @@ maildir_read_message (maildir_t *mdp)
       if (d_content->d_name[0] == '.')
         continue;
 
-      filename = 
-        (char *) xmalloc ((sizeof (char)*((strlen (d_content->d_name))
-          + (strlen (config.boxname)) + 6)));
+      filename =
+        (char *) xmalloc ((sizeof (char) * ((strlen (d_content->d_name))
+                                            + (strlen (config.boxname)) +
+                                            6)));
 
 /*
       filename = 
@@ -173,7 +177,7 @@ maildir_read_message (maildir_t *mdp)
       free (filename);
 
       isheaders = 1;
-      fp = m_fopen(message->filename, "r");
+      fp = m_fopen (message->filename, "r");
 
       if (fp == NULL)
         continue;
@@ -185,7 +189,7 @@ maildir_read_message (maildir_t *mdp)
             {
               isheaders = 0;
               continue;
-            } /* if */
+            }                   /* if */
           if (isheaders)
             {
               if (0 == strncasecmp ("From: ", buffer, 6))
@@ -199,43 +203,45 @@ maildir_read_message (maildir_t *mdp)
               if (0 == strncasecmp ("Message-ID: ", buffer, 12))
                 have_message_id = 1;
               if (0 == strncasecmp ("Return-Path: ", buffer, 13))
-                message->from = parse_return_path(buffer);
+                message->from = parse_return_path (buffer);
 
               message->headers =
                 (char *) xrealloc (message->headers,
-                  ((1 + s + message->hbytes) * sizeof (char)));
+                                   ((1 + s +
+                                     message->hbytes) * sizeof (char)));
 
               strcpy (message->headers + message->hbytes, buffer);
               message->hbytes += s;
-            } /* if */
+            }                   /* if */
           else
             {
               message->body =
                 (char *) xrealloc (message->body,
-                  ((1 + s + message->bbytes) * sizeof (char)));
+                                   ((1 + s +
+                                     message->bbytes) * sizeof (char)));
               strcpy (message->body + message->bbytes, buffer);
               message->bbytes += s;
-            } /* else */
-          } /* while */
+            }                   /* else */
+        }                       /* while */
 
 /*       if (!have_from || !have_to || !have_message_id) */
 
-      if ((!have_from && !have_sender)|| !have_date)
+      if ((!have_from && !have_sender) || !have_date)
         {
           if (config.merr)
-            fprintf(stderr, "%s: %s: Not a RFC 2822 message\n",
-              APPNAME, message->filename);
-          fclose(fp);
+            fprintf (stderr, "%s: %s: Not a RFC 2822 message\n",
+                     APPNAME, message->filename);
+          fclose (fp);
           continue;
         }
-      
-      fclose(fp);
-      return message; 
-    } /* for */
-} /* maildir_read_message */
 
-void 
-maildir_write_message (message_t *m, const char *path)
+      fclose (fp);
+      return message;
+    }                           /* for */
+}                               /* maildir_read_message */
+
+void
+maildir_write_message (message_t * m, const char *path)
 {
   char bla[BUFSIZ], *s1, *s2;
   int t;
@@ -245,11 +251,11 @@ maildir_write_message (message_t *m, const char *path)
   t = (int) time (NULL);
 
   sprintf (bla, "%i.%i_%i.%s",
-	   t, config.pid, runtime.maildir_count, config.hostname);
+           t, config.pid, runtime.maildir_count, config.hostname);
   s1 = (char *) xmalloc ((strlen (path) + strlen (bla) + 6) * sizeof (char));
-  sprintf(s1, "%s/tmp/%s", path, bla);
+  sprintf (s1, "%s/tmp/%s", path, bla);
   s2 = (char *) xmalloc ((strlen (path) + strlen (bla) + 6) * sizeof (char));
-  sprintf(s2, "%s/new/%s", path, bla);
+  sprintf (s2, "%s/new/%s", path, bla);
 
   f1 = m_fopen (s1, "w");
   fprintf (f1, "%s\n%s", m->headers, m->body);
@@ -257,7 +263,7 @@ maildir_write_message (message_t *m, const char *path)
   rename (s1, s2);
 }
 
-int 
+int
 maildir_check (const char *path)
 {
   static struct stat fs;
@@ -268,48 +274,54 @@ maildir_check (const char *path)
 
   sprintf (s, "%s/cur", path);
   i = stat (s, &fs);
-  if (-1 == i) return -1;
-  if (! S_ISDIR (fs.st_mode)) return -1;
+  if (-1 == i)
+    return -1;
+  if (!S_ISDIR (fs.st_mode))
+    return -1;
 
   sprintf (s, "%s/new", path);
   i = stat (s, &fs);
-  if (-1 == i) return -1;
-  if (! S_ISDIR (fs.st_mode)) return -1;
+  if (-1 == i)
+    return -1;
+  if (!S_ISDIR (fs.st_mode))
+    return -1;
 
-  sprintf(s, "%s/tmp", path);
+  sprintf (s, "%s/tmp", path);
   i = stat (s, &fs);
-  if (-1 == i) return -1;
-  if (! S_ISDIR (fs.st_mode)) return -1;
+  if (-1 == i)
+    return -1;
+  if (!S_ISDIR (fs.st_mode))
+    return -1;
 
   free (s);
 
   return 0;
 }
 
-void 
+void
 maildir_create (const char *path)
 {
   char *s;
   int i;
 
-  s = (char *) xmalloc ((strlen (path) + 4) * sizeof(char));
+  s = (char *) xmalloc ((strlen (path) + 4) * sizeof (char));
   errno = 0;
 
   for (;;)
     {
-      sprintf(s, "%s", path);
-      i = mkdir (s, S_IRWXU);
-      if (-1 == i) 
-        break;
-      sprintf(s, "%s/new", path);
+      sprintf (s, "%s", path);
       i = mkdir (s, S_IRWXU);
       if (-1 == i)
         break;
-      sprintf(s, "%s/cur", path);
+      sprintf (s, "%s/new", path);
       i = mkdir (s, S_IRWXU);
       if (-1 == i)
         break;
-      sprintf(s, "%s/tmp", path);
+      sprintf (s, "%s/cur", path);
+      i = mkdir (s, S_IRWXU);
+      if (-1 == i)
+        break;
+      sprintf (s, "%s/tmp", path);
       i = mkdir (s, S_IRWXU);
       if (-1 == i)
         break;
@@ -321,7 +333,7 @@ maildir_create (const char *path)
     {
       if (config.merr)
         {
-          fprintf(stderr, "%s:%s: ", APPNAME, s);
+          fprintf (stderr, "%s:%s: ", APPNAME, s);
           perror (NULL);
         }
     }

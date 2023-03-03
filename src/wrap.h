@@ -22,55 +22,64 @@
 /* wrappers around certain std functions */
 
 #ifndef WRAP_H
-#define WRAP_H
+#  define WRAP_H
 
-#include <config.h>
-#include <stdio.h>
-#include <sys/types.h>
+#  include <config.h>
+#  include <stdio.h>
+#  include <sys/types.h>
 
-#ifdef HAVE_DIRENT_H
-# include <dirent.h>
-#else
-# ifdef HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif /* HAVE_SYS_NDIR_H */
-# ifdef HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif /* HAVE_SYS_DIR_H */
-# ifdef HAVE_NDIR_H
-#  include <ndir.h>
-# endif /* HAVE_NDIR_H */
-#endif /* HAVE_DIRENT_H */
-#ifdef HAVE_LIBZ
-#include <zlib.h>
-#endif /* HAVE_LIBZ */
+#  ifdef HAVE_DIRENT_H
+#    include <dirent.h>
+#  else
+#    ifdef HAVE_SYS_NDIR_H
+#      include <sys/ndir.h>
+#    endif
+       /* HAVE_SYS_NDIR_H */
+#    ifdef HAVE_SYS_DIR_H
+#      include <sys/dir.h>
+#    endif
+       /* HAVE_SYS_DIR_H */
+#    ifdef HAVE_NDIR_H
+#      include <ndir.h>
+#    endif
+       /* HAVE_NDIR_H */
+#  endif
+       /* HAVE_DIRENT_H */
+#  ifdef HAVE_LIBZ
+#    include <zlib.h>
+#  endif
+       /* HAVE_LIBZ */
 
-#include <stdlib.h>
+#  include <stdlib.h>
 
-#ifdef HAVE_LIBDMALLOC
-# include <dmalloc.h>
-#endif /* HAVE_LIBDMALLOC */
+#  ifdef HAVE_LIBDMALLOC
+#    include <dmalloc.h>
+#  endif
+       /* HAVE_LIBDMALLOC */
 
 int m_open (const char *pathname, int flags, mode_t mode);
 
 FILE *m_fopen (const char *path, const char *mode);
 FILE *m_fdopen (int fildes, const char *mode);
-#ifdef HAVE_LIBZ
+#  ifdef HAVE_LIBZ
 gzFile m_gzdopen (int fildes, const char *mode);
 void gzwrite_loop (void *fp, char *str);
-#endif /* HAVE_LIBZ */
-#ifdef HAVE_LIBBZ2
+#  endif
+       /* HAVE_LIBZ */
+#  ifdef HAVE_LIBBZ2
 void bzwrite_loop (void *fp, char *str);
-#endif /* HAVE_LIBBZ2 */
+#  endif
+       /* HAVE_LIBBZ2 */
 
 DIR *m_opendir (const char *name);
 
-#ifndef HAVE_LIBDMALLOC
+#  ifndef HAVE_LIBDMALLOC
 void *xmalloc (size_t size);
 void *xrealloc (void *ptr, size_t size);
 void *xcalloc (size_t nmemb, size_t size);
 char *xstrdup (const char *s);
-#endif /* HAVE_LIBDMALLOC */
+#  endif
+       /* HAVE_LIBDMALLOC */
 
 int m_unlink (const char *pathname);
 

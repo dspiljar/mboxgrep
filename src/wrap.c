@@ -24,26 +24,29 @@
 #include <errno.h>
 
 #ifdef HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#  include <dirent.h>
+#  define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# ifdef HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif /* HAVE_SYS_NDIR_H */
-# ifdef HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif /* HAVE_SYS_DIR_H */
-# ifdef HAVE_NDIR_H
-#  include <ndir.h>
-# endif /* HAVE_NDIR_H */
+#  define dirent direct
+#  define NAMLEN(dirent) (dirent)->d_namlen
+#  ifdef HAVE_SYS_NDIR_H
+#    include <sys/ndir.h>
+#  endif
+       /* HAVE_SYS_NDIR_H */
+#  ifdef HAVE_SYS_DIR_H
+#    include <sys/dir.h>
+#  endif
+       /* HAVE_SYS_DIR_H */
+#  ifdef HAVE_NDIR_H
+#    include <ndir.h>
+#  endif
+       /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H */
 #ifdef HAVE_LIBZ
-#include <zlib.h>
+#  include <zlib.h>
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-#include <bzlib.h>
+#  include <bzlib.h>
 #endif /* HAVE_LIBBZ2 */
 
 #include <sys/types.h>
@@ -54,12 +57,13 @@
 #include "mboxgrep.h"
 
 #ifndef APPNAME
-#define APPNAME "mboxgrep"
+#  define APPNAME "mboxgrep"
 #endif
 
 #define BUFLEN 16384
 
-int m_open (const char *pathname, int flags, mode_t mode)
+int
+m_open (const char *pathname, int flags, mode_t mode)
 {
   int blah;
 
@@ -76,9 +80,10 @@ int m_open (const char *pathname, int flags, mode_t mode)
         exit (2);
     }
   return blah;
-}      
+}
 
-FILE *m_fopen (const char *path, const char *mode)
+FILE *
+m_fopen (const char *path, const char *mode)
 {
   FILE *blah;
 
@@ -96,7 +101,8 @@ FILE *m_fopen (const char *path, const char *mode)
   return blah;
 }
 
-FILE *m_fdopen (int fildes, const char *mode)
+FILE *
+m_fdopen (int fildes, const char *mode)
 {
   FILE *blah;
 
@@ -111,7 +117,8 @@ FILE *m_fdopen (int fildes, const char *mode)
 
 #ifdef HAVE_LIBZ
 
-gzFile m_gzdopen (int fildes, const char *mode)
+gzFile
+m_gzdopen (int fildes, const char *mode)
 {
   gzFile blah;
 
@@ -126,7 +133,8 @@ gzFile m_gzdopen (int fildes, const char *mode)
 
 #endif /* HAVE_LIBZ */
 
-DIR *m_opendir (const char *name)
+DIR *
+m_opendir (const char *name)
 {
   DIR *blah;
 
@@ -144,7 +152,8 @@ DIR *m_opendir (const char *name)
 
 #ifndef HAVE_LIBDMALLOC
 
-void *xmalloc (size_t size)
+void *
+xmalloc (size_t size)
 {
   void *foo;
 
@@ -158,7 +167,8 @@ void *xmalloc (size_t size)
   return foo;
 }
 
-void *xrealloc (void *ptr, size_t size)
+void *
+xrealloc (void *ptr, size_t size)
 {
   void *foo;
 
@@ -172,7 +182,8 @@ void *xrealloc (void *ptr, size_t size)
   return foo;
 }
 
-void *xcalloc (size_t nmemb, size_t size)
+void *
+xcalloc (size_t nmemb, size_t size)
 {
   void *foo;
 
@@ -186,7 +197,8 @@ void *xcalloc (size_t nmemb, size_t size)
   return foo;
 }
 
-char *xstrdup (const char *s)
+char *
+xstrdup (const char *s)
 {
   char *foo;
 
@@ -202,7 +214,8 @@ char *xstrdup (const char *s)
 
 #endif /* HAVE_LIBDMALLOC */
 
-int m_unlink (const char *pathname)
+int
+m_unlink (const char *pathname)
 {
   int baz;
 
@@ -220,7 +233,8 @@ int m_unlink (const char *pathname)
 
 #ifdef HAVE_LIBZ
 
-void gzwrite_loop (void *fp, char *str)
+void
+gzwrite_loop (void *fp, char *str)
 {
   int quux, len, baz;
 
@@ -228,8 +242,8 @@ void gzwrite_loop (void *fp, char *str)
   baz = strlen (str);
   for (;;)
     {
-      len = gzwrite (fp, (str+quux), 
-        (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
+      len = gzwrite (fp, (str + quux),
+                     (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
       quux += len;
       if (quux == baz)
         break;
@@ -240,7 +254,8 @@ void gzwrite_loop (void *fp, char *str)
 
 #ifdef HAVE_LIBBZ2
 
-void bzwrite_loop (void *fp, char *str)
+void
+bzwrite_loop (void *fp, char *str)
 {
   int quux, len, baz;
 
@@ -248,8 +263,8 @@ void bzwrite_loop (void *fp, char *str)
   baz = strlen (str);
   for (;;)
     {
-      len = BZ2_bzwrite (fp, (str+quux), 
-        (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
+      len = BZ2_bzwrite (fp, (str + quux),
+                         (((quux + BUFLEN) < baz) ? BUFLEN : (baz - quux)));
       quux += len;
       if (quux == baz)
         break;

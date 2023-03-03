@@ -22,11 +22,11 @@
 #include <string.h>
 #include <regex.h>
 #ifdef HAVE_LIBPCRE
-#include <pcre.h>
+#  include <pcre.h>
 #endif /* HAVE_LIBPCRE */
 #include "mboxgrep.h"
 #include "message.h"
-#include "wrap.h" /* xcalloc() et cetera */
+#include "wrap.h"               /* xcalloc() et cetera */
 
 #ifdef HAVE_LIBPCRE
 void
@@ -36,35 +36,32 @@ pcre_init (void)
   const char *error;
 
   config.pcre_pattern =
-    (pcre *) pcre_compile (config.regex_s, 
-      (config.ignorecase ? PCRE_CASELESS : 0),
-      &error, &errptr, NULL);
+    (pcre *) pcre_compile (config.regex_s,
+                           (config.ignorecase ? PCRE_CASELESS : 0),
+                           &error, &errptr, NULL);
   if (config.pcre_pattern == NULL)
     {
       if (config.merr)
-        fprintf (stderr, "%s: %s: %s\n", APPNAME, config.regex_s,
-          error);
-      exit(2);
+        fprintf (stderr, "%s: %s: %s\n", APPNAME, config.regex_s, error);
+      exit (2);
     }
 }
 
 void
-pcre_match (message_t *msg)
+pcre_match (message_t * msg)
 {
   int of[BUFSIZ];
 
   if (config.headers)
     config.res1 =
       pcre_exec ((pcre *) config.pcre_pattern,
-      (pcre_extra *) config.pcre_hints,
-      msg->headers,
-      (int) strlen (msg->headers), 0, 0, of, BUFSIZ);
+                 (pcre_extra *) config.pcre_hints,
+                 msg->headers, (int) strlen (msg->headers), 0, 0, of, BUFSIZ);
   if (config.body)
     config.res2 =
       pcre_exec ((pcre *) config.pcre_pattern,
-      (pcre_extra *) config.pcre_hints,
-      msg->body,
-      (int) strlen (msg->body), 0, 0, of, BUFSIZ);
+                 (pcre_extra *) config.pcre_hints,
+                 msg->body, (int) strlen (msg->body), 0, 0, of, BUFSIZ);
 
   config.res1 = config.res1 ^ 1;
   config.res2 = config.res2 ^ 1;
@@ -77,20 +74,21 @@ regex_init (void)
   int flag1 = 0, flag2 = 0;
   int errcode = 0;
   char errbuf[BUFSIZ];
-	  
+
   if (config.ignorecase)
     flag1 = REG_ICASE;
   if (config.extended)
     flag2 = REG_EXTENDED;
 
   config.posix_pattern = (regex_t *) xmalloc (sizeof (regex_t));
-  errcode = regcomp ((regex_t *) config.posix_pattern, config.regex_s, 
-		     (flag1 | flag2 | REG_NEWLINE ));
+  errcode = regcomp ((regex_t *) config.posix_pattern, config.regex_s,
+                     (flag1 | flag2 | REG_NEWLINE));
   if (0 != errcode)
     {
       if (config.merr)
         {
-          regerror (errcode, (regex_t *) config.posix_pattern, errbuf, BUFSIZ);
+          regerror (errcode, (regex_t *) config.posix_pattern, errbuf,
+                    BUFSIZ);
           fprintf (stderr, "%s: %s: %s\n", APPNAME, config.regex_s, errbuf);
         }
       exit (2);
@@ -98,12 +96,12 @@ regex_init (void)
 }
 
 void
-regex_match (message_t *msg)
+regex_match (message_t * msg)
 {
   if (config.headers)
     config.res1 = regexec ((regex_t *) config.posix_pattern,
-      msg->headers, 0, NULL, 0);
+                           msg->headers, 0, NULL, 0);
   if (config.body)
     config.res2 = regexec ((regex_t *) config.posix_pattern,
-      msg->body, 0, NULL, 0);
+                           msg->body, 0, NULL, 0);
 }

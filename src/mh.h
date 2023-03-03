@@ -18,29 +18,33 @@
 */
 
 #ifndef MH_H
-#define MH_H 1
+#  define MH_H 1
 
-#include <config.h>
+#  include <config.h>
 
-#ifdef HAVE_DIRENT_H
-# include <dirent.h>
-#else
-# ifdef HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif /* HAVE_SYS_NDIR_H */
-# ifdef HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif /* HAVE_SYS_DIR_H */
-# ifdef HAVE_NDIR_H
-#  include <ndir.h>
-# endif /* HAVE_NDIR_H */
-#endif /* HAVE_DIRENT_H */
+#  ifdef HAVE_DIRENT_H
+#    include <dirent.h>
+#  else
+#    ifdef HAVE_SYS_NDIR_H
+#      include <sys/ndir.h>
+#    endif
+       /* HAVE_SYS_NDIR_H */
+#    ifdef HAVE_SYS_DIR_H
+#      include <sys/dir.h>
+#    endif
+       /* HAVE_SYS_DIR_H */
+#    ifdef HAVE_NDIR_H
+#      include <ndir.h>
+#    endif
+       /* HAVE_NDIR_H */
+#  endif
+       /* HAVE_DIRENT_H */
 
-#include "mboxgrep.h"
+#  include "mboxgrep.h"
 
 DIR *mh_open (const char *path);
-void mh_close (DIR *dp);
-message_t *mh_read_message (DIR *dp);
-void mh_write_message (message_t *m, const char *path);
+void mh_close (DIR * dp);
+message_t *mh_read_message (DIR * dp);
+void mh_write_message (message_t * m, const char *path);
 
 #endif /* MH_H */
