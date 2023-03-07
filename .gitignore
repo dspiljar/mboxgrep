@@ -3,4 +3,6 @@ config.h
 config.log
 config.status
 src/*.o
+src/*.c~
+src/*.h~
 src/mboxgrep
