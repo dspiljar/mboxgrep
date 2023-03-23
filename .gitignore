@@ -6,3 +6,7 @@ src/*.o
 src/*.c~
 src/*.h~
 src/mboxgrep
+src/.deps/
+src/stamp-h1
+aclocal.m4
+autom4te.cache/
