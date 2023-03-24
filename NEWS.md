@@ -1,5 +1,10 @@
 # Changes of mboxgrep
 
+## Changes since 0.7.10
+
+- GNU Automake is now utilized instead of manually written Makefile.in files.
+- Code indentation has been corrected and documented (GNU indent is used for this purpose).
+
 ## Changes since 0.7.9
 
 - development has been restarted after a longer hiatus

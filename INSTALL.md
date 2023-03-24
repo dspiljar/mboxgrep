@@ -1,8 +1,8 @@
-# How to compile and install mboxgrep
+# Compilation and installation of mboxgrep
 
-mboxgrep should compile on a modern Unix-like operating system, such as GNU/Linux or FreeBSD.
+`mboxgrep` should compile on a modern Unix-like operating system, such as GNU/Linux or FreeBSD.
 
-It uses autoconf, so the most basic compilation procedure consists of:
+Autoconf and Automake are used, and the most basic compilation procedure consists of:
 
 ```
 ./configure
