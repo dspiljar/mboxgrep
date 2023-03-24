@@ -9,7 +9,7 @@ END-INFO-DIR-ENTRY
 
 File: mboxgrep.info,  Node: Top,  Up: (dir)
 
-This file documents 'mboxgrep' (version 0.7.10), a mailbox scanning
+This file documents 'mboxgrep' (version 0.7.11), a mailbox scanning
 utility.
 
    Copyright (C) 2000, 2001, 2002, 2003 Daniel Spiljar

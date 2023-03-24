@@ -15,14 +15,13 @@
   You should have received a copy of the GNU General Public License
   along with mboxgrep; if not, write to the Free Software Foundation, 
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #ifndef MBOXGREP_H
 #define MBOXGREP_H
 
 #define APPNAME "mboxgrep"
-#define VERSION "0.7.10"
+#define VERSION "0.7.11"
 #define BUGREPORT_ADDR "dspiljar AT datatipp.se"
 
 #define HOST_NAME_SIZE 256
