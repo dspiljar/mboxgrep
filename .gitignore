@@ -10,3 +10,9 @@ src/.deps/
 src/stamp-h1
 aclocal.m4
 autom4te.cache/
+Makefile.in
+configure
+compile
+depcomp
+install-sh
+missing
