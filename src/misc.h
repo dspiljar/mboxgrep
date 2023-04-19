@@ -25,14 +25,17 @@
 #  include "message.h"
 /* #include <time.h> */
 
-format_t folder_format (const char *name);
-lockmethod_t lock_method (const char *name);
+void set_folder_format (const char *name);
+void set_lock_method (const char *name);
 /* time_t parse_date(char *datestr); */
 char *parse_return_path (char *rpath);
 void *allocate_message (void);
 void postmark_print (message_t * msg);
-void set_default_options (void);
-void get_runtime_options (int *argc, char **argv,
+void init_options (void);
+void get_options (int *argc, char **argv,
                           struct option *long_options);
+void check_options (void);
+void set_option_action (action_t action, char *path);
+void set_option_regextype (regextype_t regextype);
 
 #endif /* MISC_H */

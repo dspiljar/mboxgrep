@@ -1,6 +1,6 @@
 /*
    mboxgrep - scan mailbox for messages matching a regular expression
-   Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006  Daniel Spiljar
+   Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006, 2023  Daniel Spiljar
 
    Mboxgrep is free software; you can redistribute it and/or modify it 
    under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ mbox_open (const char *path, const char *mode)
           return NULL;
         }
 
-      if (config.lock)
+      if (config.lock > LOCK_NONE)
         {
 #ifdef HAVE_FLOCK
           int op;
@@ -123,27 +123,27 @@ mbox_open (const char *path, const char *mode)
 
       if (mode[0] == 'r')
         {
-          if (config.format == MBOX)
+          if (config.format == FORMAT_MBOX)
             mp->fp = (FILE *) m_fdopen (fd, "r");
 #ifdef HAVE_LIBZ
-          else if (config.format == ZMBOX)
+          else if (config.format == FORMAT_ZMBOX)
             mp->fp = (gzFile *) m_gzdopen (fd, "rb");
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-          else if (config.format == BZ2MBOX)
+          else if (config.format == FORMAT_BZ2MBOX)
             mp->fp = (BZFILE *) BZ2_bzdopen (fd, "rb");
 #endif /* HAVE_LIBBZ2 */
         }
       else if (mode[0] == 'w')
         {
-          if (config.format == MBOX)
+          if (config.format == FORMAT_MBOX)
             mp->fp = (FILE *) m_fdopen (fd, "w");
 #ifdef HAVE_LIBZ
-          else if (config.format == ZMBOX)
+          else if (config.format == FORMAT_ZMBOX)
             mp->fp = (gzFile *) m_gzdopen (fd, "wb");
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-          else if (config.format == BZ2MBOX)
+          else if (config.format == FORMAT_BZ2MBOX)
             mp->fp = (BZFILE *) BZ2_bzdopen (fd, "wb");
 #endif /* HAVE_LIBBZ2 */
         }
@@ -163,14 +163,14 @@ mbox_open (const char *path, const char *mode)
 
   if (mode[0] == 'r')
     {
-      if (config.format == MBOX)
+      if (config.format == FORMAT_MBOX)
         fgets (buffer, BUFSIZ, mp->fp);
 #ifdef HAVE_LIBZ
-      else if (config.format == ZMBOX)
+      else if (config.format == FORMAT_ZMBOX)
         gzgets (mp->fp, buffer, BUFSIZ);
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-      else if (config.format == BZ2MBOX)
+      else if (config.format == FORMAT_BZ2MBOX)
         {
           char c[1] = "\0";
           int n = 0;
@@ -196,14 +196,14 @@ mbox_open (const char *path, const char *mode)
                 fprintf (stderr, "%s: %s: Not a mbox folder\n", APPNAME,
                          path);
             }
-          if (config.format == MBOX)
+          if (config.format == FORMAT_MBOX)
             fclose (mp->fp);
 #ifdef HAVE_LIBZ
-          else if (config.format == ZMBOX)
+          else if (config.format == FORMAT_ZMBOX)
             gzclose (mp->fp);
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-          else if (config.format == BZ2MBOX)
+          else if (config.format == FORMAT_BZ2MBOX)
             BZ2_bzclose (mp->fp);
 #endif /* HAVE_LIBBZ2 */
           return NULL;
@@ -216,14 +216,14 @@ mbox_open (const char *path, const char *mode)
 void
 mbox_close (mbox_t * mp)
 {
-  if (config.format == MBOX)
+  if (config.format == FORMAT_MBOX)
     fclose (mp->fp);
 #ifdef HAVE_LIBZ
-  else if (config.format == ZMBOX)
+  else if (config.format == FORMAT_ZMBOX)
     gzclose (mp->fp);
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-  else if (config.format == BZ2MBOX)
+  else if (config.format == FORMAT_BZ2MBOX)
     BZ2_bzclose (mp->fp);
 #endif /* HAVE_LIBBZ2 */
 
@@ -249,7 +249,7 @@ mbox_read_message (mbox_t * mp)
 
   for (;;)
     {
-      if (config.format == MBOX)
+      if (config.format == FORMAT_MBOX)
         {
           if (fgets (buffer, BUFSIZ, mp->fp) == NULL)
             {
@@ -261,7 +261,7 @@ mbox_read_message (mbox_t * mp)
         }
 
 #ifdef HAVE_LIBZ
-      else if (config.format == ZMBOX)
+      else if (config.format == FORMAT_ZMBOX)
         {
           if (gzgets (mp->fp, buffer, BUFSIZ) == NULL)
             {
@@ -274,7 +274,7 @@ mbox_read_message (mbox_t * mp)
 #endif /* HAVE_LIBZ */
 
 #ifdef HAVE_LIBBZ2
-      else if (config.format == BZ2MBOX)
+      else if (config.format == FORMAT_BZ2MBOX)
         {
           char c[1] = "\0";
           int n = 0;
@@ -370,10 +370,10 @@ tmpfile_name (const char *path)
 void
 mbox_write_message (message_t * msg, mbox_t * mbox)
 {
-  if (config.format == MBOX)
+  if (config.format == FORMAT_MBOX)
     fprintf (mbox->fp, "%s\n%s", msg->headers, msg->body);
 #ifdef HAVE_LIBZ
-  else if (config.format == ZMBOX)
+  else if (config.format == FORMAT_ZMBOX)
     {
       gzwrite_loop (mbox->fp, msg->headers);
       gzwrite (mbox->fp, "\n", 1);
@@ -381,7 +381,7 @@ mbox_write_message (message_t * msg, mbox_t * mbox)
     }
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-  else if (config.format == BZ2MBOX)
+  else if (config.format == FORMAT_BZ2MBOX)
     {
       bzwrite_loop (mbox->fp, msg->headers);
       BZ2_bzwrite (mbox->fp, "\n", 1);

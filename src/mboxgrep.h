@@ -46,33 +46,45 @@
 
 typedef enum
   {
-    MBOX,
-    ZMBOX,
-    MH,
-    NNML,
-    NNMH,
-    MAILDIR,
-    BZ2MBOX
+    FORMAT_UNDEF,
+    FORMAT_MBOX,
+    FORMAT_ZMBOX,
+    FORMAT_MH,
+    FORMAT_NNML,
+    FORMAT_NNMH,
+    FORMAT_MAILDIR,
+    FORMAT_BZ2MBOX
   }
 format_t;
 
 typedef enum
   {
-    NONE,
-    FCNTL,
-    FLOCK
+    LOCK_UNDEF,
+    LOCK_NONE,
+    LOCK_FCNTL,
+    LOCK_FLOCK
   }
 lockmethod_t;
 
 typedef enum
   {
-    DISPLAY,
-    WRITE,
-    COUNT,
-    DELETE,
-    PIPE
+    ACTION_UNDEF,
+    ACTION_DISPLAY,
+    ACTION_WRITE,
+    ACTION_COUNT,
+    ACTION_DELETE,
+    ACTION_PIPE
   }
 action_t;
+
+typedef enum
+  {
+    REGEX_UNDEF,
+    REGEX_BASIC,
+    REGEX_EXTENDED,
+    REGEX_PERL
+  }
+regextype_t;
 
 typedef struct
 {
@@ -93,9 +105,6 @@ checksum_t;
 
 typedef struct
 {
-  int extended;
-  int perl;
-  
   int body;
   int headers;
   int dedup;
@@ -117,6 +126,7 @@ typedef struct
   action_t action;
   format_t format;
   lockmethod_t lock;
+  regextype_t regextype;
 }
 option_t;
 

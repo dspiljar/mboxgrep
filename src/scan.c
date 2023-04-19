@@ -83,7 +83,7 @@ scan_mailbox (char path[])
   int delete = 0;
   int isdup = 0;
 
-  if (config.format == MAILDIR && config.action == WRITE)
+  if (config.format == FORMAT_MAILDIR && config.action == ACTION_WRITE)
     {
       foo = opendir (config.outboxname);        /* do NOT change this to m_opendir! */
       if (foo == NULL && errno == ENOENT)
@@ -101,24 +101,24 @@ scan_mailbox (char path[])
     }
 
   runtime.count = 0;
-  if (config.action == DELETE)
+  if (config.action == ACTION_DELETE)
     delete = 1;
 
-  if ((config.format == MBOX) || (config.format == ZMBOX)
-      || (config.format == BZ2MBOX))
+  if ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
+      || (config.format == FORMAT_BZ2MBOX))
     {
       mbox = (mbox_t *) mbox_open (path, "r");
       if (mbox == NULL)
         return;
     }
-  else if ((config.format == MH) || (config.format == NNMH)
-           || (config.format == NNML))
+  else if ((config.format == FORMAT_MH) || (config.format == FORMAT_NNMH)
+           || (config.format == FORMAT_NNML))
     {
       boxd = mh_open (path);
       if (boxd == NULL)
         return;
     }
-  else if (config.format == MAILDIR)
+  else if (config.format == FORMAT_MAILDIR)
     {
       maildird = maildir_open (path);
 
@@ -131,13 +131,13 @@ scan_mailbox (char path[])
       config.res1 = 1;
       config.res2 = 1;
 
-      if ((config.format == MBOX) || (config.format == ZMBOX)
-          || (config.format == BZ2MBOX))
+      if ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
+          || (config.format == FORMAT_BZ2MBOX))
         msg = (message_t *) mbox_read_message (mbox);
-      else if ((config.format == MH) || (config.format == NNMH)
-               || (config.format == NNML))
+      else if ((config.format == FORMAT_MH) || (config.format == FORMAT_NNMH)
+               || (config.format == FORMAT_NNML))
         msg = (message_t *) mh_read_message (boxd);
-      else if (config.format == MAILDIR)
+      else if (config.format == FORMAT_MAILDIR)
         msg = (message_t *) maildir_read_message (maildird);
 
       if (msg == NULL)
@@ -147,7 +147,7 @@ scan_mailbox (char path[])
         msg->from = (char *) xstrdup ("nobody");
 
 #ifdef HAVE_LIBPCRE
-      if (config.perl)
+      if (config.regextype == REGEX_PERL)
         pcre_match (msg);
       else
 #endif /* HAVE_LIBPCRE */
@@ -160,24 +160,24 @@ scan_mailbox (char path[])
           ((config.invert ^ delete)) &&
           ((config.dedup && !isdup) || !config.dedup))
         {
-          if (config.action == DISPLAY)
+          if (config.action == ACTION_DISPLAY)
             {
-              if (config.format != MBOX && config.format != ZMBOX
-                  && config.format != BZ2MBOX
+              if (config.format != FORMAT_MBOX && config.format != FORMAT_ZMBOX
+                  && config.format != FORMAT_BZ2MBOX
                   && 0 != strncmp ("From ", msg->headers, 5))
                 postmark_print (msg);
 
               fprintf (stdout, "%s\n%s", msg->headers, msg->body);
             }
-          else if (config.action == WRITE)
+          else if (config.action == ACTION_WRITE)
             {
-              if (config.format == MAILDIR)
+              if (config.format == FORMAT_MAILDIR)
                 maildir_write_message (msg, config.outboxname);
-              else if (config.format == MH || config.format == NNMH
-                       || config.format == NNML)
+              else if (config.format == FORMAT_MH || config.format == FORMAT_NNMH
+                       || config.format == FORMAT_NNML)
                 mh_write_message (msg, config.outboxname);
-              else if ((config.format == MBOX) || (config.format == ZMBOX)
-                       || (config.format == BZ2MBOX))
+              else if ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
+                       || (config.format == FORMAT_BZ2MBOX))
                 {
                   out = mbox_open (config.outboxname, "w");
                   /* fprintf (out->fp, "%s\n%s", msg->headers, msg->body); */
@@ -185,7 +185,7 @@ scan_mailbox (char path[])
                   mbox_close (out);
                 }
             }
-          else if (config.action == PIPE)
+          else if (config.action == ACTION_PIPE)
             {
               outf = popen (config.pipecmd, "w");
               if (outf == NULL)
@@ -200,19 +200,19 @@ scan_mailbox (char path[])
               fprintf (outf, "%s\n%s", msg->headers, msg->body);
               pclose (outf);
             }
-          else if (config.action == COUNT)
+          else if (config.action == ACTION_COUNT)
             runtime.count++;
-          else if (config.action == DELETE &&
-                   ((config.format == MBOX) || (config.format == ZMBOX)
-                    || (config.format == BZ2MBOX)))
+          else if (config.action == ACTION_DELETE &&
+                   ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
+                    || (config.format == FORMAT_BZ2MBOX)))
             mbox_write_message (msg, runtime.tmp_mbox);
         }
 
       else
         if (((((config.res1 == 0) | (config.res2 == 0)) ^ config.invert)
-             && delete) && ((config.format == MH) || (config.format == NNMH)
-                            || (config.format == NNML)
-                            || (config.format == MAILDIR)))
+             && delete) && ((config.format == FORMAT_MH) || (config.format == FORMAT_NNMH)
+                            || (config.format == FORMAT_NNML)
+                            || (config.format == FORMAT_MAILDIR)))
         m_unlink (msg->filename);
 
       free (msg->body);
@@ -220,11 +220,11 @@ scan_mailbox (char path[])
       free (msg);
     }                           /* for */
 
-  if ((config.format == MBOX) || (config.format == ZMBOX)
-      || (config.format == BZ2MBOX))
+  if ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
+      || (config.format == FORMAT_BZ2MBOX))
     mbox_close (mbox);
-  else if ((config.format == MH) || (config.format == NNMH)
-           || (config.format == NNML))
+  else if ((config.format == FORMAT_MH) || (config.format == FORMAT_NNMH)
+           || (config.format == FORMAT_NNML))
     mh_close (boxd);
 }
 

@@ -1,6 +1,6 @@
 /* -*- C -*- 
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000, 2001, 2002, 2003, 2006  Daniel Spiljar
+  Copyright (C) 2000, 2001, 2002, 2003, 2006, 2023  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ mh_read_message (DIR * dp)
 
       fgets (buffer, BUFSIZ, fp);
 
-/*       if (config.format == NNML || config.format == NNMH) */
+/*       if (config.format == FORMAT_NNML || config.format == FORMAT_NNMH) */
 /* 	{ */
 /* 	  if (0 != strncmp ("X-From-Line: ", buffer, 13)) */
 /* 	    { */

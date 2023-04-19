@@ -24,7 +24,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
-#include <unistd.h>
 #ifdef HAVE_LIBZ
 #  include <zlib.h>
 #endif /* HAVE_LIBZ */
@@ -81,21 +80,11 @@ main (int argc, char **argv)
     {0, 0, 0, 0}
   };
 
-  set_default_options ();
+  init_options ();
 
-  get_runtime_options (&argc, argv, long_options);
+  get_options (&argc, argv, long_options);
 
-  if ((config.body == 0) && (config.headers == 0))
-    {
-      config.body = 1;
-      config.headers = 1;
-    }
-
-  if (config.format == MAILDIR && config.action == WRITE)
-    {
-      gethostname (config.hostname, HOST_NAME_SIZE);
-      config.pid = (int) getpid ();
-    }
+  check_options ();
 
   runtime.cs = (checksum_t *) xmalloc (sizeof (checksum_t));
   runtime.cs->md5 = (char **) xcalloc (1, sizeof (char **));
@@ -111,7 +100,7 @@ main (int argc, char **argv)
   if (config.haveregex)
     {
 #ifdef HAVE_LIBPCRE
-      if (config.perl)
+      if (config.regextype == REGEX_PERL)
         pcre_init ();
       else
 #endif /* HAVE_LIBPCRE */
@@ -125,7 +114,7 @@ main (int argc, char **argv)
 
   while (optind < argc)
     {
-      if (config.action == DELETE)
+      if (config.action == ACTION_DELETE)
         {
           tmpmbox_create (argv[optind]);
           runtime.tmp_mbox = (mbox_t *) mbox_open (config.tmpfilename, "w");
@@ -140,7 +129,7 @@ main (int argc, char **argv)
 
       havemailbox = 1;
 
-      if (config.action == COUNT)
+      if (config.action == ACTION_COUNT)
         {
           if (singlefile)
             fprintf (stdout, "%i\n", runtime.count);
@@ -152,19 +141,20 @@ main (int argc, char **argv)
                 fprintf (stdout, "%s:%i\n", argv[optind], runtime.count);
             }
         }
-      if (config.action == DELETE)
+      if (config.action == ACTION_DELETE)
         {
           mbox_close (runtime.tmp_mbox);
           rename (config.tmpfilename, argv[optind]);
         }
+
       ++optind;
     }
 
   if (!havemailbox)
     {
-      config.format = MBOX;
+      config.format = FORMAT_MBOX;
       scan_mailbox ("-");
-      if (config.action == COUNT)
+      if (config.action == ACTION_COUNT)
         fprintf (stdout, "%i\n", runtime.count);
     }
 

@@ -28,62 +28,76 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "mboxgrep.h"
+#include "misc.h"
 #include "wrap.h"
 #include "getopt.h"
 #include "info.h"
 #include "message.h"
 
-format_t
-folder_format (const char *name)
+/* Determine the folder format passed to -m. */
+
+void
+set_folder_format (const char *name)
 {
-  format_t f;
+  if (config.format > 0)
+    {
+      if (config.merr)
+        fprintf (stderr, "%s: multiple mailbox types specified\n", APPNAME);
+      exit (2);
+    }
 
   if (0 == strncasecmp (name, "mbox", 4))
-    f = MBOX;
+    config.format = FORMAT_MBOX;
   else if (0 == strncasecmp (name, "zmbox", 5))
-    f = ZMBOX;
+    config.format = FORMAT_ZMBOX;
   else if (0 == strncasecmp (name, "gzmbox", 6))
-    f = ZMBOX;
+    config.format = FORMAT_ZMBOX;
   else if (0 == strncasecmp (name, "bzmbox", 5))
-    f = BZ2MBOX;
+    config.format = FORMAT_BZ2MBOX;
   else if (0 == strncasecmp (name, "bz2mbox", 5))
-    f = BZ2MBOX;
+    config.format = FORMAT_BZ2MBOX;
   else if (0 == strncasecmp (name, "mh", 2))
-    f = MH;
+    config.format = FORMAT_MH;
   else if (0 == strncasecmp (name, "nnml", 4))
-    f = NNML;
+    config.format = FORMAT_NNML;
   else if (0 == strncasecmp (name, "nnmh", 4))
-    f = NNMH;
+    config.format = FORMAT_NNMH;
   else if (0 == strncasecmp (name, "maildir", 7))
-    f = MAILDIR;
+    config.format = FORMAT_MAILDIR;
   else
     {
       if (config.merr)
         fprintf (stderr, "%s: %s: unknown folder type\n", APPNAME, name);
       exit (2);
     }
-
-  return f;
 }
 
-lockmethod_t
-lock_method (const char *name)
+/* Determine the file locking method passed to -l. */
+
+void
+set_lock_method (const char *name)
 {
-  lockmethod_t l;
+  if (config.lock > 0)
+    {
+      if (config.merr)
+        fprintf (stderr, "%s: conflicting file locking options specified\n", APPNAME);
+      exit (2);
+    }
 
   if (0 == strncasecmp (name, "none", 4))
-    l = NONE;
+    config.lock = LOCK_NONE;
   else if (0 == strncasecmp (name, "off", 3))
-    l = NONE;
+    config.lock = LOCK_NONE;
 #ifdef HAVE_FCNTL
   else if (0 == strncasecmp (name, "fcntl", 5))
-    l = FCNTL;
+    config.lock = LOCK_FCNTL;
 #endif /* HAVE_FCNTL */
 #ifdef HAVE_FLOCK
   else if (0 == strncasecmp (name, "flock", 5))
-    l = FLOCK;
+    config.lock = LOCK_FLOCK;
 #endif /* HAVE_FLOCK */
   else
     {
@@ -91,9 +105,9 @@ lock_method (const char *name)
         fprintf (stderr, "mboxgrep: %s: unknown file locking method\n", name);
       exit (2);
     }
-
-  return l;
 }
+
+/* Dead code */
 
 /*
 time_t parse_date(char *datestr)
@@ -170,26 +184,29 @@ postmark_print (message_t * msg)
     fprintf (stdout, "From nobody  %s\n", date_str);
 }
 
+/* Initialize the option_t struct. */
+
 void
-set_default_options (void)
+init_options (void)
 {
-  config.perl = 0;
-  config.extended = 1;
+  config.regextype = REGEX_UNDEF;
   config.invert = 0;
   config.headers = 0;
   config.body = 0;
-  config.action = DISPLAY;
+  config.action = ACTION_UNDEF;
   config.dedup = 0;
   config.recursive = 0;
   config.ignorecase = 0;
-  config.format = MBOX;         /* default mailbox format */
-  config.lock = FCNTL;          /* default file locking method */
+  config.format = FORMAT_UNDEF;
+  config.lock = LOCK_UNDEF;     /* default file locking method */
   config.merr = 1;              /* report errors by default */
   config.debug = 0;
 }
 
+/* Parse command-line arguments and assign values to option_t. */
+
 void
-get_runtime_options (int *argc, char **argv, struct option *long_options)
+get_options (int *argc, char **argv, struct option *long_options)
 {
   int option_index = 0, c;
 
@@ -206,35 +223,26 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
         case '?':
           usage ();
         case 'c':
-          config.action = COUNT;
+          set_option_action (ACTION_COUNT, NULL);
           break;
         case 'd':
-          config.action = DELETE;
+          set_option_action (ACTION_DELETE, NULL);
           break;
         case 'e':
           config.regex_s = xstrdup (optarg);
           config.haveregex = 1;
           break;
         case 'o':
-          config.outboxname = xstrdup (optarg);
-          config.action = WRITE;
+          set_option_action (ACTION_WRITE, optarg);
           break;
         case 'E':
-          config.extended = 1;
+          set_option_regextype (REGEX_EXTENDED);
           break;
         case 'G':
-          config.extended = 0;
+          set_option_regextype (REGEX_BASIC);
           break;
         case 'P':
-#ifdef HAVE_LIBPCRE
-          config.extended = 0;
-          config.perl = 1;
-#else
-          fprintf (stderr,
-                   "%s: Support for Perl regular expressions not "
-                   "compiled in\n", APPNAME);
-          exit (2);
-#endif /* HAVE_LIBPCRE */
+          set_option_regextype (REGEX_PERL);
           break;
         case 'h':
           help ();
@@ -243,14 +251,13 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
           config.ignorecase = 1;
           break;
         case 'm':
-          config.format = folder_format (optarg);
+          set_folder_format (optarg);
           break;
         case 'l':
-          config.lock = lock_method (optarg);
+          set_lock_method (optarg);
           break;
         case 'p':
-          config.action = PIPE;
-          config.pipecmd = xstrdup (optarg);
+          set_option_action (ACTION_PIPE, optarg);
           break;
         case 'V':
           version ();
@@ -289,7 +296,7 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
                 config.dedup = 1;
                 break;
               case 'l':
-                config.lock = 0;
+                set_lock_method ("none");
                 break;
               default:
                 fprintf (stderr, "%s: invalid option -- n%c\n",
@@ -299,4 +306,83 @@ get_runtime_options (int *argc, char **argv, struct option *long_options)
           }
         }                       /* switch */
     }                           /* while */
+}
+
+/* Check the state of command-line options after parsing them.
+ * Raise error on conflicting options and set uninitialized ones to default values.
+ */
+
+void
+check_options (void)
+{
+  gethostname (config.hostname, HOST_NAME_SIZE);
+  config.pid = (int) getpid ();
+
+  if (config.action == ACTION_UNDEF)
+    {
+      config.action = ACTION_DISPLAY;
+    }
+
+  if (config.format == FORMAT_UNDEF)
+    {
+      config.format = FORMAT_MBOX;  /* default mailbox format */
+    }
+
+  if (config.regextype == REGEX_UNDEF)
+    {
+      config.regextype = REGEX_EXTENDED;  /* default regex type */
+    }
+
+  if ((config.body == 0) && (config.headers == 0))
+    {
+      config.body = 1;
+      config.headers = 1;
+    }
+}
+
+void
+set_option_action (action_t action, char *path)
+{
+  if (config.action > 0)
+    {
+      if (config.merr)
+        fprintf (stderr, "%s: conflicting actions specified\n", APPNAME);
+      exit (2);
+    }
+
+  config.action = action;
+
+  if (action == ACTION_WRITE)
+    {
+      config.outboxname = xstrdup (path);
+    }
+
+  if (action == ACTION_PIPE)
+    {
+      config.pipecmd = xstrdup (optarg);
+    }
+}
+
+void
+set_option_regextype (regextype_t regextype)
+{
+  if (config.regextype > 0)
+    {
+      if (config.merr)
+        fprintf (stderr, "%s: conflicting matchers specified\n", APPNAME);
+      exit (2);
+    }
+
+#ifndef HAVE_LIBPCRE
+  if (regextype == REGEX_PERL);
+    {
+      fprintf (stderr,
+              "%s: Support for Perl regular expressions not compiled in\n",
+              APPNAME);
+      exit (2);
+    }
+  }
+#endif /* HAVE_LIBPCRE */
+
+  config.regextype = regextype;
 }

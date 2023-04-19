@@ -77,7 +77,7 @@ regex_init (void)
 
   if (config.ignorecase)
     flag1 = REG_ICASE;
-  if (config.extended)
+  if (config.regextype == REGEX_EXTENDED)
     flag2 = REG_EXTENDED;
 
   config.posix_pattern = (regex_t *) xmalloc (sizeof (regex_t));
