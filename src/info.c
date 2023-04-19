@@ -22,19 +22,22 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "mboxgrep.h"
 
 
 void
-print_wrap (char *str, int len, int *n)
+print_wrap (char *str)
 {
-  *n += len;
+  static int n = 0;
+
+  n += strlen (str);
   fprintf (stdout, "%s", str);
-  if (*n >= 50)
+  if (n >= 50)
     {
       fprintf (stdout, "\n");
-      *n = 0;
+      n = 0;
     }
   else
     fprintf (stdout, " ");
@@ -43,8 +46,6 @@ print_wrap (char *str, int len, int *n)
 void
 version (void)
 {
-  int n = 0;
-
   fprintf (stdout, "%s %s\n\n"
            "Copyright (C) 2000 - 2004, 2006, 2010, 2023  Daniel Spiljar\n"
            "This program is free software; you can redistribute it and/or "
@@ -54,19 +55,19 @@ version (void)
            APPNAME, VERSION);
   fprintf (stdout, "Compilation options:\n");
 #ifdef HAVE_DIRENT_H
-  print_wrap ("HAVE_DIRENT_H", 13, &n);
+  print_wrap ("HAVE_DIRENT_H");
 #endif /* HAVE_DIRENT_H */
 #ifdef HAVE_FCNTL
-  print_wrap ("HAVE_FCNTL", 10, &n);
+  print_wrap ("HAVE_FCNTL");
 #endif /* HAVE_FCNTL */
 #ifdef HAVE_FLOCK
-  print_wrap ("HAVE_FLOCK", 10, &n);
+  print_wrap ("HAVE_FLOCK");
 #endif /* HAVE_FLOCK */
 #ifdef HAVE_FTS_OPEN
-  print_wrap ("HAVE_FTS_OPEN", 13, &n);
+  print_wrap ("HAVE_FTS_OPEN");
 #else
 #  ifdef HAVE_FTW
-  print_wrap ("HAVE_FTW", 8, &n);
+  print_wrap ("HAVE_FTW");
 #  endif
        /* HAVE_FTW */
 #endif /* HAVE_FTS_OPEN */
@@ -74,31 +75,31 @@ version (void)
   fprintf (stdout, "HAVE_LIBLOCKFILE ");
 */
 #ifdef HAVE_LIBPCRE
-  print_wrap ("HAVE_LIBPCRE", 12, &n);
+  print_wrap ("HAVE_LIBPCRE");
 #endif /* HAVE_LIBPCRE */
 #ifdef HAVE_LIBZ
-  print_wrap ("HAVE_LIBZ", 9, &n);
+  print_wrap ("HAVE_LIBZ");
 #endif /* HAVE_LIBZ */
 #ifdef HAVE_LIBBZ2
-  print_wrap ("HAVE_LIBBZ2", 11, &n);
+  print_wrap ("HAVE_LIBBZ2");
 #endif /* HAVE_LIBBZ2 */
 #ifdef HAVE_NDIR_H
-  print_wrap ("HAVE_NDIR_H", 11, &n);
+  print_wrap ("HAVE_NDIR_H");
 #endif /* HAVE_NDIR_H */
 #ifdef HAVE_SYS_DIR_H
-  print_wrap ("HAVE_SYS_DIR_H", 14, &n);
+  print_wrap ("HAVE_SYS_DIR_H");
 #endif /* HAVE_SYS_DIR_H */
 #ifdef HAVE_SYS_NDIR_H
-  print_wrap ("HAVE_SYS_NDIR_H", 15, &n);
+  print_wrap ("HAVE_SYS_NDIR_H");
 #endif /* HAVE_SYS_NDIR_H */
 #ifdef HAVE_STRPTIME
-  print_wrap ("HAVE_STRPTIME", 15, &n);
+  print_wrap ("HAVE_STRPTIME");
 #endif /* HAVE_STRPTIME */
 #ifdef HAVE_REGCOMP
-  print_wrap ("HAVE_REGCOMP", 15, &n);
+  print_wrap ("HAVE_REGCOMP");
 #endif /* HAVE_REGCOMP */
 #ifdef HAVE_LIBDMALLOC
-  print_wrap ("HAVE_LIBDMALLOC", 15, &n);
+  print_wrap ("HAVE_LIBDMALLOC");
 #endif /* HAVE_LIBDMALLOC */
   fprintf (stdout, "\n");
 

@@ -18,7 +18,7 @@
 */
 
 #define _XOPEN_SOURCE           /* Pull in strptime(3) from time.h */
-#define _BSD_SOURCE             /* Compensate for _XOPEN_SOURCE to pull in strdup(3)
+#define _DEFAULT_SOURCE         /* Compensate for _XOPEN_SOURCE to pull in strdup(3)
                                  * from string.h. */
 
 #include <config.h>

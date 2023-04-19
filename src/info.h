@@ -20,7 +20,7 @@
 #ifndef INFO_H
 #  define INFO_H
 
-void print_wrap (char *str, int len, int *n);
+void print_wrap (char *str);
 void version (void);
 void help (void);
 void usage (void);
