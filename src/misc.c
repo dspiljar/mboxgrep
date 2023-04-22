@@ -381,8 +381,6 @@ set_option_regextype (regextype_t regextype)
               APPNAME);
       exit (2);
     }
-  }
 #endif /* HAVE_LIBPCRE */
-
   config.regextype = regextype;
 }
