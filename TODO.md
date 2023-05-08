@@ -18,13 +18,14 @@
 
 ## File formats, encodings and standards
 
+- [ ] migrate to pcre2, as pcre is obsolete
+- [ ] use a more modern hash function than MD5
 - [ ] MIME support
 - [ ] support for GnuPG
 - [x] support for compressed mbox folders
 - [x] support for bzip2 compression
 - [ ] support for XZ-format compression
 - [ ] support for mail folder conversion
-- [ ] use a more modern hash function than MD5
 - [ ] improve error detection when a directory is not a Maildir or MH folder
 - [ ] document criteria for folder format detection
 
