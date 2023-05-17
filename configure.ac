@@ -34,34 +34,35 @@ AC_HEADER_DIRENT
 
 # Checks for libraries.
 
-# Check for PCRE library
-AC_ARG_WITH(pcre, [  --without-pcre          Compile without Perl regexp support],,
+# Check for PCRE2 library
+AC_ARG_WITH(pcre2, [  --without-pcre2          Compile without Perl regexp support],,
 [
-	AC_PATH_PROG(PCRE_CONFIG, pcre-config)
+	AC_PATH_PROG(PCRE2_CONFIG, pcre2-config)
 
-	if test "$PCRE_CONFIG"; then
-	   CFLAGS="$CFLAGS `$PCRE_CONFIG --cflags`"
-	   LIBS="$LIBS `$PCRE_CONFIG --libs`"
+	if test "$PCRE2_CONFIG"; then
+	   CFLAGS="$CFLAGS `$PCRE2_CONFIG --cflags`"
+	   LIBS="$LIBS `$PCRE2_CONFIG --libs32`"
 
 	   AC_LINK_IFELSE(
 	   [
-#include <pcre.h>
+#define PCRE2_CODE_UNIT_WIDTH 32
+#include <pcre2.h>
 
 int main ()
 {
   return 0;
 }
 	   ],
-	   AC_DEFINE(HAVE_LIBPCRE),
+	   AC_DEFINE(HAVE_LIBPCRE2),
 	   [
-		AC_MSG_NOTICE(found pcre-config but could not compile test program.)
-		AC_MSG_FAILURE(is PCRE properly installed?)
+		AC_MSG_NOTICE(found pcre2-config but could not compile test program.)
+		AC_MSG_FAILURE(is PCRE2 properly installed?)
 	   ]
 )
 	else
-	   AC_MSG_NOTICE(pcre-config not found)
-	   AC_MSG_NOTICE(trying to find PCRE anyway)
-	   AC_CHECK_LIB(pcre, main)
+	   AC_MSG_NOTICE(pcre2-config not found)
+	   AC_MSG_NOTICE(trying to find PCRE2 anyway)
+	   AC_CHECK_LIB(pcre2, main)
 	fi
 ]
 )

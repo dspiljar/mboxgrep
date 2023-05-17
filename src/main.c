@@ -99,11 +99,11 @@ main (int argc, char **argv)
 
   if (config.haveregex)
     {
-#ifdef HAVE_LIBPCRE
+#ifdef HAVE_LIBPCRE2
       if (config.regextype == REGEX_PERL)
         pcre_init ();
       else
-#endif /* HAVE_LIBPCRE */
+#endif /* HAVE_LIBPCRE2 */
         regex_init ();
     }
   else

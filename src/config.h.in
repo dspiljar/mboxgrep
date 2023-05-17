@@ -25,8 +25,8 @@
 /* Define to 1 if you have the `garfield' library (-lgarfield). */
 #undef HAVE_LIBGARFIELD
 
-/* Define to 1 if you have the `pcre' library (-lpcre). */
-#undef HAVE_LIBPCRE
+/* Define to 1 if you have the `pcre2' library (-lpcre2). */
+#undef HAVE_LIBPCRE2
 
 /* Define to 1 if you have the `z' library (-lz). */
 #undef HAVE_LIBZ

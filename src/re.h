@@ -19,9 +19,9 @@
 
 #include "mboxgrep.h"
 
-#ifdef HAVE_LIBPCRE
+#ifdef HAVE_LIBPCRE2
 void pcre_init (void);
 void pcre_match (message_t * msg);
-#endif /* HAVE_LIBPCRE */
+#endif /* HAVE_LIBPCRE2 */
 void regex_init (void);
 void regex_match (message_t * msg);

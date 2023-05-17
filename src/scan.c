@@ -146,11 +146,11 @@ scan_mailbox (char path[])
       if (msg->from == NULL)
         msg->from = (char *) xstrdup ("nobody");
 
-#ifdef HAVE_LIBPCRE
+#ifdef HAVE_LIBPCRE2
       if (config.regextype == REGEX_PERL)
         pcre_match (msg);
       else
-#endif /* HAVE_LIBPCRE */
+#endif /* HAVE_LIBPCRE2 */
         regex_match (msg);
 
       if (config.dedup)
