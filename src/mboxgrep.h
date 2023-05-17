@@ -120,7 +120,7 @@ typedef struct
   char hostname[HOST_NAME_SIZE];
   char *boxname, *outboxname, *pipecmd, *tmpfilename, *regex_s;
 
-  void *pcre_pattern, *pcre_hints, *posix_pattern;
+  void *pcre_pattern, *posix_pattern, *match_data;
   int res1, res2;
 
   action_t action;

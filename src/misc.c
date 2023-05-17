@@ -373,7 +373,7 @@ set_option_regextype (regextype_t regextype)
       exit (2);
     }
 
-#ifndef HAVE_LIBPCRE
+#ifndef HAVE_LIBPCRE2
   if (regextype == REGEX_PERL);
     {
       fprintf (stderr,
@@ -381,6 +381,6 @@ set_option_regextype (regextype_t regextype)
               APPNAME);
       exit (2);
     }
-#endif /* HAVE_LIBPCRE */
+#endif /* HAVE_LIBPCRE2 */
   config.regextype = regextype;
 }

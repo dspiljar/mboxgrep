@@ -18,7 +18,7 @@
 
 ## File formats, encodings and standards
 
-- [ ] migrate to pcre2, as pcre is obsolete
+- [x] migrate to pcre2, as pcre is obsolete
 - [ ] use a more modern hash function than MD5
 - [ ] MIME support
 - [ ] support for GnuPG

@@ -74,9 +74,9 @@ version (void)
 /*
   fprintf (stdout, "HAVE_LIBLOCKFILE ");
 */
-#ifdef HAVE_LIBPCRE
-  print_wrap ("HAVE_LIBPCRE");
-#endif /* HAVE_LIBPCRE */
+#ifdef HAVE_LIBPCRE2
+  print_wrap ("HAVE_LIBPCRE2");
+#endif /* HAVE_LIBPCRE2 */
 #ifdef HAVE_LIBZ
   print_wrap ("HAVE_LIBZ");
 #endif /* HAVE_LIBZ */
@@ -128,10 +128,10 @@ help (void)
            "Matching criteria:\n\n"
            "  -E,  --extended-regexp\tPATTERN is an extended regular expression\n"
            "  -G,  --basic-regexp\t\tPATTERN is a basic regular expression\n");
-#ifdef HAVE_LIBPCRE
+#ifdef HAVE_LIBPCRE2
   fprintf (stdout,
            "  -P,  --perl-regexp\t\tPATTERN is a Perl regular expression\n");
-#endif /* HAVE_LIBPCRE */
+#endif /* HAVE_LIBPCRE2 */
   fprintf (stdout,
            "  -e,  --regexp=PATTERN\t\tUse PATTERN as a regular expression\n"
            "  -i,  --ignore-case\t\tIgnore case distinctions\n"
