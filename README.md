@@ -1,7 +1,7 @@
 # mboxgrep - selects e-mail messages matching a pattern
 
 `mboxgrep` is a `grep(1)`-like tool which scans mailboxes and selects
-e-mail messages matching pattern.
+e-mail messages matching a pattern.
 
 Full description of mboxgrep is contained in the documentation,
 which is provided both in manpage and texinfo format, to satisfy
