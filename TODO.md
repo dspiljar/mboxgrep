@@ -3,7 +3,7 @@
 ## Behavior
 
 - [x] use cryptographic hashes for detecting duplicate messages
-- [ ] add checking for conflicting command-line options
+- [x] add checking for conflicting command-line options
 - [ ] support for deletion of messages after being matched and displayed
 - [x] ignore .overview when grepping Gnus folders
 - [x] inverted matching

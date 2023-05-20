@@ -1,5 +1,11 @@
 # Changes of mboxgrep
 
+## Changes since 0.7.11
+
+- Port to the pcre2 library (pcre1 is no longer supported).
+- Check command-line options for conflicting matchers and actions.
+- Various minor code cleanups.
+
 ## Changes since 0.7.10
 
 - GNU Automake is now utilized instead of manually written Makefile.in files.
