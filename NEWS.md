@@ -1,5 +1,9 @@
 # Changes of mboxgrep
 
+## Changes since 0.7.12
+
+- Fix Automake macros to include the license file and others.
+
 ## Changes since 0.7.11
 
 - Port to the pcre2 library (pcre1 is no longer supported).
