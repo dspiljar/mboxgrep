@@ -1,2 +1,2 @@
 SUBDIRS = doc src
-dist_data_DATA = contrib
+EXTRA_DIST = contrib COPYING.md INSTALL.md NEWS.md README.md TODO.md
