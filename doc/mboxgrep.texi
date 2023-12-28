@@ -171,10 +171,9 @@ Use with extreme caution.
 @itemx -nd
 Ignore duplicate messages.
 
-@item --output=FOLDER
-@itemx -o FOLDER
-Suppress normal output and write messages to destination folder FOLDER
-instead. 
+@item --output=MAILBOX
+@itemx -o MAILBOX
+Suppress normal output and write messages to destination MAILBOX instead.
 
 Note that @code{mboxgrep} assumes the output folder is of the same format 
 as the input folder.  Currently there is no possibility to convert folders.

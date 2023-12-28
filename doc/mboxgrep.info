@@ -1,4 +1,4 @@
-This is mboxgrep.info, produced by makeinfo version 6.7 from
+This is mboxgrep.info, produced by makeinfo version 6.8 from
 mboxgrep.texi.
 
 INFO-DIR-SECTION Mail
@@ -151,10 +151,10 @@ options below change such behavior.
 '-nd'
      Ignore duplicate messages.
 
-'--output=FOLDER'
-'-o FOLDER'
-     Suppress normal output and write messages to destination folder
-     FOLDER instead.
+'--output=MAILBOX'
+'-o MAILBOX'
+     Suppress normal output and write messages to destination MAILBOX
+     instead.
 
      Note that 'mboxgrep' assumes the output folder is of the same
      format as the input folder.  Currently there is no possibility to
@@ -256,11 +256,11 @@ Node: Miscellaneous1828
 Node: File locking2113
 Node: Regexp selection2750
 Node: Output control3302
-Node: Search scope selection4346
-Node: Mailbox type selection4587
-Node: Examples4908
-Node: Bugs5732
-Node: To Vicky6150
+Node: Search scope selection4342
+Node: Mailbox type selection4583
+Node: Examples4904
+Node: Bugs5728
+Node: To Vicky6146
 
 End Tag Table
 
