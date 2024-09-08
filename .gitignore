@@ -17,3 +17,7 @@ compile
 depcomp
 install-sh
 missing
+src/mboxgrep.exe
+configure~
+.gitignore
+.vscode/*

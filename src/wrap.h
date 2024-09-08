@@ -83,4 +83,11 @@ char *xstrdup (const char *s);
 
 int m_unlink (const char *pathname);
 
+#if defined(__CYGWIN__) || defined(_WIN32)
+#define NLSEP "\r\n"
+#else
+#define NLSEP "\n"
+#endif 
+
+
 #endif /* WRAP_H */

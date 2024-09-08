@@ -29,8 +29,10 @@ typedef struct
   char *from;
   char *headers;
   int hbytes;
+  int hmemsize;
   char *body;
   int bbytes;
+  int bmemsize;
   time_t date;
 }
 message_t;

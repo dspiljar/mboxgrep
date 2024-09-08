@@ -18,7 +18,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Yawn.
-AC_INIT([mboxgrep], [0.7.12a], [dspiljar@datatipp.se], [mboxgrep], [https://www.mboxgrep.org/])
+AC_INIT([mboxgrep], [0.7.13], [dspiljar@datatipp.se], [mboxgrep], [https://www.mboxgrep.org/])
 #AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([foreign])
 AC_LANG([C])
@@ -93,7 +93,5 @@ AC_CHECK_FUNCS([strptime])
 AC_CHECK_FUNCS(ftw)
 AC_CHECK_FUNCS(fts_open)
 
-AC_CONFIG_FILES([Makefile
-                 doc/Makefile
-                 src/Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile])
 AC_OUTPUT

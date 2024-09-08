@@ -158,10 +158,12 @@ allocate_message (void)
   message->headers = (char *) xmalloc (sizeof (char));
   message->headers[0] = '\0';
   message->hbytes = 0;
+  message->hmemsize = sizeof (char);
 
   message->body = (char *) xmalloc (sizeof (char));
   message->body[0] = '\0';
   message->bbytes = 0;
+  message->bmemsize = sizeof (char);
 
   message->from = NULL;
 
@@ -201,6 +203,8 @@ init_options (void)
   config.lock = LOCK_UNDEF;     /* default file locking method */
   config.merr = 1;              /* report errors by default */
   config.debug = 0;
+  config.progress = 0;          /* show progress while executing (to stderr) */
+  config.passthrough = 0;
 }
 
 /* Parse command-line arguments and assign values to option_t. */
@@ -212,7 +216,7 @@ get_options (int *argc, char **argv, struct option *long_options)
 
   while (1)
     {
-      c = getopt_long (*argc, argv, "BcdEe:GHhil:m:n:o:Pp:rsVv", long_options,
+      c = getopt_long (*argc, argv, "BcdEe:GHhil:m:n:o:Pp:rsVvxY", long_options,
                        &option_index);
 
       if (c == -1)
@@ -273,6 +277,12 @@ get_options (int *argc, char **argv, struct option *long_options)
           break;
         case 's':
           config.merr = 0;
+          break;
+        case 'x':
+          config.progress = 1;
+          break;
+        case 'Y':
+          config.passthrough = 1;
           break;
         case 201:
           config.lock = 0;
@@ -338,6 +348,14 @@ check_options (void)
       config.body = 1;
       config.headers = 1;
     }
+
+  if (config.passthrough == 1 && config.action != ACTION_WRITE)
+    {
+      if (config.merr)
+        fprintf (stderr, "%s: Passthrough requires -o output.\n", APPNAME);
+      exit (2);
+    }
+
 }
 
 void

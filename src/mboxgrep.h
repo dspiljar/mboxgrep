@@ -21,7 +21,7 @@
 #define MBOXGREP_H
 
 #define APPNAME "mboxgrep"
-#define VERSION "0.7.12a"
+#define VERSION "0.7.13"
 #define BUGREPORT_ADDR "dspiljar AT datatipp.se"
 
 #define HOST_NAME_SIZE 256
@@ -116,6 +116,8 @@ typedef struct
   int pid;
   int haveregex;
   int debug;
+  int progress; 
+  int passthrough;
 
   char hostname[HOST_NAME_SIZE];
   char *boxname, *outboxname, *pipecmd, *tmpfilename, *regex_s;
@@ -137,6 +139,7 @@ typedef struct
   checksum_t *cs;
   /* mbox_t *tmp_mbox; */
   void *tmp_mbox;
+  int processed;
 }
 runtime_t;
 

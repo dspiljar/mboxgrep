@@ -1,4 +1,4 @@
-This is mboxgrep.info, produced by makeinfo version 6.8 from
+This is mboxgrep.info, produced by makeinfo version 7.1 from
 mboxgrep.texi.
 
 INFO-DIR-SECTION Mail
@@ -9,7 +9,7 @@ END-INFO-DIR-ENTRY
 
 File: mboxgrep.info,  Node: Top,  Up: (dir)
 
-This file documents 'mboxgrep' (version 0.7.12a), a mailbox scanning
+This file documents ‘mboxgrep’ (version 0.7.12a), amailbox scanning
 utility.
 
    Copyright (C) 2000, 2001, 2002, 2003 Daniel Spiljar
@@ -29,11 +29,11 @@ File: mboxgrep.info,  Node: Introduction,  Next: Invoking,  Up: Top
 1 Introduction
 **************
 
-'mboxgrep' is a small, non-interactive utility that scans mail folders
+‘mboxgrep’ is a small, non-interactive utility that scans mail folders
 for messages matching regular expressions.
 
    It supports basic and extended POSIX regular expressions.
-'Perl'-style regular expressions are supported as well, if 'mboxgrep' is
+‘Perl’-style regular expressions are supported as well, if ‘mboxgrep’ is
 linked with PCRE library.
 
    Found messages can be either displayed on standard output, counted,
@@ -41,14 +41,14 @@ deleted, piped to a specified command, or copied to another mailbox.
 
    It can read and write a variety of folder formats:
 
-   * mbox folders, either plain or compressed
-   * MH folders
-   * nnml and nnmh folders used by Gnus
-   * 'qmail'-style maildirs
+   • mbox folders, either plain or compressed
+   • MH folders
+   • nnml and nnmh folders used by Gnus
+   • ‘qmail’-style maildirs
 
    Additionally, it can read mbox folders or output from another
-'mboxgrep' process from standard input.  It does so if a single dash (-)
-is given as a file name.
+‘mboxgrep’process from standard input.  It does so if a single dash (-)
+is givenas a file name.
 
 
 File: mboxgrep.info,  Node: Invoking,  Next: Examples,  Prev: Introduction,  Up: Top
@@ -56,7 +56,7 @@ File: mboxgrep.info,  Node: Invoking,  Next: Examples,  Prev: Introduction,  Up:
 2 Command-Line Arguments
 ************************
 
-The syntax of 'mboxgrep' invocation is:
+The syntax of ‘mboxgrep’ invocation is:
 
      mboxgrep [OPTIONS] PATTERN [MAILBOX]
 
@@ -72,125 +72,125 @@ The syntax of 'mboxgrep' invocation is:
 
 File: mboxgrep.info,  Node: Miscellaneous,  Next: File locking,  Up: Invoking
 
-'--help'
-'-h'
+‘--help’
+‘-h’
      Display a brief help screen and exit.
 
-'--version'
-'-V'
+‘--version’
+‘-V’
      Display program version and copyright information and exit.
 
-'--recursive'
-'-r'
+‘--recursive’
+‘-r’
      Descend into directories recursively.
 
 
 File: mboxgrep.info,  Node: File locking,  Next: Regexp selection,  Prev: Miscellaneous,  Up: Invoking
 
-When accessing mbox folders, 'mboxgrep' puts a shared lock on files by
+When accessing mbox folders, ‘mboxgrep’ puts a shared lock onfiles by
 default.  Note that mbox folders normally should not be accessed without
 locking.
 
-'--file-lock=METHOD'
-'-l METHOD'
-     Specify file locking METHOD. 'mboxgrep' supports 'flock' and
-     'fcntl' file locking.  However, one of these methods may be
+‘--file-lock=METHOD’
+‘-l METHOD’
+     Specify file locking METHOD. ‘mboxgrep’ supports ‘flock’ and
+     ‘fcntl’ file locking.  However, one of these methods may be
      unimplemented on your operating system and thus not available in
-     'mboxgrep' at run time.  To disable file locking, specify 'none'.
+     ‘mboxgrep’ at run time.  To disable file locking, specify ‘none’.
 
-'--no-file-lock'
-'-nl'
+‘--no-file-lock’
+‘-nl’
      Do not attempt to lock mbox folder files.
 
 
 File: mboxgrep.info,  Node: Regexp selection,  Next: Output control,  Prev: File locking,  Up: Invoking
 
-'--extended-regexp'
-'-E'
+‘--extended-regexp’
+‘-E’
      PATTERN is an extended regular expression.
 
-'--basic-regexp'
-'-G'
+‘--basic-regexp’
+‘-G’
      PATTERN is a basic regular expression.
 
-'--perl-regexp'
-'-P'
+‘--perl-regexp’
+‘-P’
      PATTERN is a Perl regular expression.
 
-'--regexp=PATTERN'
-'-e PATTERN'
+‘--regexp=PATTERN’
+‘-e PATTERN’
      Use PATTERN as a regular expression.
 
-'--ignore-case'
-'-i'
+‘--ignore-case’
+‘-i’
      Perform case-insensitive search.
 
-'--invert-match'
-'-v'
+‘--invert-match’
+‘-v’
      Invert the sense of matching, i.e.  select only non-matching
      messages.
 
 
 File: mboxgrep.info,  Node: Output control,  Next: Search scope selection,  Prev: Regexp selection,  Up: Invoking
 
-By default, 'mboxgrep' writes found messages to standard output.  The
+By default, ‘mboxgrep’ writes found messages to standard output.  The
 options below change such behavior.
 
-'--count'
-'-c'
+‘--count’
+‘-c’
      Suppress normal output and print the count of matching (or
-     non-matching, if used with the '-v' option) messages.
+     non-matching,if used with the ‘-v’ option) messages.
 
-'--delete'
-'-d'
+‘--delete’
+‘-d’
      Suppress normal output and delete selected messages.
 
      Use with extreme caution.
 
-'--no-duplicates'
-'-nd'
+‘--no-duplicates’
+‘-nd’
      Ignore duplicate messages.
 
-'--output=MAILBOX'
-'-o MAILBOX'
+‘--output=MAILBOX’
+‘-o MAILBOX’
      Suppress normal output and write messages to destination MAILBOX
      instead.
 
-     Note that 'mboxgrep' assumes the output folder is of the same
+     Note that ‘mboxgrep’ assumes the output folder is of the same
      format as the input folder.  Currently there is no possibility to
      convert folders.
 
-'--pipe=COMMAND'
-'-p COMMAND'
+‘--pipe=COMMAND’
+‘-p COMMAND’
      Suppress normal output and pipe each selected message to a separate
      instance of COMMAND.
 
-'--no-messages'
-'-s'
+‘--no-messages’
+‘-s’
      Suppress error messages.
 
-'--debug'
+‘--debug’
      Print messages useful for debugging.
 
 
 File: mboxgrep.info,  Node: Search scope selection,  Next: Mailbox type selection,  Prev: Output control,  Up: Invoking
 
-'--headers'
-'-H'
+‘--headers’
+‘-H’
      Match PATTERN against message headers.
 
-'--body'
-'-B'
+‘--body’
+‘-B’
      Match PATTERN against message body.
 
 
 File: mboxgrep.info,  Node: Mailbox type selection,  Prev: Search scope selection,  Up: Invoking
 
-'--mailbox-format=FORMAT'
-'-m FORMAT'
-     Specify mailbox FORMAT. Supported formats are 'mbox' (default),
-     'zmbox' (gzip compressed mbox), 'bz2mbox' (bzip2 compressed mbox)
-     'mh', 'nnml', 'nnmh', and 'maildir'.
+‘--mailbox-format=FORMAT’
+‘-m FORMAT’
+     Specify mailbox FORMAT. Supported formats are ‘mbox’ (default),
+     ‘zmbox’ (gzip compressed mbox), ‘bz2mbox’ (bzip2 compressedmbox)
+     ‘mh’, ‘nnml’, ‘nnmh’, and ‘maildir’.
 
 
 File: mboxgrep.info,  Node: Examples,  Next: Bugs,  Prev: Invoking,  Up: Top
@@ -198,7 +198,7 @@ File: mboxgrep.info,  Node: Examples,  Next: Bugs,  Prev: Invoking,  Up: Top
 3 Examples
 **********
 
-Scan '$MAIL' for messages from Dirty Harry:
+Scan ‘$MAIL’ for messages from Dirty Harry:
 
      mboxgrep -H '^From:.*callahan@sanfranciscopolice\.org' $MAIL
 
@@ -206,17 +206,17 @@ Scan '$MAIL' for messages from Dirty Harry:
 
      mboxgrep --pipe="/usr/lib/sendmail george" --ignore-case george ~/Mail/*
 
-   Display all messages in folder '~/Mail/incoming', except those that
+   Display all messages in folder ‘~/Mail/incoming’, except those that
 appear to originate from AOL:
 
      mboxgrep -v -H '^Received:.*aol\.com' ~/Mail/incoming
 
-   Do a case-insensitive scan of '~/Mail/incoming' for messages with
-subject "Weekly News" and write them to folder '~/Mail/archive':
+   Do a case-insensitive scan of ‘~/Mail/incoming’ for messages with
+subject "Weekly News" and write them to folder ‘~/Mail/archive’:
 
      mboxgrep -o ~/Mail/archive -H -i '^Subject: Weekly News' ~/Mail/incoming
 
-   Count _all_ messages stored in folder 'spam', ignoring duplicates:
+   Count _all_ messages stored in folder ‘spam’, ignoring duplicates:
 
      mboxgrep -nd -c . spam
 
@@ -226,7 +226,7 @@ File: mboxgrep.info,  Node: Bugs,  Next: To Vicky,  Prev: Examples,  Up: Top
 4 Detecting Vermin
 ******************
 
-Shortly, if 'mboxgrep' crashes and/or works differently than described
+Shortly, if ‘mboxgrep’ crashes and/or works differently than described
 in this manual, you have found a bug.
 
    Please report bugs to <dspiljar@datatipp.se>.  Instructions how to
@@ -239,28 +239,28 @@ File: mboxgrep.info,  Node: To Vicky,  Prev: Bugs,  Up: Top
 5 Author's Dedication
 *********************
 
-'Mboxgrep' is dedicated in loving memory of Vicky, my cat who died of
+‘Mboxgrep’ is dedicated in loving memory of Vicky, my cat who diedof
 tumor on Sep 12, 2002.
 
    You haven't been long with us, but you gave us a lot of joy and all
-your big heart that stopped ticking too early.  I will never forget you.
+your big heart that stopped ticking too early.  I will never forgetyou.
 Sleep well, little friend.
 
 
 
 Tag Table:
 Node: Top197
-Node: Introduction597
-Node: Invoking1466
-Node: Miscellaneous1828
-Node: File locking2113
-Node: Regexp selection2750
-Node: Output control3302
-Node: Search scope selection4342
-Node: Mailbox type selection4583
-Node: Examples4904
-Node: Bugs5728
-Node: To Vicky6146
+Node: Introduction601
+Node: Invoking1498
+Node: Miscellaneous1864
+Node: File locking2173
+Node: Regexp selection2850
+Node: Output control3450
+Node: Search scope selection4554
+Node: Mailbox type selection4811
+Node: Examples5168
+Node: Bugs6012
+Node: To Vicky6434
 
 End Tag Table
 

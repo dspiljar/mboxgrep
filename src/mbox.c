@@ -244,8 +244,13 @@ mbox_read_message (mbox_t * mp)
   message->headers =
     (char *) realloc (message->headers,
                       ((1 + s + message->hbytes) * sizeof (char)));
+  message->hmemsize = ((1 + s + message->hbytes) * sizeof (char));
   strcpy (message->headers + message->hbytes, mp->postmark_cache);
   message->hbytes += s;
+
+  if (config.debug)
+    fprintf (stderr, "%s: %s, line %d: found header hbytes = %d\n",
+      APPNAME, __FILE__, __LINE__, message->hbytes);
 
   for (;;)
     {
@@ -299,7 +304,11 @@ mbox_read_message (mbox_t * mp)
 
       s = strlen (buffer);
 
+#if defined(__CYGWIN__) || defined(_WIN32)
+      if ((buffer[0] == '\r' && buffer[1] == '\n')  && isheaders == 1)
+#else
       if (buffer[0] == '\n' && isheaders == 1)
+#endif
         {
           isheaders = 0;
           continue;
@@ -307,9 +316,13 @@ mbox_read_message (mbox_t * mp)
 
       if (isheaders)
         {
-          message->headers =
-            (char *) realloc (message->headers,
-                              ((1 + s + message->hbytes) * sizeof (char)));
+          /* Save time by expanding the header and message buffers by large chunks at a time */
+          while ((1 + s + message->hbytes) * sizeof (char) > message->hmemsize) 
+            {
+              message->headers =
+                (char *) realloc (message->headers, message->hmemsize + MESSAGE_ALLOC_BLOCK);
+              message->hmemsize += MESSAGE_ALLOC_BLOCK;
+            }
           strcpy (message->headers + message->hbytes, buffer);
           message->hbytes += s;
         }
@@ -320,9 +333,13 @@ mbox_read_message (mbox_t * mp)
               strcpy (mp->postmark_cache, buffer);
               return message;
             }
-          message->body =
-            (char *) realloc (message->body,
-                              ((1 + s + message->bbytes) * sizeof (char)));
+          while ((1 + s + message->bbytes) * sizeof (char) > message->bmemsize) 
+            {
+              message->body =
+                (char *) realloc (message->body, message->bmemsize + MESSAGE_ALLOC_BLOCK);
+              message->bmemsize += MESSAGE_ALLOC_BLOCK;
+            }
+
           strcpy (message->body + message->bbytes, buffer);
           message->bbytes += s;
         }
@@ -371,12 +388,12 @@ void
 mbox_write_message (message_t * msg, mbox_t * mbox)
 {
   if (config.format == FORMAT_MBOX)
-    fprintf (mbox->fp, "%s\n%s", msg->headers, msg->body);
+    fprintf (mbox->fp, "%s" NLSEP "%s", msg->headers, msg->body);
 #ifdef HAVE_LIBZ
   else if (config.format == FORMAT_ZMBOX)
     {
       gzwrite_loop (mbox->fp, msg->headers);
-      gzwrite (mbox->fp, "\n", 1);
+      gzwrite (mbox->fp, NLSEP, strlen(NLSEP));
       gzwrite_loop (mbox->fp, msg->body);
     }
 #endif /* HAVE_LIBZ */
@@ -384,7 +401,7 @@ mbox_write_message (message_t * msg, mbox_t * mbox)
   else if (config.format == FORMAT_BZ2MBOX)
     {
       bzwrite_loop (mbox->fp, msg->headers);
-      BZ2_bzwrite (mbox->fp, "\n", 1);
+      BZ2_bzwrite (mbox->fp, NLSEP, strlen(NLSEP));
       bzwrite_loop (mbox->fp, msg->body);
     }
 #endif /* HAVE_LIBBZ2 */
