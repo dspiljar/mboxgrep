@@ -93,7 +93,5 @@ AC_CHECK_FUNCS([strptime])
 AC_CHECK_FUNCS(ftw)
 AC_CHECK_FUNCS(fts_open)
 
-AC_CONFIG_FILES([Makefile
-                 doc/Makefile
-                 src/Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile])
 AC_OUTPUT
