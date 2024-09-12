@@ -244,6 +244,7 @@ mbox_read_message (mbox_t * mp)
   message->headers =
     (char *) realloc (message->headers,
                       ((1 + s + message->hbytes) * sizeof (char)));
+  message->hmemsize = ((1 + s + message->hbytes) * sizeof (char));
   strcpy (message->headers + message->hbytes, mp->postmark_cache);
   message->hbytes += s;
 
@@ -311,9 +312,13 @@ mbox_read_message (mbox_t * mp)
 
       if (isheaders)
         {
-          message->headers =
-            (char *) realloc (message->headers,
-                              ((1 + s + message->hbytes) * sizeof (char)));
+          /* Save time by expanding the header and message buffers by large chunks at a time */
+          while ((1 + s + message->hbytes) * sizeof (char) > message->hmemsize) 
+            {
+              message->headers =
+                (char *) realloc (message->headers, message->hmemsize + MESSAGE_ALLOC_BLOCK);
+              message->hmemsize += MESSAGE_ALLOC_BLOCK;
+            }
           strcpy (message->headers + message->hbytes, buffer);
           message->hbytes += s;
         }
@@ -324,9 +329,13 @@ mbox_read_message (mbox_t * mp)
               strcpy (mp->postmark_cache, buffer);
               return message;
             }
-          message->body =
-            (char *) realloc (message->body,
-                              ((1 + s + message->bbytes) * sizeof (char)));
+          while ((1 + s + message->bbytes) * sizeof (char) > message->bmemsize) 
+            {
+              message->body =
+                (char *) realloc (message->body, message->bmemsize + MESSAGE_ALLOC_BLOCK);
+              message->bmemsize += MESSAGE_ALLOC_BLOCK;
+            }
+
           strcpy (message->body + message->bbytes, buffer);
           message->bbytes += s;
         }

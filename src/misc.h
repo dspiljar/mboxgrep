@@ -38,4 +38,6 @@ void check_options (void);
 void set_option_action (action_t action, char *path);
 void set_option_regextype (regextype_t regextype);
 
+#define MESSAGE_ALLOC_BLOCK 0x10000
+
 #endif /* MISC_H */

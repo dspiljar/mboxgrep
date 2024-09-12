@@ -158,10 +158,12 @@ allocate_message (void)
   message->headers = (char *) xmalloc (sizeof (char));
   message->headers[0] = '\0';
   message->hbytes = 0;
+  message->hmemsize = sizeof (char);
 
   message->body = (char *) xmalloc (sizeof (char));
   message->body[0] = '\0';
   message->bbytes = 0;
+  message->bmemsize = sizeof (char);
 
   message->from = NULL;
 
