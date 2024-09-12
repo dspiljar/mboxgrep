@@ -172,7 +172,7 @@ scan_mailbox (char path[])
                   && 0 != strncmp ("From ", msg->headers, 5))
                 postmark_print (msg);
 
-              fprintf (stdout, "%s\n%s", msg->headers, msg->body);
+              fprintf (stdout, "%s%s%s", msg->headers, config.crlfsep, msg->body);
             }
           else if (config.action == ACTION_WRITE)
             {
@@ -185,7 +185,7 @@ scan_mailbox (char path[])
                        || (config.format == FORMAT_BZ2MBOX))
                 {
                   out = mbox_open (config.outboxname, "w");
-                  /* fprintf (out->fp, "%s\n%s", msg->headers, msg->body); */
+                  /* fprintf (out->fp, "%s%s%s", msg->headers, config.crnlsep, msg->body); */
                   mbox_write_message (msg, out);
                   mbox_close (out);
                 }
@@ -202,7 +202,7 @@ scan_mailbox (char path[])
                     }
                   exit (2);
                 }               /* if */
-              fprintf (outf, "%s\n%s", msg->headers, msg->body);
+              fprintf (outf, "%s%s%s", msg->headers, config.crlfsep, msg->body);
               pclose (outf);
             }
           else if (config.action == ACTION_DELETE &&
@@ -226,7 +226,7 @@ scan_mailbox (char path[])
                 && 0 != strncmp ("From ", msg->headers, 5))
                   postmark_print (msg);
 
-            fprintf (stdout, "%s\n%s", msg->headers, msg->body);
+            fprintf (stdout, "%s%s%s", msg->headers, config.crlfsep, msg->body);
           }
         }
       free (msg->body);

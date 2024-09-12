@@ -204,7 +204,9 @@ init_options (void)
   config.merr = 1;              /* report errors by default */
   config.debug = 0;
   config.progress = 0;          /* show progress while executing (to stderr) */
-  config.passthrough = 0;
+  config.passthrough = 0;       /* passthrough mode */
+  config.crlf = 0;              /* Use Windows CRNL*/
+  config.crlfsep = UNIX_NL;
 }
 
 /* Parse command-line arguments and assign values to option_t. */
@@ -216,7 +218,7 @@ get_options (int *argc, char **argv, struct option *long_options)
 
   while (1)
     {
-      c = getopt_long (*argc, argv, "BcdEe:GHhil:m:n:o:Pp:rsVvxY", long_options,
+      c = getopt_long (*argc, argv, "BcdEe:GHhil:m:n:o:Pp:rsVvxYz", long_options,
                        &option_index);
 
       if (c == -1)
@@ -283,6 +285,10 @@ get_options (int *argc, char **argv, struct option *long_options)
           break;
         case 'Y':
           config.passthrough = 1;
+          break;
+        case 'z':
+          config.crlf = 1;
+          config.crlfsep = WIN_NL;
           break;
         case 201:
           config.lock = 0;

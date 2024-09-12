@@ -118,6 +118,8 @@ typedef struct
   int debug;
   int progress; 
   int passthrough;
+  int crlf;
+  char *crlfsep;
 
   char hostname[HOST_NAME_SIZE];
   char *boxname, *outboxname, *pipecmd, *tmpfilename, *regex_s;

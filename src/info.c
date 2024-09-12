@@ -127,7 +127,8 @@ help (void)
            "       --debug\t\t\tPrint messages useful for debugging\n"
            "  -Y,  --passthrough\t\tWrite matches to file, pipe to stdout the rest.\n"
            "                    \t\tUseful to split a file in parts (requires -o).\n"
-           "  -x,  --show-progress\t\tPrint progress while running.\n\n"
+           "  -x,  --show-progress\t\tPrint progress while running.\n"
+           "  -z,  --crlf\t\t\tUse Windows CRNL line separator (input & output)\n\n"
            "Matching criteria:\n\n"
            "  -E,  --extended-regexp\tPATTERN is an extended regular expression\n"
            "  -G,  --basic-regexp\t\tPATTERN is a basic regular expression\n");

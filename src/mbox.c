@@ -304,12 +304,19 @@ mbox_read_message (mbox_t * mp)
 
       s = strlen (buffer);
 
-      if (buffer[0] == '\n' && isheaders == 1)
+      if (config.crlf) {
+        if (buffer[0] == '\r' && buffer[1] == '\n' && isheaders == 1)
         {
           isheaders = 0;
           continue;
         }
-
+      } else {
+        if (buffer[0] == '\n' && isheaders == 1)
+        {
+          isheaders = 0;
+          continue;
+        }
+      }
       if (isheaders)
         {
           /* Save time by expanding the header and message buffers by large chunks at a time */
@@ -384,12 +391,12 @@ void
 mbox_write_message (message_t * msg, mbox_t * mbox)
 {
   if (config.format == FORMAT_MBOX)
-    fprintf (mbox->fp, "%s\n%s", msg->headers, msg->body);
+    fprintf (mbox->fp, "%s%s%s", msg->headers, config.crlfsep, msg->body);
 #ifdef HAVE_LIBZ
   else if (config.format == FORMAT_ZMBOX)
     {
       gzwrite_loop (mbox->fp, msg->headers);
-      gzwrite (mbox->fp, "\n", 1);
+      gzwrite (mbox->fp, config.crlfsep, strlen(config.crlfsep));
       gzwrite_loop (mbox->fp, msg->body);
     }
 #endif /* HAVE_LIBZ */
@@ -397,7 +404,7 @@ mbox_write_message (message_t * msg, mbox_t * mbox)
   else if (config.format == FORMAT_BZ2MBOX)
     {
       bzwrite_loop (mbox->fp, msg->headers);
-      BZ2_bzwrite (mbox->fp, "\n", 1);
+      BZ2_bzwrite (mbox->fp, config.crlfsep, strlen(config.crlfsep));
       bzwrite_loop (mbox->fp, msg->body);
     }
 #endif /* HAVE_LIBBZ2 */

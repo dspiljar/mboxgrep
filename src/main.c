@@ -80,6 +80,7 @@ main (int argc, char **argv)
     {"recursive", 0, 0, 'r'},
     {"show-progress", 0, 0, 'x'},
     {"passthrough", 0, 0, 'Y'},
+    {"crlf", 0, 0, 'Y'},
     {0, 0, 0, 0}
   };
 

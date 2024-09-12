@@ -83,4 +83,7 @@ char *xstrdup (const char *s);
 
 int m_unlink (const char *pathname);
 
+#define UNIX_NL "\n"
+#define WIN_NL "\r\n"
+
 #endif /* WRAP_H */
