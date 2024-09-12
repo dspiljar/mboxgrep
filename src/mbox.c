@@ -247,6 +247,10 @@ mbox_read_message (mbox_t * mp)
   strcpy (message->headers + message->hbytes, mp->postmark_cache);
   message->hbytes += s;
 
+  if (config.debug)
+    fprintf (stderr, "%s: %s, line %d: found header hbytes = %d\n",
+      APPNAME, __FILE__, __LINE__, message->hbytes);
+
   for (;;)
     {
       if (config.format == FORMAT_MBOX)

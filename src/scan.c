@@ -140,8 +140,12 @@ scan_mailbox (char path[])
       else if (config.format == FORMAT_MAILDIR)
         msg = (message_t *) maildir_read_message (maildird);
 
-      if (msg == NULL)
+      if (msg == NULL) {
+        if (config.debug)
+          fprintf (stderr, "%s: %s, line %d: no more messages\n",
+                   APPNAME, __FILE__, __LINE__);
         break;
+      }
 
       if (msg->from == NULL)
         msg->from = (char *) xstrdup ("nobody");
@@ -156,6 +160,7 @@ scan_mailbox (char path[])
       if (config.dedup)
         isdup = md5_check_message (msg->body, runtime.cs);
 
+      /* If there is a match on Header or Body, XOR on inversion XOR on Delete, and not deduped, output match*/
       if (((config.res1 == 0) | (config.res2 == 0)) ^
           ((config.invert ^ delete)) &&
           ((config.dedup && !isdup) || !config.dedup))
@@ -200,24 +205,37 @@ scan_mailbox (char path[])
               fprintf (outf, "%s\n%s", msg->headers, msg->body);
               pclose (outf);
             }
-          else if (config.action == ACTION_COUNT)
-            runtime.count++;
           else if (config.action == ACTION_DELETE &&
                    ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
                     || (config.format == FORMAT_BZ2MBOX)))
             mbox_write_message (msg, runtime.tmp_mbox);
+          runtime.count++;
         }
-
       else
-        if (((((config.res1 == 0) | (config.res2 == 0)) ^ config.invert)
-             && delete) && ((config.format == FORMAT_MH) || (config.format == FORMAT_NNMH)
-                            || (config.format == FORMAT_NNML)
-                            || (config.format == FORMAT_MAILDIR)))
-        m_unlink (msg->filename);
+        {
+          if (((((config.res1 == 0) | (config.res2 == 0)) ^ config.invert)
+              && delete) && ((config.format == FORMAT_MH) || (config.format == FORMAT_NNMH)
+                              || (config.format == FORMAT_NNML)
+                              || (config.format == FORMAT_MAILDIR)))
+            m_unlink (msg->filename); /* match and delete */
 
+          if (config.passthrough == 1 && config.action == ACTION_WRITE) {
+            /* passthrough: display the non-matched messages, only allowed if the output is to file. */
+            if (config.format != FORMAT_MBOX && config.format != FORMAT_ZMBOX
+                && config.format != FORMAT_BZ2MBOX
+                && 0 != strncmp ("From ", msg->headers, 5))
+                  postmark_print (msg);
+
+            fprintf (stdout, "%s\n%s", msg->headers, msg->body);
+          }
+        }
       free (msg->body);
       free (msg->headers);
       free (msg);
+
+      runtime.processed++;
+      if (config.progress)
+        fprintf (stderr, "Matched %d / %d messages\r",runtime.count, runtime.processed);
     }                           /* for */
 
   if ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)

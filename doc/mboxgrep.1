@@ -79,6 +79,11 @@ Pipe each found message to COMMAND
 .IP "-d, --delete"
 Suppress normal output and delete selected messages instead.  Use with
 caution.
+.IP "-Y, --passthrough"
+Write matches to file, pipe to stdout the rest. Useful to split a file 
+in parts (requires -o).
+.IP "-x, --show-progress"
+Print progress while running.
 .IP "-nd, --no-duplicates"
 Ignore duplicate messages.
 .IP "-m, --mailbox-format=TYPE"

@@ -52,6 +52,7 @@ main (int argc, char **argv)
   int singlefile = 0;
   runtime.count = 0;
   runtime.maildir_count = 0;
+  runtime.processed = 0;
 
   static struct option long_options[] = {
     {"count", 0, 0, 'c'},
@@ -77,6 +78,8 @@ main (int argc, char **argv)
     {"debug", 0, 0, 202},
     {"file-lock", 1, 0, 'l'},
     {"recursive", 0, 0, 'r'},
+    {"show-progress", 0, 0, 'x'},
+    {"passthrough", 0, 0, 'Y'},
     {0, 0, 0, 0}
   };
 
