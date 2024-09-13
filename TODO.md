@@ -15,6 +15,7 @@
 - [x] reading messages from standard input
 - [x] run-time selection of file locking method
 - [x] add a debug function
+- [ ] Remove the option to recursively traverse directories and instruct the users to run mboxgrep in conjuction with find(1) instead.
 
 ## File formats, encodings and standards
 
@@ -28,6 +29,7 @@
 - [ ] support for mail folder conversion
 - [ ] improve error detection when a directory is not a Maildir or MH folder
 - [ ] document criteria for folder format detection
+- [ ] Maildir: check if an atomic rename() fails. This could be caused if "new" and "cur" subdirectories are not on the same filesystem, for example.
 
 ## Miscellaneous
 
