@@ -1,6 +1,6 @@
 /*
    mboxgrep - scan mailbox for messages matching a regular expression
-   Copyright (C) 2000, 2001, 2002, 2003, 2004, 2006, 2023  Daniel Spiljar
+   Copyright (C) 2000 - 2004, 2006, 2023 - 2024  Daniel Spiljar
 
    Mboxgrep is free software; you can redistribute it and/or modify it 
    under the terms of the GNU General Public License as published by
@@ -90,36 +90,7 @@ mbox_open (const char *path, const char *mode)
         }
 
       if (config.lock > LOCK_NONE)
-        {
-#ifdef HAVE_FLOCK
-          int op;
-
-          if (mode[0] == 'r')
-            op = LOCK_SH;
-          else
-            op = LOCK_EX;
-          if (-1 == flock (fd, op))
-#else
-          memset (&lck, 0, sizeof (struct flock));
-          lck.l_whence = SEEK_SET;
-          if (mode[0] == 'r')
-            lck.l_type = F_RDLCK;
-          else
-            lck.l_type = F_WRLCK;
-
-          if (-1 == fcntl (fd, F_SETLK, &lck))
-#endif /* HAVE_FLOCK */
-            {
-              if (config.merr)
-                {
-                  fprintf (stderr, "%s: %s: ", APPNAME, path);
-                  perror (NULL);
-                }
-              errno = 0;
-              close (fd);
-              return NULL;
-            }
-        }
+        mbox_lock (fd, path, mode);
 
       if (mode[0] == 'r')
         {
@@ -430,4 +401,35 @@ tmpfile_create (void)
       exit (2);
     }
   return fd;
+}
+
+void
+mbox_lock (int fd, const char *path, const char *mode)
+{
+#ifdef HAVE_FLOCK
+  int op;
+
+  if (mode[0] == 'r')
+    op = LOCK_SH;
+  else
+    op = LOCK_EX;
+  if (-1 == flock (fd, op))
+#else
+  memset (&lck, 0, sizeof (struct flock));
+  lck.l_whence = SEEK_SET;
+  if (mode[0] == 'r')
+    lck.l_type = F_RDLCK;
+  else
+    lck.l_type = F_WRLCK;
+
+  if (-1 == fcntl (fd, F_SETLK, &lck))
+#endif /* HAVE_FLOCK */
+    {
+      if (config.merr)
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, path);
+          perror (NULL);
+          exit (2);
+        }
+    }
 }
