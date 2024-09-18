@@ -132,6 +132,8 @@ mbox_open (const char *path, const char *mode)
         }
     }
 
+  memset (buffer, 0, BUFSIZ);
+
   if (mode[0] == 'r')
     {
       if (config.format == FORMAT_MBOX)
@@ -158,13 +160,13 @@ mbox_open (const char *path, const char *mode)
 
       if (0 != strncmp ("From ", buffer, 5))
         {
-          if (config.merr)
+          if ((config.merr) && (buffer[0] != '\0'))
             {
               if (0 == strcmp ("-", path))
-                fprintf (stderr, "%s: (standard input): Not a mbox folder\n",
+                fprintf (stderr, "%s: (standard input): Not an mbox folder\n",
                          APPNAME);
               else
-                fprintf (stderr, "%s: %s: Not a mbox folder\n", APPNAME,
+                fprintf (stderr, "%s: %s: Not an mbox folder\n", APPNAME,
                          path);
             }
           if (config.format == FORMAT_MBOX)
