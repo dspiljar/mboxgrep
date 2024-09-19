@@ -19,9 +19,7 @@
 
 #ifndef MBOX_H
 #  define MBOX_H 1
-
 #  include <config.h>
-
 #  include "message.h"
 
 typedef struct
@@ -31,8 +29,14 @@ typedef struct
   char *postmark_cache;
 } mbox_t;
 
+typedef enum
+{
+  r,
+  w,
+} mbox_mode_t;
 
-mbox_t *mbox_open (const char *path, const char *mode);
+
+mbox_t *mbox_open (const char *path, const mbox_mode_t mbox_mode);
 void tmpmbox_create (const char *path);
 void tmpfile_name (const char *path);
 void tmpfile_mod_own (const int fd, const char *path);
@@ -40,6 +44,6 @@ int tmpfile_create (void);
 void mbox_close (mbox_t * mbp);
 message_t *mbox_read_message (mbox_t * mp);
 void mbox_write_message (message_t * m, mbox_t * mbox);
-void mbox_lock (int fd, const char *path, const char *mode);
+void mbox_lock (int fd, const char *path, const mbox_mode_t mbox_mode);
 
 #endif /* MBOX_H */

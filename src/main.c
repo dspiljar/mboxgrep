@@ -1,6 +1,6 @@
 /*
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000 - 2004, 2006, 2023  Daniel Spiljar
+  Copyright (C) 2000 - 2004, 2006, 2023 - 2024  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ main (int argc, char **argv)
       if (config.action == ACTION_DELETE)
         {
           tmpmbox_create (argv[optind]);
-          runtime.tmp_mbox = (mbox_t *) mbox_open (config.tmpfilename, "w");
+          runtime.tmp_mbox = (mbox_t *) mbox_open (config.tmpfilename, w);
         }
 
       config.boxname = xstrdup (argv[optind]);

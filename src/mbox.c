@@ -50,7 +50,7 @@
 #endif /* HAVE_LIBDMALLOC */
 
 mbox_t *
-mbox_open (const char *path, const char *mode)
+mbox_open (const char *path, const mbox_mode_t mbox_mode)
 {
   mbox_t *mp;
   static int fd;
@@ -66,17 +66,11 @@ mbox_open (const char *path, const char *mode)
     mp->fp = stdin;
   else
     {
-      if (mode[0] == 'r')
-        fd = m_open (path, O_RDONLY, 0);
-      else if (mode[0] == 'w')
+      if (mbox_mode == w)
         fd = m_open (path, (O_WRONLY | O_CREAT | O_APPEND),
                      (S_IWUSR | S_IRUSR));
       else
-        {
-          fprintf (stderr, "%s: mbox.c: Unknown mode %c.  You shouldn't "
-                   "get this error...", APPNAME, mode[0]);
-          exit (2);
-        }
+        fd = m_open (path, O_RDONLY, 0);
 
       if (fd == -1)
         {
@@ -90,9 +84,9 @@ mbox_open (const char *path, const char *mode)
         }
 
       if (config.lock > LOCK_NONE)
-        mbox_lock (fd, path, mode);
+        mbox_lock (fd, path, mbox_mode);
 
-      if (mode[0] == 'r')
+      if (mbox_mode == r)
         {
           if (config.format == FORMAT_MBOX)
             mp->fp = (FILE *) m_fdopen (fd, "r");
@@ -105,7 +99,7 @@ mbox_open (const char *path, const char *mode)
             mp->fp = (BZFILE *) BZ2_bzdopen (fd, "rb");
 #endif /* HAVE_LIBBZ2 */
         }
-      else if (mode[0] == 'w')
+      else if (mbox_mode == w)
         {
           if (config.format == FORMAT_MBOX)
             mp->fp = (FILE *) m_fdopen (fd, "w");
@@ -134,7 +128,7 @@ mbox_open (const char *path, const char *mode)
 
   memset (buffer, 0, BUFSIZ);
 
-  if (mode[0] == 'r')
+  if (mbox_mode == r)
     {
       if (config.format == FORMAT_MBOX)
         fgets (buffer, BUFSIZ, mp->fp);
@@ -406,12 +400,12 @@ tmpfile_create (void)
 }
 
 void
-mbox_lock (int fd, const char *path, const char *mode)
+mbox_lock (int fd, const char *path, const mbox_mode_t mbox_mode)
 {
 #ifdef HAVE_FLOCK
   int op;
 
-  if (mode[0] == 'r')
+  if (mbox_mode == r)
     op = LOCK_SH;
   else
     op = LOCK_EX;
