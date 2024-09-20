@@ -1,6 +1,6 @@
 /*
    mboxgrep - scan mailbox for messages matching a regular expression
-   Copyright (C) 2000 - 2004, 2006, 2023  Daniel Spiljar
+   Copyright (C) 2000 - 2004, 2006, 2023 - 2024  Daniel Spiljar
    
    Mboxgrep is free software; you can redistribute it and/or modify it 
    under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ scan_mailbox (char path[])
   if ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
       || (config.format == FORMAT_BZ2MBOX))
     {
-      mbox = (mbox_t *) mbox_open (path, "r");
+      mbox = (mbox_t *) mbox_open (path, r);
       if (mbox == NULL)
         return;
     }
@@ -179,7 +179,7 @@ scan_mailbox (char path[])
               else if ((config.format == FORMAT_MBOX) || (config.format == FORMAT_ZMBOX)
                        || (config.format == FORMAT_BZ2MBOX))
                 {
-                  out = mbox_open (config.outboxname, "w");
+                  out = mbox_open (config.outboxname, w);
                   /* fprintf (out->fp, "%s\n%s", msg->headers, msg->body); */
                   mbox_write_message (msg, out);
                   mbox_close (out);
