@@ -45,5 +45,6 @@ void mbox_close (mbox_t * mbp);
 message_t *mbox_read_message (mbox_t * mp);
 void mbox_write_message (message_t * m, mbox_t * mbox);
 void mbox_lock (int fd, const char *path, const mbox_mode_t mbox_mode);
+void *mbox_fdopen (int fd, const char *path, const mbox_mode_t mbox_mode);
 
 #endif /* MBOX_H */

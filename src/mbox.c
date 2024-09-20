@@ -74,11 +74,6 @@ mbox_open (const char *path, const mbox_mode_t mbox_mode)
 
       if (fd == -1)
         {
-          if (config.merr)
-            {
-              fprintf (stderr, "%s: %s: ", APPNAME, path);
-              perror (NULL);
-            }
           errno = 0;
           return NULL;
         }
@@ -86,44 +81,7 @@ mbox_open (const char *path, const mbox_mode_t mbox_mode)
       if (config.lock > LOCK_NONE)
         mbox_lock (fd, path, mbox_mode);
 
-      if (mbox_mode == r)
-        {
-          if (config.format == FORMAT_MBOX)
-            mp->fp = (FILE *) m_fdopen (fd, "r");
-#ifdef HAVE_LIBZ
-          else if (config.format == FORMAT_ZMBOX)
-            mp->fp = (gzFile *) m_gzdopen (fd, "rb");
-#endif /* HAVE_LIBZ */
-#ifdef HAVE_LIBBZ2
-          else if (config.format == FORMAT_BZ2MBOX)
-            mp->fp = (BZFILE *) BZ2_bzdopen (fd, "rb");
-#endif /* HAVE_LIBBZ2 */
-        }
-      else if (mbox_mode == w)
-        {
-          if (config.format == FORMAT_MBOX)
-            mp->fp = (FILE *) m_fdopen (fd, "w");
-#ifdef HAVE_LIBZ
-          else if (config.format == FORMAT_ZMBOX)
-            mp->fp = (gzFile *) m_gzdopen (fd, "wb");
-#endif /* HAVE_LIBZ */
-#ifdef HAVE_LIBBZ2
-          else if (config.format == FORMAT_BZ2MBOX)
-            mp->fp = (BZFILE *) BZ2_bzdopen (fd, "wb");
-#endif /* HAVE_LIBBZ2 */
-        }
-
-      if (mp->fp == NULL)
-        {
-          if (config.merr)
-            {
-              fprintf (stderr, "%s: %s: ", APPNAME, path);
-              perror (NULL);
-            }
-          errno = 0;
-          close (fd);
-          return NULL;
-        }
+      mp->fp = mbox_fdopen (fd, path, mbox_mode);
     }
 
   memset (buffer, 0, BUFSIZ);
@@ -428,4 +386,41 @@ mbox_lock (int fd, const char *path, const mbox_mode_t mbox_mode)
           exit (2);
         }
     }
+}
+
+void *
+mbox_fdopen (int fd, const char *path, const mbox_mode_t mbox_mode)
+{
+  void *f;
+  char *file_mode;
+
+  if (mbox_mode == w)
+    file_mode = xstrdup("wb");
+  else
+    file_mode = xstrdup("rb");
+
+  if (config.format == FORMAT_MBOX)
+    f = (FILE *) m_fdopen (fd, file_mode);
+#ifdef HAVE_LIBZ
+  else if (config.format == FORMAT_ZMBOX)
+    f = (gzFile *) m_gzdopen (fd, file_mode);
+#endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+  else if (config.format == FORMAT_BZ2MBOX)
+    f = (BZFILE *) BZ2_bzdopen (fd, file_mode);
+#endif /* HAVE_LIBBZ2 */
+
+  if (f == NULL)
+    {
+      if (config.merr)
+        {
+          fprintf (stderr, "%s: %s: ", APPNAME, path);
+          perror (NULL);
+        }
+      errno = 0;
+      close (fd);
+      return NULL;
+    }
+
+  return f;
 }
