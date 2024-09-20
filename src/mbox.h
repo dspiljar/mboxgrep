@@ -46,5 +46,6 @@ message_t *mbox_read_message (mbox_t * mp);
 void mbox_write_message (message_t * m, mbox_t * mbox);
 void mbox_lock (int fd, const char *path, const mbox_mode_t mbox_mode);
 void *mbox_fdopen (int fd, const char *path, const mbox_mode_t mbox_mode);
+char *mbox_check_postmark(mbox_t *mp, const char *path);
 
 #endif /* MBOX_H */

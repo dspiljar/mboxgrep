@@ -57,10 +57,9 @@ mbox_open (const char *path, const mbox_mode_t mbox_mode)
 #ifndef HAVE_FLOCK
   struct flock lck;
 #endif /* HAVE_FLOCK */
-  char buffer[BUFSIZ];
 
   mp = (mbox_t *) xmalloc (sizeof (mbox_t));
-  mp->postmark_cache = (char *) xmalloc (BUFSIZ * sizeof (char));
+  mp->postmark_cache = NULL;
 
   if (0 == strcmp ("-", path))
     mp->fp = stdin;
@@ -84,57 +83,14 @@ mbox_open (const char *path, const mbox_mode_t mbox_mode)
       mp->fp = mbox_fdopen (fd, path, mbox_mode);
     }
 
-  memset (buffer, 0, BUFSIZ);
-
   if (mbox_mode == r)
     {
-      if (config.format == FORMAT_MBOX)
-        fgets (buffer, BUFSIZ, mp->fp);
-#ifdef HAVE_LIBZ
-      else if (config.format == FORMAT_ZMBOX)
-        gzgets (mp->fp, buffer, BUFSIZ);
-#endif /* HAVE_LIBZ */
-#ifdef HAVE_LIBBZ2
-      else if (config.format == FORMAT_BZ2MBOX)
-        {
-          char c[1] = "\0";
-          int n = 0;
+      mp->postmark_cache = mbox_check_postmark (mp, path);
 
-          while (c[0] != '\n' && n < BUFSIZ)
-            {
-              BZ2_bzread (mp->fp, c, 1);
-              buffer[n] = c[0];
-              n++;
-            }
-          buffer[n] = '\0';
-        }
-#endif /* HAVE_LIBBZ2 */
-
-      if (0 != strncmp ("From ", buffer, 5))
-        {
-          if ((config.merr) && (buffer[0] != '\0'))
-            {
-              if (0 == strcmp ("-", path))
-                fprintf (stderr, "%s: (standard input): Not an mbox folder\n",
-                         APPNAME);
-              else
-                fprintf (stderr, "%s: %s: Not an mbox folder\n", APPNAME,
-                         path);
-            }
-          if (config.format == FORMAT_MBOX)
-            fclose (mp->fp);
-#ifdef HAVE_LIBZ
-          else if (config.format == FORMAT_ZMBOX)
-            gzclose (mp->fp);
-#endif /* HAVE_LIBZ */
-#ifdef HAVE_LIBBZ2
-          else if (config.format == FORMAT_BZ2MBOX)
-            BZ2_bzclose (mp->fp);
-#endif /* HAVE_LIBBZ2 */
-          return NULL;
-        }
-      strcpy (mp->postmark_cache, buffer);
+      if (! mp->postmark_cache)
+        return NULL;
     }
+
   return mp;
 }
 
@@ -423,4 +379,60 @@ mbox_fdopen (int fd, const char *path, const mbox_mode_t mbox_mode)
     }
 
   return f;
+}
+
+char *
+mbox_check_postmark(mbox_t *mp, const char *path)
+{
+  char *buffer;
+
+  buffer = (char *) xmalloc (BUFSIZ * sizeof (char));
+  memset (buffer, 0, BUFSIZ);
+
+  if (config.format == FORMAT_MBOX)
+    fgets (buffer, BUFSIZ, mp->fp);
+#ifdef HAVE_LIBZ
+  else if (config.format == FORMAT_ZMBOX)
+    gzgets (mp->fp, buffer, BUFSIZ);
+#endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+  else if (config.format == FORMAT_BZ2MBOX)
+    {
+      char c[1] = "\0";
+      int n = 0;
+
+      while (c[0] != '\n' && n < BUFSIZ)
+        {
+          BZ2_bzread (mp->fp, c, 1);
+          buffer[n] = c[0];
+          n++;
+        }
+      buffer[n] = '\0';
+    }
+#endif /* HAVE_LIBBZ2 */
+
+  if (0 != strncmp ("From ", buffer, 5))
+    {
+      if ((config.merr) && (buffer[0] != '\0'))
+        {
+          if (0 == strcmp ("-", path))
+            fprintf (stderr, "%s: (standard input): Not an mbox folder\n",
+                     APPNAME);
+          else
+            fprintf (stderr, "%s: %s: Not an mbox folder\n", APPNAME,
+                     path);
+        }
+      if (config.format == FORMAT_MBOX)
+        fclose (mp->fp);
+#ifdef HAVE_LIBZ
+      else if (config.format == FORMAT_ZMBOX)
+        gzclose (mp->fp);
+#endif /* HAVE_LIBZ */
+#ifdef HAVE_LIBBZ2
+      else if (config.format == FORMAT_BZ2MBOX)
+        BZ2_bzclose (mp->fp);
+#endif /* HAVE_LIBBZ2 */
+      return NULL;
+    }
+  return buffer;
 }
