@@ -1,4 +1,4 @@
-.TH MBOXGREP 1 "21 May 2023"
+.TH MBOXGREP 1 "23 September 2024"
 .SH NAME
 mboxgrep \- displays email messages matching a pattern
 .SH SYNOPSIS
@@ -97,10 +97,26 @@ Search $MAIL for messages from Dirty Harry:
 mboxgrep '^From:.*callahan@sanfranciscopolice\\.org' $MAIL
 .TP
 \(bu
+Re-mail to George messages that mention his name:
+.PP
+mboxgrep --pipe="/usr/lib/sendmail george" --ignore-case george ~/Mail/*
+.TP
+\(bu
 Display all messages contained in folder ~/Mail/incoming, except those
 that appear to originate from AOL:
 .PP
 mboxgrep -v 'Received:.*aol\\.com' ~/Mail/incoming
+.TP
+\(bu
+Do a case-insensitive scan of ~/Mail/incoming for messages with subject
+``Weekly News'' and write them to folder ~/Mail/archive:
+.PP
+mboxgrep -o ~/Mail/archive -H -i '^Subject: Weekly News' ~/Mail/incoming
+.TP
+\(bu
+Count all messages stored in folder spam, ignoring duplicates:
+.PP
+mboxgrep -nd -c . spam
 .SH BUGS
 Report them to address below.
 .SH SEE ALSO
@@ -108,7 +124,8 @@ grep(1),
 regex(7),
 perlre(1),
 mbox(5),
-RFC 2822
+RFC 2822,
+RFC 4155
 .SH DEDICATION
 Mboxgrep is dedicated in loving memory of Vicky, my cat who died of
 tumor on Sep 12, 2002.  
@@ -116,7 +133,11 @@ tumor on Sep 12, 2002.
 You haven't been long with us, but you gave us a lot of joy and all your
 big heart that stopped ticking too early.  I will never forget you.  Sleep
 well, little friend.
-.SH URL
-http://www.mboxgrep.org/
+.SH HOMEPAGE
+https://www.mboxgrep.org/
+.SH GIT
+https://git.datatipp.se/dspiljar/mboxgrep
+.PP
+https://github.com/dspiljar/mboxgrep
 .SH AUTHOR
-Daniel Spiljar <dspiljar AT datatipp.se>
+Daniel Spiljar <dspiljar@datatipp.se>

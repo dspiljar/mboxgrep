@@ -12,7 +12,7 @@ File: mboxgrep.info,  Node: Top,  Up: (dir)
 This file documents 'mboxgrep' (version 0.7.12a), a mailbox scanning
 utility.
 
-   Copyright (C) 2000, 2001, 2002, 2003 Daniel Spiljar
+   Copyright (C) 2000 - 2003, 2024 Daniel Spiljar
 
 * Menu:
 
@@ -250,17 +250,17 @@ Sleep well, little friend.
 
 Tag Table:
 Node: Top197
-Node: Introduction597
-Node: Invoking1466
-Node: Miscellaneous1828
-Node: File locking2113
-Node: Regexp selection2750
-Node: Output control3302
-Node: Search scope selection4342
-Node: Mailbox type selection4583
-Node: Examples4904
-Node: Bugs5728
-Node: To Vicky6146
+Node: Introduction592
+Node: Invoking1461
+Node: Miscellaneous1823
+Node: File locking2108
+Node: Regexp selection2745
+Node: Output control3297
+Node: Search scope selection4337
+Node: Mailbox type selection4578
+Node: Examples4899
+Node: Bugs5723
+Node: To Vicky6141
 
 End Tag Table
 
