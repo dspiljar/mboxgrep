@@ -9,7 +9,7 @@ END-INFO-DIR-ENTRY
 
 File: mboxgrep.info,  Node: Top,  Up: (dir)
 
-This file documents 'mboxgrep' (version 0.7.12a), a mailbox scanning
+This file documents 'mboxgrep' (version 0.7.13), a mailbox scanning
 utility.
 
    Copyright (C) 2000 - 2003, 2024 Daniel Spiljar
@@ -250,17 +250,17 @@ Sleep well, little friend.
 
 Tag Table:
 Node: Top197
-Node: Introduction592
-Node: Invoking1461
-Node: Miscellaneous1823
-Node: File locking2108
-Node: Regexp selection2745
-Node: Output control3297
-Node: Search scope selection4337
-Node: Mailbox type selection4578
-Node: Examples4899
-Node: Bugs5723
-Node: To Vicky6141
+Node: Introduction591
+Node: Invoking1460
+Node: Miscellaneous1822
+Node: File locking2107
+Node: Regexp selection2744
+Node: Output control3296
+Node: Search scope selection4336
+Node: Mailbox type selection4577
+Node: Examples4898
+Node: Bugs5722
+Node: To Vicky6140
 
 End Tag Table
 

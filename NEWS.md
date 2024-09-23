@@ -1,5 +1,12 @@
 # Changes of mboxgrep
 
+## Changes in 0.7.13
+
+- Improve the readability of this file.
+- Failure to lock a file (mbox) is now a fatal error.
+- Fix Autoconf on Windows.
+- Code refactoring, mostly of mbox-related functions.
+
 ## Changes in 0.7.12a
 
 - Fix Automake macros to include the license file and others.

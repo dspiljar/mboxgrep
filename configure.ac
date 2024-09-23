@@ -1,5 +1,5 @@
 #  mboxgrep - scan mailbox for messages matching a regular expression
-#  Copyright (C) 2000 - 2003, 2023  Daniel Spiljar
+#  Copyright (C) 2000 - 2003, 2023 - 2024  Daniel Spiljar
 #
 #  Mboxgrep is free software; you can redistribute it and/or modify it 
 #  under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Yawn.
-AC_INIT([mboxgrep], [0.7.12a], [dspiljar@datatipp.se], [mboxgrep], [https://www.mboxgrep.org/])
+AC_INIT([mboxgrep], [0.7.13], [dspiljar@datatipp.se], [mboxgrep], [https://www.mboxgrep.org/])
 #AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([foreign])
 AC_LANG([C])
