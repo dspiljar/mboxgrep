@@ -4,8 +4,7 @@ config.h.in
 config.log
 config.status
 src/*.o
-src/*.c~
-src/*.h~
+src/*.exe
 src/mboxgrep
 src/.deps/
 src/stamp-h1
@@ -17,7 +16,6 @@ compile
 depcomp
 install-sh
 missing
-src/mboxgrep.exe
-configure~
 .gitignore
 .vscode/*
+*~
