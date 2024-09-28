@@ -1,6 +1,6 @@
 /*
   mboxgrep - scan mailbox for messages matching a regular expression
-  Copyright (C) 2000 - 2004, 2006, 2010, 2023  Daniel Spiljar
+  Copyright (C) 2000 - 2004, 2006, 2010, 2023 - 2024  Daniel Spiljar
 
   Mboxgrep is free software; you can redistribute it and/or modify it 
   under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ void
 version (void)
 {
   fprintf (stdout, "%s %s\n\n"
-           "Copyright (C) 2000 - 2004, 2006, 2010, 2023  Daniel Spiljar\n"
+           "Copyright (C) 2000 - 2004, 2006, 2010, 2023 - 2024  Daniel Spiljar\n"
            "This program is free software; you can redistribute it and/or "
            "modify\nit under the terms of the GNU General Public License "
            "as published by\nthe Free Software Foundation; either version "
