@@ -18,18 +18,16 @@
 # Process this file with autoconf to produce a configure script.
 
 # Yawn.
-AC_INIT([mboxgrep], [0.7.13], [dspiljar@datatipp.se], [mboxgrep], [https://www.mboxgrep.org/])
+AC_INIT([mboxgrep],[0.7.13],[dspiljar@datatipp.se],[mboxgrep],[https://www.mboxgrep.org/])
 #AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([foreign])
 AC_LANG([C])
-AC_CONFIG_HEADER([src/config.h])
+AC_CONFIG_HEADERS([src/config.h])
 
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 
-# Checks for standard (sp?) header files
-AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Checks for libraries.
