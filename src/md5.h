@@ -22,10 +22,7 @@
 #define _MD5_H 1
 
 #include <stdio.h>
-
-#if defined HAVE_LIMITS_H || _LIBC
-# include <limits.h>
-#endif
+#include <limits.h>
 
 /* The following contortions are an attempt to use the C preprocessor
    to determine an unsigned integral type that is 32 bits wide.  An
@@ -38,20 +35,7 @@
 # include <sys/types.h>
 typedef u_int32_t md5_uint32;
 #else
-# if defined __STDC__ && __STDC__
-#  define UINT_MAX_32_BITS 4294967295U
-# else
-#  define UINT_MAX_32_BITS 0xFFFFFFFF
-# endif
-
-/* If UINT_MAX isn't defined, assume it's a 32-bit type.
-   This should be valid for all systems GNU cares about because
-   that doesn't include 16-bit systems, and only modern systems
-   (that certainly have <limits.h>) have 64+-bit integral types.  */
-
-# ifndef UINT_MAX
-#  define UINT_MAX UINT_MAX_32_BITS
-# endif
+#define UINT_MAX_32_BITS 4294967295U
 
 # if UINT_MAX == UINT_MAX_32_BITS
    typedef unsigned int md5_uint32;
